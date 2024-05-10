@@ -10,6 +10,8 @@ import TextInput from "../shared/TextInput";
 import Domain from "../assets/images/domain.png";
 import dns from "../assets/images/dns.png";
 import success from "../assets/images/success.png";
+import { db } from "../../Firebase-config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import selectDomain from "../assets/images/selectDomain.png";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
@@ -40,11 +42,24 @@ function Onboarding() {
 
   useEffect(() => {
     if (location.state === null) {
-      navigate("/register");
+      navigate("/");
     } else {
       setPanelId(location.state.id);
     }
   }, [location.state, navigate]);
+
+  useEffect(() => {
+    const checkPanel = async () => {
+      const registerdPanelsCol = collection(db, "registeredPanels");
+      const registerdPanelsSnap = await getDocs(
+        query(registerdPanelsCol, where("panelId", "==", parseInt(panelId)))
+      );
+      if (!registerdPanelsSnap.empty) {
+        navigate(`/control-panel/${panelId}/dashboard`);
+      }
+    };
+    checkPanel();
+  }, [panelId, navigate, stage]);
 
   const goToSelectDomainStage = () => {
     if (!selectedOption) {

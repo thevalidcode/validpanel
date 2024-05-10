@@ -44,6 +44,8 @@ function createServer(domain, res) {
             return;
           }
           createARecord(domain, "5.196.190.226");
+          createVirtualHost(domain);
+          createSSL(domain)
           res.json({ message: "Zone created successfully" });
         });
       });
@@ -115,5 +117,67 @@ www IN A ${ipAddress}
       });
     });
   }
+}
+
+function createVirtualHost(domain) {
+  const fileContent = `<VirtualHost *:80>
+  DocumentRoot /var/www/panels
+  ServerName ${domain}
+  ServerAlias www.${domain}
+  <Directory /var/www/panels>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+  RewriteEngine on
+  RewriteCond %{SERVER_NAME} =www.${domain} [OR]
+  RewriteCond %{SERVER_NAME} =${domain}
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+`;
+  fs.writeFile(
+    `/etc/apache2/sites-available/${domain}.conf`,
+    fileContent,
+    (err) => {
+      if (err) {
+        console.error(`Error writing zone file: ${err.message}`);
+        return;
+      }
+      // Enable the site
+      exec(`a2ensite ${domain}.conf`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error enabling site: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.error(`Error enabling site: ${stderr}`);
+          return;
+        }
+        exec("systemctl restart apache2", (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error restarting Apache: ${error.message}`);
+            return;
+          }
+          if (stderr) {
+            console.error(`Error restarting Apache: ${stderr}`);
+            return;
+          }
+        });
+      });
+    }
+  );
+}
+
+function createSSL(domain) {
+  exec(`certbot --apache -d ${domain}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error creating ssl: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Error creating ssl: ${stderr}`);
+      return;
+    }
+  });
 }
 module.exports = { createServer };
