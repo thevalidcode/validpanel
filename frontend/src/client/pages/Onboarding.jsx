@@ -130,6 +130,7 @@ function Onboarding() {
     } catch (error) {
       setBtnLoading(false);
       setBtnName("Create");
+      console.log(error);
     }
   };
   return (
