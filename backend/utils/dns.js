@@ -1,4 +1,6 @@
-function createServer(domain) {
+const exec = require("child_process").exec;
+
+function createServer(domain, res) {
   // Generate BIND zone file configuration
   const zoneConfig = `
   zone "${domain}" {

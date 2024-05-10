@@ -2,7 +2,6 @@ const express = require("express");
 const panel = express.Router();
 const { db } = require("../db");
 const { createServer } = require("./dns");
-const exec = require("child_process").exec;
 
 panel.post("/getId", async (req, res) => {
   const { uid } = req.body;
@@ -71,7 +70,7 @@ panel.post("/create", async (req, res) => {
 
   const registeredPanelsCol = db.collection("registeredPanels");
   await registeredPanelsCol.doc(domain).set({ panelId: parseInt(panelId) });
-  createServer(domain);
+  createServer(domain, res);
 });
 
 module.exports = { panel };
