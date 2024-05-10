@@ -1,0 +1,53 @@
+.cltextinput {
+  padding: 10px 18px 10px 8px;
+  position: relative;
+  left: -15px;
+  outline: 0;
+  width: 100%;
+  border-radius: 13px;
+  border-top-left-radius: 0px;
+  font-size: calc(1em + 0.3rem);
+  border-bottom-left-radius: 0px;
+  background-color: transparent;
+  color: white;
+  border: 0.25rem solid var(--clactivecolor);
+}
+
+.cltextinput:focus {
+  border: 1px solid var(--clactivecolor);
+  outline: 0;
+  box-shadow: 0.25rem 0 0 0 var(--clactivecolor);
+}
+
+.cltextinput:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px var(--clbasebgcolor) inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+.cltextinput:-webkit-autofill {
+  box-shadow: 0 0 0 1000px var(--clbasebgcolor) inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+.clpassicondiv {
+  position: absolute;
+  right: 0;
+}
+
+.clpassicon {
+  font-size: 2rem;
+  color: #bbbbbb;
+  position: relative;
+  cursor: pointer;
+  left: -50px;
+  top: 15px;
+}
+
+@media (max-width: 800px) {
+  .cltextinput {
+    font-size: 1em;
+  }
+  .clpassicon {
+    font-size: 1.3rem;
+  }
+}

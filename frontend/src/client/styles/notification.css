@@ -1,0 +1,59 @@
+.notifyCon {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  animation-name: drop-down-fade;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  width: 60%;
+  animation-play-state: running;
+}
+
+.notifyText {
+  padding: 10px 14px;
+  margin: auto;
+  color: var(--cltextcolor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  -webkit-box-shadow: -1px 4.5px 7.5px 3.5px var(--clhovercolor);
+  overflow: auto;
+  -moz-box-shadow: -1px 4.5px 7.5px 3.5px var(--clhovercolor);
+  box-shadow: -1px 4.5px 7.5px 3.5px var(--clhovercolor);
+  border-radius: 12px;
+  background-color: var(--clbgcolor);
+  font-weight: 600;
+}
+
+.notifyText .icon {
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+.notifyCon.paused {
+  animation-play-state: paused;
+}
+
+@keyframes drop-down-fade {
+  0% {
+    opacity: 0;
+    top: 0%;
+  }
+  50% {
+    opacity: 1;
+    top: 20%;
+  }
+  100% {
+    opacity: 0;
+    top: 0%;
+  }
+}
+
+@media (max-width: 800px) {
+  .notifyCon {
+    width: 80%;
+  }
+}

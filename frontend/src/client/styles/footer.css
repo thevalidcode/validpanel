@@ -1,0 +1,40 @@
+.loclfooter {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+}
+
+.loclfootercont {
+  width: 70%;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loclfootercont span {
+  white-space: nowrap;
+  color: var(--cltextcolor);
+  font-weight: 600;
+}
+
+.loclfootercont a {
+  color: var(--cltextcolor);
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+@media (max-width: 800px) {
+  .loclfootercont {
+    width: 95%;
+  }
+}
+
+@media (max-width: 350px) {
+  .loclfootercont span {
+    white-space: wrap;
+  }
+}
