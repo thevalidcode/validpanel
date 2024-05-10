@@ -43,8 +43,6 @@ function createServer(domain, res) {
 
         // After successfully reloading BIND, create A record
         createARecord(domain, "5.196.190.226");
-
-        console.log(`Zone ${domain} created successfully`);
         res.json({ message: "Zone created successfully" });
       });
     });
@@ -60,8 +58,8 @@ function createARecord(domain, ipAddress) {
   1209600
   3600 )
 
-${domain} IN A ${ipAddress}
-www.${domain} IN A ${ipAddress}
+@ IN A ${ipAddress}
+www IN A ${ipAddress}
 `;
 
   // Write zone file content to /var/lib/bind/{domain}.hosts
@@ -81,7 +79,6 @@ www.${domain} IN A ${ipAddress}
         console.error(`Stderr: ${stderr}`);
         return;
       }
-      console.log(`A record for ${domain} created successfully`);
     });
   });
 }
