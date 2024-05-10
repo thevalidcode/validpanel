@@ -1,0 +1,27 @@
+on: push
+name: 🚀 Deploy project on push
+jobs:
+  web-deploy:
+    name: Deploy project
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      # - name: 📂 Sync frontend files
+      #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      #   with:
+      #     server: ${{ secrets.FTP_SERVER }}
+      #     username: ${{ secrets.FTP_USERNAME }}
+      #     password: ${{ secrets.FTP_PASSWORD }}
+      #     local-dir: "./frontend/build/"
+      #     timeout: 900
+
+      - name: 📂 Sync backend files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_BACKEND_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: "./backend/"
+          timeout: 900
