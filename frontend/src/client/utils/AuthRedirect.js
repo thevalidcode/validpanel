@@ -9,7 +9,7 @@ function AuthRedirect() {
   const { backendUrl } = useContext(AppContext);
   const navigate = useNavigate();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const getPanelId = async () => {
           try {
@@ -28,6 +28,9 @@ function AuthRedirect() {
         getPanelId();
       }
     });
+    return () => {
+      unsubscribe();
+    };
   }, [navigate, backendUrl]);
   return null;
 }

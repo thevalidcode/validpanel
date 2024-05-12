@@ -30,6 +30,7 @@ function Register() {
     setNotifyType,
     backendUrl,
     setNotifyMessage,
+    siteTitle,
     setNotifyVisibility,
   } = useContext(AppContext);
   const navigate = useNavigate();
@@ -54,7 +55,9 @@ function Register() {
     };
     hashPassword();
   }, [password]);
-
+  useEffect(() => {
+    document.title = `Register | ${siteTitle}`;
+  }, [siteTitle]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email.trim() === "" || password.trim() === "" || name.trim() === "") {

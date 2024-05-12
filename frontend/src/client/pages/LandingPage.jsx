@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/landingpage.css";
 import BG from "../assets/images/dotted-black-background.jpg";
 import PanelImage from "../assets/images/panel-image.png";
@@ -22,8 +22,12 @@ import Footer from "../components/Footer";
 import AuthRedirect from "../utils/AuthRedirect";
 
 function LandingPage() {
-  const { clientStyles } = useContext(AppContext);
+  const { clientStyles, siteTitle } = useContext(AppContext);
   const [lightThemeImage, setLightThemeImage] = useState(true);
+  
+  useEffect(() => {
+    document.title = siteTitle;
+  }, [siteTitle]);
 
   return (
     <div className="landingpage" style={clientStyles}>

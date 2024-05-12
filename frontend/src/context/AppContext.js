@@ -1,5 +1,4 @@
 import { createContext, useEffect, useMemo, useState } from "react";
-
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
@@ -17,8 +16,10 @@ const AppProvider = ({ children }) => {
   );
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyVisibility, setNotifyVisibility] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [notifyType, setNotifyType] = useState("");
   const [notifyDuration, setNotifyDuration] = useState(4000);
+
   useEffect(() => {
     const bodyStyle = document.querySelector("body").style;
     bodyStyle.setProperty("--sitecolor", clientStyles["--sitecolor"]);
@@ -30,12 +31,16 @@ const AppProvider = ({ children }) => {
     bodyStyle.setProperty("--clbasebgcolor", clientStyles["--clbasebgcolor"]);
     bodyStyle.backgroundColor = "var(--clbgcolor)";
   }, [clientStyles]);
-  const backendUrl = "https://validpanel.com:3002";
+  const backendUrl = "http://localhost:3002";
+  const siteTitle = "Valid Panel";
   return (
     <AppContext.Provider
       value={{
         clientStyles,
+        loading,
+        setLoading,
         notifyMessage,
+        siteTitle,
         notifyType,
         setNotifyType,
         setNotifyMessage,

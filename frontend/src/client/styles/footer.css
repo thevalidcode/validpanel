@@ -5,6 +5,11 @@
   padding: 20px;
 }
 
+.clfooter {
+  position: relative;
+  top: 150px;
+}
+
 .loclfootercont {
   width: 70%;
   margin: auto;

@@ -10,14 +10,14 @@ import TextInput from "../shared/TextInput";
 import Domain from "../assets/images/domain.png";
 import dns from "../assets/images/dns.png";
 import success from "../assets/images/success.png";
-import { db } from "../../Firebase-config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth } from "../../Firebase-config";
 import selectDomain from "../assets/images/selectDomain.png";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa6";
 import { IoCopy } from "react-icons/io5";
 import axios from "axios";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Onboarding() {
   const location = useLocation();
@@ -27,9 +27,10 @@ function Onboarding() {
     setNotifyType,
     setNotifyMessage,
     backendUrl,
+    siteTitle,
     setNotifyVisibility,
   } = useContext(AppContext);
-  const [panelId, setPanelId] = useState(0);
+  const [panelId, setPanelId] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [stage, setStage] = useState("start");
   const [domain, setDomain] = useState("");
@@ -41,26 +42,21 @@ function Onboarding() {
   };
 
   useEffect(() => {
-    if (location.state === null) {
-      navigate("/");
-    } else {
+    if (location.state) {
       setPanelId(location.state.id);
     }
   }, [location.state, navigate]);
 
   useEffect(() => {
-    const checkPanel = async () => {
-      const registerdPanelsCol = collection(db, "registeredPanels");
-      const registerdPanelsSnap = await getDocs(
-        query(registerdPanelsCol, where("panelId", "==", parseInt(panelId)))
-      );
-      if (!registerdPanelsSnap.empty) {
-        navigate(`/control-panel/${panelId}/dashboard`);
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/");
       }
-    };
-    checkPanel();
-  }, [panelId, navigate, stage]);
-
+    });
+  }, [navigate]);
+  useEffect(() => {
+    document.title = `Onboarding | ${siteTitle}`;
+  }, [siteTitle]);
   const goToSelectDomainStage = () => {
     if (!selectedOption) {
       Notify("error", "Kindly choose one");
@@ -138,10 +134,15 @@ function Onboarding() {
         domain: isDomain ? `${domain}` : `${domain}.validpanel.com`,
         panelId: panelId,
       };
-      await axios.post(`${backendUrl}/panel/create`, data);
+      if (!panelId) {
+        data.uid = auth.currentUser.uid;
+      }
+      const response = await axios.post(`${backendUrl}/panel/create`, data);
+      const mainPanelId = response.data.panelId;
       setBtnLoading(false);
       setBtnName("Create");
       setStage("success");
+      navigate(`/control-panel/${mainPanelId}/dashboard`);
     } catch (error) {
       setBtnLoading(false);
       setBtnName("Create");
@@ -324,7 +325,7 @@ function Onboarding() {
           ""
         )}
       </div>
-      <div className="clonboardfooter">
+      <div className="clfooter">
         <Footer />
       </div>
     </div>

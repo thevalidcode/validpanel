@@ -1,31 +1,29 @@
 import "../styles/navbar.css";
 import { useState, useRef, useEffect } from "react";
 import { IoOpen } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
-import { FaSquareXTwitter } from "react-icons/fa6";
+import { FaLightbulb, FaSquareXTwitter } from "react-icons/fa6";
 import { IoIosPricetags, IoLogoInstagram } from "react-icons/io";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import { RiMenu2Line } from "react-icons/ri";
 import { MdOutlineCancel } from "react-icons/md";
-import { VscAccount } from "react-icons/vsc";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { FaListUl } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../Firebase-config";
+import Logo from "../assets/images/ValidPanel.png";
 
 function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const buttonRef = useRef();
   const containerRef = useRef();
+  const navigate = useNavigate();
 
   const toogleOpen = () => {
     setIsOpen(!isOpen);
-  };
-
-  const toogleDropdownOpen = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const cancelOpen = () => {
@@ -49,6 +47,15 @@ function NavBar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.uid) {
+        setIsLoggedIn(true);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     let handler = (e) => {
       if (
@@ -56,7 +63,6 @@ function NavBar() {
         !containerRef.current?.contains(e.target)
       ) {
         setIsOpen(false);
-        setIsDropdownOpen(false);
       }
     };
     if (isOpen) {
@@ -67,101 +73,105 @@ function NavBar() {
       document.removeEventListener("mousedown", handler);
     };
   });
+  const goHome = () => {
+    navigate("/");
+  };
 
   return (
-    <div className={scrolled ? "clnavbarcon-scroll" : "clnavbarcon"}>
-      <div className="clnavbar">
-        <div className="clnavbarlogo">
-          <Link
-            to="/"
-            className=" text-decoration-none text-white"
-            style={{ fontSize: "2rem" }}
-          >
-            Logo
-          </Link>
-        </div>
-        <div className="clnavbarsocials">
-          <Link to="/#" className="navbarsocial">
-            <FaSquareXTwitter className="clnavbarsocialIcon" />
-          </Link>
-          <Link to="/#" className="navbarsocial">
-            <IoLogoInstagram className="clnavbarsocialIcon" />
-          </Link>
-          <Link to="/#" className="navbarsocial">
-            <IoLogoWhatsapp className="clnavbarsocialIcon" />
-          </Link>
-        </div>
-        <div className="clnavbarother">
-          <Link to="/#" className="navbarother">
-            <IoIosPricetags className="clnavbarsocialIcon" />
-            Pricing
-          </Link>
-        </div>
-        <div className="clnavbarlinks">
-          <Link to="/register" className="clnavbarregis">
-            <IoOpen className="clnavbaricon" />
-            Register
-          </Link>
-          <Link to="/login" className="clnavbarlogin">
-            <IoLogIn className="clnavbaricon" />
-            Login
-          </Link>
-        </div>
-        <RiMenu2Line className="clnavbarhbmenu" onClick={toogleOpen} />
-      </div>
-      {isOpen ? (
-        <div className="clmbnavbar" ref={containerRef}>
-          <div className="clmbnavbarhead">
-            <h1>Logo</h1>
-            <div ref={buttonRef}>
-              <MdOutlineCancel
-                className="clmbnavbarcancel"
-                onClick={cancelOpen}
-              />
+    <div className="clnavbarmain">
+      <div className={scrolled ? "clnavbarcon-scroll" : "clnavbarcon"}>
+        <div className="clnavbar">
+          <img
+            src={Logo}
+            alt="logo"
+            className="clnavbarlogoimg"
+            onClick={goHome}
+          />
+          <div className="clnavbarsocials">
+            <Link to="/#" className="navbarsocial">
+              <FaSquareXTwitter className="clnavbarsocialIcon" />
+            </Link>
+            <Link to="/#" className="navbarsocial">
+              <IoLogoInstagram className="clnavbarsocialIcon" />
+            </Link>
+            <Link to="/#" className="navbarsocial">
+              <IoLogoWhatsapp className="clnavbarsocialIcon" />
+            </Link>
+          </div>
+          <div className="clnavbarother">
+            <Link to="/#" className="navbarother">
+              <IoIosPricetags className="clnavbarsocialIcon" />
+              Pricing
+            </Link>
+          </div>
+          {!isLoggedIn ? (
+            <div className="clnavbarlinks">
+              <Link to="/register" className="clnavbarregis">
+                <IoOpen className="clnavbaricon" />
+                Register
+              </Link>
+              <Link to="/login" className="clnavbarlogin">
+                <IoLogIn className="clnavbaricon" />
+                Login
+              </Link>
             </div>
-          </div>
-          <div className="clmbnavbarsocials">
-            <Link to="/#" className="navbarsocial">
-              <FaSquareXTwitter className="clmbnavbarsocialIcon" /> X
+          ) : (
+            <Link to="/request-feature" className="clnavbarreq">
+              <FaLightbulb className="clnavbaricon" />
+              Improve Valid Panel
             </Link>
-            <Link to="/#" className="navbarsocial">
-              <IoLogoInstagram className="clmbnavbarsocialIcon" />
-              Instagram
-            </Link>
-            <Link to="/#" className="navbarsocial">
-              <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
-              Whatsapp
-            </Link>
-          </div>
-          <div className="claccdropdown">
-            <span className="claccount" onClick={toogleDropdownOpen}>
-              <VscAccount className="claccicon" />
-              Account{" "}
-              {isDropdownOpen ? (
-                <FaCaretUp className="claccdownicon" />
-              ) : (
-                <FaCaretDown className="claccdownicon" />
-              )}
-            </span>
-            {isDropdownOpen ? (
-              <div className="cldropdownmenu">
-                <Link to="/login" className="cldropdownlink">
-                  <IoPerson className="cldropdowniconli" />
+          )}
+          <RiMenu2Line className="clnavbarhbmenu" onClick={toogleOpen} />
+        </div>
+        {isOpen ? (
+          <div className="clmbnavbar" ref={containerRef}>
+            <div className="clmbnavbarhead">
+              <img
+                src={Logo}
+                alt="logo"
+                className="clnavbarlogoimg"
+                onClick={goHome}
+              />
+              <div className="clmbnavbarsocials">
+                <Link to="/#" className="navbarsocial">
+                  <FaSquareXTwitter className="clmbnavbarsocialIcon" />
+                </Link>
+                <Link to="/#" className="navbarsocial">
+                  <IoLogoInstagram className="clmbnavbarsocialIcon" />
+                </Link>
+                <Link to="/#" className="navbarsocial">
+                  <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
+                </Link>
+              </div>
+              <div ref={buttonRef}>
+                <MdOutlineCancel
+                  className="clmbnavbarcancel"
+                  onClick={cancelOpen}
+                />
+              </div>
+            </div>
+            {isLoggedIn ? (
+              <Link to="/request-feature" className="clmbnavbarreq">
+                <FaLightbulb className="clmbnavbaricon" />
+                Improve Valid Panel
+              </Link>
+            ) : (
+              <div className="clmbnbmenu">
+                <Link to="/login" className="clmbnblink">
+                  <IoPerson className="clmbnbiconli" />
                   Login
                 </Link>
-                <Link to="/register" className="cldropdownlink">
-                  <FaListUl className="cldropdowniconli" />
+                <Link to="/register" className="clmbnblink">
+                  <FaListUl className="clmbnbiconli" />
                   Register
                 </Link>
               </div>
-            ) : (
-              ""
             )}
           </div>
-        </div>
-      ) : (
-        ""
-      )}
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 }

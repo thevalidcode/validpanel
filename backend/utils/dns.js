@@ -1,7 +1,8 @@
 const fs = require("fs");
 const exec = require("child_process").exec;
+const { db } = require("../db");
 
-function createServer(domain, res) {
+function createServer(domain, panelId, res) {
   // Read existing content of named.conf.local
   fs.readFile("/etc/bind/named.conf.local", "utf8", (err, data) => {
     if (err) {
@@ -45,8 +46,7 @@ function createServer(domain, res) {
           }
           createARecord(domain, "5.196.190.226");
           createVirtualHost(domain);
-          createSSL(domain)
-          res.json({ message: "Zone created successfully" });
+          res.json({ panelId: panelId, message: "Server created successfully" });
         });
       });
     }
@@ -168,16 +168,80 @@ function createVirtualHost(domain) {
   );
 }
 
-function createSSL(domain) {
-  exec(`certbot --apache -d ${domain}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error creating ssl: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Error creating ssl: ${stderr}`);
-      return;
-    }
-  });
+async function createSSL() {
+  const registeredPanelsCol = db
+    .collection("registeredPanels")
+    .where("ssl", "==", false);
+  const registeredPanelsSnap = await registeredPanelsCol.get();
+  for (const regPanel of registeredPanelsSnap.docs) {
+    exec(`certbot --apache -d ${regPanel.id}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error creating ssl: ${error.message}`);
+        return;
+      } else if (stderr) {
+        console.error(`Error creating ssl: ${stderr}`);
+        return;
+      } else {
+        fs.readFile(
+          `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
+          "utf8",
+          (err, data) => {
+            if (err) {
+              console.error(`Error reading file: ${err.message}`);
+              res.status(500).json({ error: "Internal server error" });
+              return;
+            }
+            const paragraphs = data.split(/\n\s*\n/);
+
+            const indexToInsert = paragraphs.length - 3;
+
+            const newParagraphContent = `
+            ProxyPreserveHost On
+            ProxyPass /api/v2 https://${regPanel.id}:3001/api/v2
+            ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
+            paragraphs.splice(indexToInsert, 0, newParagraphContent);
+
+            const newData = paragraphs.join("\n\n");
+
+            fs.writeFile(
+              `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
+              newData,
+              "utf8",
+              (err) => {
+                if (err) {
+                  console.error("Error writing file:", err);
+                  return;
+                }
+              }
+            );
+          }
+        );
+        exec(
+          `ln -s /etc/apache2/sites-available/${regPanel.id}-le-ssl.conf /etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
+          (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error linking ssl file: ${error.message}`);
+              return;
+            } else if (stderr) {
+              console.error(`Error linking ssl file: ${stderr}`);
+              return;
+            }
+          }
+        );
+      }
+    });
+    exec(`systemctl reload apache2`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error reloading apache2: ${error.message}`);
+        return;
+      } else if (stderr) {
+        console.error(`Error reloading apache2: ${stderr}`);
+        return;
+      }
+    });
+    await db.collection("registeredPanels").doc(regPanel.id).update({
+      ssl: true,
+    });
+  }
 }
-module.exports = { createServer };
+module.exports = { createServer, createSSL };

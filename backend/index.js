@@ -5,7 +5,9 @@ const cors = require("cors");
 const app = express();
 const usersRouter = require("./routes/user");
 const { panel } = require("./utils/panel");
+const cron = require("node-cron");
 const fs = require("fs");
+const { createSSL } = require("./utils/dns");
 const PORT = 3002;
 
 app.use(bodyParser.json());
@@ -20,6 +22,10 @@ const options = {
   ),
 };
 const server = https.createServer(options, app);
+
+cron.schedule("0 */3 * * *", () => {
+  createSSL();
+});
 
 server.listen(PORT, () => {
   console.log(`Server running on https://validpanel.com:${PORT}/`);

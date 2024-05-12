@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import BG from "../assets/images/dotted-black-background.jpg";
 import "../styles/login.css";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { IoMail } from "react-icons/io5";
 import { IoIosLock } from "react-icons/io";
@@ -24,6 +24,7 @@ function Login() {
     setNotifyDuration,
     setNotifyType,
     setNotifyMessage,
+    siteTitle,
     backendUrl,
     setNotifyVisibility,
   } = useContext(AppContext);
@@ -33,7 +34,9 @@ function Login() {
     const value = e.target.value;
     setChange(value);
   };
-
+  useEffect(() => {
+    document.title = `Login | ${siteTitle}`;
+  }, [siteTitle]);
   const Notify = (type, message, duration) => {
     setNotifyType(type);
     setNotifyMessage(message);

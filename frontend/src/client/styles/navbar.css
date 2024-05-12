@@ -10,16 +10,23 @@
 .clnavbarcon-scroll {
   position: fixed;
   background-color: var(--clbgcolor);
-  padding: 20px;
+  padding: 20px 0px;
   transition: 0.5s;
   width: 100%;
   z-index: 9000;
   color: white;
 }
 
+.clnavbarlogoimg {
+  width: 90px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
 .clnavbar {
   width: 70%;
   margin-left: auto;
+  height: 90px;
   margin-right: auto;
   display: flex;
   justify-content: space-between;
@@ -114,6 +121,7 @@
 
 .clnavbaricon {
   font-size: 1.6rem;
+  transition: 0.5s;
   margin-right: 12px;
 }
 
@@ -144,11 +152,6 @@
   align-items: center;
 }
 
-.clmbnavbarhead h1:hover {
-  color: #190030;
-  transition: 0.2s;
-}
-
 .clmbnavbarcancel {
   font-size: 2rem;
   cursor: pointer;
@@ -156,17 +159,21 @@
 
 .clmbnavbarsocials {
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  flex-direction: column;
 }
 
 .clmbnavbarsocials a,
 .claccount {
   transition: 0.3s;
-  margin-top: 20px;
   font-weight: 500;
   display: flex;
   align-items: center;
+}
+
+.claccount {
+  margin-top: 20px;
 }
 
 .clmbnavbarsocials a:hover {
@@ -203,42 +210,91 @@
   font-weight: 500;
 }
 
-.claccdropdown {
-  margin-top: 20px;
-}
-
-.cldropdownmenu {
-  margin-left: 1.7rem;
+.clmbnbmenu {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.cldropdownmenu .cldropdownlink {
+.clmbnbmenu .clmbnblink {
   text-decoration: none;
   display: inline-flex;
-  border-radius: 5px;
+  border-radius: 9px;
   align-items: center;
-  width: calc(100% - 12px - 1.7rem);
+  width: 100%;
   background-color: transparent;
   color: white;
   margin-top: 10px;
-  padding: 10px 15px 10px 0px;
+  padding: 10px 15px
 }
-.cldropdownmenu .cldropdownlink:hover {
-  background-color: #bebebe;
+.clmbnbmenu .clmbnblink:hover {
+  background-color: var(--clbuttoncolor);
   transition: 0.4s;
 }
 
-.cldropdownmenu .cldropdownlink .cldropdowniconli {
+.clmbnbmenu .clmbnblink .clmbnbiconli {
   transition: 0.3s;
-  font-size: 1.7rem;
-  margin-left: 12px;
+  font-size: 1.6rem;
   margin-right: 12px;
   color: #ddd;
 }
 
+.clnavbarreq {
+  background-image: linear-gradient(to bottom left, #750ecf, #ba54f5, #9c34f7);
+  transition: 0.15s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.4rem;
+  line-height: 20px;
+  box-shadow: none;
+  border-radius: 0.7rem;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.8rem 1.3rem;
+}
+
+.clnavbarreq:hover {
+  background-image: linear-gradient(to bottom left, #650eb1, #ac49e6, #9012ff);
+  transition: 0.15s ease;
+}
+
+.clnavbarreq:hover .clnavbaricon {
+  color: var(--cltextcolor);
+  transition: 0.5s;
+}
+
+.clmbnavbarreq .clmbnavbaricon {
+  transition: 0.3s;
+  font-size: 1.4rem;
+  margin-right: 12px;
+  color: #ddd;
+}
+
+.clmbnavbarreq {
+  text-decoration: none;
+  display: inline-flex;
+  border-radius: 9px;
+  align-items: center;
+  font-weight: 600;
+  width: 100%;
+  transition: 0.5s;
+  background-color: transparent;
+  color: white;
+  margin-top: 10px;
+  padding: 10px 15px;
+}
+
+.clmbnavbarreq:hover {
+  background-color: var(--clbuttoncolor);
+  transition: 0.5s;
+}
+
 @media (max-width: 1320px) {
+  .clnavbar {
+    height: 50px;
+  }
   .clmbnavbar {
     display: block;
   }
@@ -248,8 +304,12 @@
   }
   .clnavbarlinks,
   .clnavbarsocials,
-  .clnavbarother {
+  .clnavbarother,
+  .clnavbarreq {
     display: none;
+  }
+  .clnavbarlogoimg {
+    width: 60px;
   }
 }
 

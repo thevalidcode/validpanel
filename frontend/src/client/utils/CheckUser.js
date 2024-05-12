@@ -11,7 +11,7 @@ function CheckUser() {
   const { panelId } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const checkPanel = async () => {
           const registeredPanelsQuery = query(
@@ -21,10 +21,11 @@ function CheckUser() {
           const registeredPanelsSnap = await getDocs(registeredPanelsQuery);
           const response = await axios.post(`${backendUrl}/panel/checkuser`, {
             uid: user.uid,
+            panelId: panelId,
           });
           if (!response.data.success) {
             navigate("/");
-            await signOut(auth)
+            await signOut(auth);
           }
           if (registeredPanelsSnap.empty) {
             navigate("/onboarding", {
@@ -39,6 +40,9 @@ function CheckUser() {
         navigate("/");
       }
     });
+    return () => {
+      unsubscribe();
+    };
   }, [panelId, navigate, backendUrl]);
   return null;
 }
