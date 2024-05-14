@@ -1,0 +1,132 @@
+.claccount {
+  position: relative;
+  top: 150px;
+}
+
+.claccheadtxt h1 {
+  background: linear-gradient(
+    to bottom,
+    var(--clbasebgcolor),
+    var(--cltextcolor)
+  );
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  background-clip: text;
+}
+
+.claccountbd {
+  margin: 0px 20px;
+  color: white;
+}
+
+.claccountbd .container {
+  background-color: var(--clbasebgcolor);
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.claccnaem {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.claccname,
+.claccemail,
+.claccexistpass,
+.claccnewpass,
+.claccconfirmpass {
+  width: 600px;
+  position: relative;
+  flex-grow: 1;
+}
+
+.claccnaem input,
+.claccpassword input {
+  border-radius: 10px;
+  left: 0;
+}
+
+.claccemail input:disabled {
+  background-color: var(--clhovercolor);
+}
+
+.clwelcometxt {
+  margin-bottom: 10px;
+}
+
+.clwelcometxt {
+  color: white;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.claccpass,
+.claccpanel {
+  border-top: 1px solid var(--clbgcolor);
+  margin: 30px 0px;
+  width: 100%;
+}
+
+.claccpassword {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0px 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.claccpass h1,
+.claccpanel h1 {
+  margin: 10px auto;
+  background: linear-gradient(
+    to bottom,
+    var(--clbasebgcolor),
+    var(--cltextcolor)
+  );
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  background-clip: text;
+}
+
+.claccpassword .clpassicondiv {
+  right: -29px;
+  bottom: 30px;
+}
+
+.clacclabel {
+  font-size: 1.1rem;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
+}
+
+.claccpanels {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+}
+
+.claccexistpanel {
+  width: 100%;
+}
+
+@media (max-width: 800px) {
+  .clacclabel {
+    letter-spacing: 0px;
+    font-size: 1rem;
+  }
+  .claccpanels {
+    width: 90%;
+  }
+}

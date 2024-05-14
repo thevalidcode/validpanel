@@ -13,11 +13,16 @@ import { IoPerson } from "react-icons/io5";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../Firebase-config";
 import Logo from "../assets/images/ValidPanel.png";
+import axios from "axios";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
 
 function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { backendUrl } = useContext(AppContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [panelId, setPanelId] = useState(0);
   const buttonRef = useRef();
   const containerRef = useRef();
   const navigate = useNavigate();
@@ -29,6 +34,8 @@ function NavBar() {
   const cancelOpen = () => {
     setIsOpen(false);
   };
+
+  const { currentUser } = auth;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,11 +56,14 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsuscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.uid) {
         setIsLoggedIn(true);
       }
     });
+    return () => {
+      unsuscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -73,8 +83,22 @@ function NavBar() {
       document.removeEventListener("mousedown", handler);
     };
   });
+
+  useEffect(() => {
+    if (currentUser && currentUser.uid) {
+      const getPanel = async () => {
+        const response = await axios.post(`${backendUrl}/panel/getId`, {
+          uid: currentUser.uid,
+        });
+        const panelId = response.data.id;
+        setPanelId(panelId);
+      };
+      getPanel();
+    }
+  }, [backendUrl, currentUser]);
+
   const goHome = () => {
-    navigate("/");
+    navigate(panelId !== 0 ? `/control-panel/${panelId}/dashboard` : "/");
   };
 
   return (

@@ -33,6 +33,29 @@ panel.post("/getId", async (req, res) => {
   }
 });
 
+panel.post("/get", async (req, res) => {
+  const { uid } = req.body;
+
+  if (!uid) {
+    return res.status(400).json({ error: "Missing uid" });
+  }
+  const panelsCollectionRef = db
+    .collection("registeredPanels")
+    .where("adminUid", "==", uid);
+  const panelsQuerySnapshot = await panelsCollectionRef.get();
+  const panelData = [];
+  if (!panelsQuerySnapshot.empty) {
+    for (const panelDoc of panelsQuerySnapshot.docs) {
+      const domain = panelDoc.id;
+      const panelId = panelDoc.data().panelId;
+      panelData.push({ value: panelId, label: domain });
+    }
+    return res.status(200).send(panelData);
+  } else {
+    return res.status(200).send([]);
+  }
+});
+
 panel.post("/checkuser", async (req, res) => {
   const { uid, panelId } = req.body;
 
@@ -124,7 +147,7 @@ panel.post("/create", async (req, res) => {
   const registeredPanelsCol = db.collection("registeredPanels");
   await registeredPanelsCol
     .doc(domain)
-    .set({ panelId: parseInt(mainPanelId), ssl: false });
+    .set({ panelId: parseInt(mainPanelId), ssl: false, adminUid: uid });
   createServer(domain, mainPanelId, res);
 });
 

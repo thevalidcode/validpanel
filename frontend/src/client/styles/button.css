@@ -43,13 +43,13 @@
   grid-area: 1/1;
   border: 9px solid;
   border-radius: 50%;
-  border-color: var(--clbasebgcolor) var(--clhovercolor) #0000 #0000;
+  border-color: var(--clactivecolor) var(--clhovercolor) #0000 #0000;
   mix-blend-mode: darken;
   animation: spinner-plncf9 1s infinite linear;
 }
 
 .clspinbutton .spinner::after {
-  border-color: #0000 #0000 var(--cltextcolor) transparent;
+  border-color: #0000 #0000 var(--clbuttoncolor) transparent;
   animation-direction: reverse;
 }
 
@@ -63,5 +63,23 @@
   .clspinbutton {
     padding: 15px 30px;
     font-size: 1rem;
+  }
+  .clspinbutton .spinner {
+    width: 15px;
+    height: 15px;
+  }
+  .clspinbutton .spinner::before,
+  .clspinbutton .spinner::after {
+    content: "";
+    grid-area: 1/1;
+    border: 4px solid;
+    border-radius: 50%;
+    border-color: var(--clactivecolor) var(--clhovercolor) #0000 #0000;
+    mix-blend-mode: darken;
+    animation: spinner-plncf9 1s infinite linear;
+  }
+  .clspinbutton .spinner::after {
+    border-color: #0000 #0000 var(--clbuttoncolor) transparent;
+    animation-direction: reverse;
   }
 }

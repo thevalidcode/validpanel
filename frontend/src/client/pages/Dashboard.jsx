@@ -2,13 +2,14 @@ import NavBar from "../components/NavBar";
 import CheckUser from "../utils/CheckUser";
 import Footer from "../components/Footer";
 import "../styles/dashboard.css";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import smile from "../assets/images/smile.png";
 import { useState, useEffect, useContext } from "react";
 import { db } from "../../Firebase-config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { AppContext } from "../../context/AppContext";
 import Loader from "../shared/Loader";
+import AnchorLink from "../shared/AnchorLink";
 
 function Dashboard() {
   const { loading, setLoading, siteTitle } = useContext(AppContext);
@@ -51,12 +52,16 @@ function Dashboard() {
         <div className="cldashbdbody">
           <img src={smile} alt="" className="clntcdashbdiimg" />
           <h2>Nothing To See Here For Now.</h2>
-          <Link to={`https://${domain}`} target="blank">
-            View Panel
-          </Link>
-          <Link to={`https://${domain}/control-panel/login`} target="blank">
-            View Admin
-          </Link>
+          <AnchorLink
+            to={`https://${domain}`}
+            target="blank"
+            name="View Panel"
+          />
+          <AnchorLink
+            to={`https://${domain}/control-panel/login`}
+            target="blank"
+            name="View Admin"
+          />
         </div>
       </div>
       <div className="clfooter">

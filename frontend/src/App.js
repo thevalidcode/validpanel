@@ -7,6 +7,7 @@ import Register from "./client/pages/Register";
 import Onboarding from "./client/pages/Onboarding";
 import ControlPanel from "./client/pages/ControlPanel";
 import Dashboard from "./client/pages/Dashboard";
+import Account from "./client/pages/Account";
 
 function App() {
   return (
@@ -67,6 +68,15 @@ function App() {
             element={
               <>
                 <Dashboard />
+              </>
+            }
+          />
+          <Route
+            path="/control-panel/:panelId/account"
+            exact
+            element={
+              <>
+                <Account />
               </>
             }
           />

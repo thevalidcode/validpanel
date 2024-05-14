@@ -3,6 +3,26 @@
   height: 100%;
 }
 
+.clonbheado {
+  display: flex;
+  align-items: center;
+}
+
+.clongoback {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: transparent;
+  margin-right: 30px;
+  width: fit-content;
+  border: 1px solid var(--clhovercolor);
+}
+
+.clongoback .icon {
+  font-size: 1.4rem;
+  color: var(--cltextcolor);
+}
+
 .clonbselect {
   position: relative;
   top: 150px;
@@ -17,6 +37,7 @@
 
 .clonbheadtxt {
   font-size: 2rem;
+  margin: auto 0px;
   font-weight: 700;
   background: linear-gradient(to top left, #7719cf, #370364);
   background-clip: text;
@@ -313,5 +334,8 @@
   }
   .clpanelsucctext span {
     font-size: calc(1em + 0.2rem);
+  }
+  .clongoback .icon {
+    font-size: 1.1rem;
   }
 }

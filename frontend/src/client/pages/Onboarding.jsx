@@ -18,6 +18,7 @@ import { FaAngleRight } from "react-icons/fa6";
 import { IoCopy } from "react-icons/io5";
 import axios from "axios";
 import { onAuthStateChanged } from "firebase/auth";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 function Onboarding() {
   const location = useLocation();
@@ -126,6 +127,10 @@ function Onboarding() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const CreatePanel = async () => {
     setBtnLoading(true);
     setBtnName("Creating...");
@@ -155,7 +160,12 @@ function Onboarding() {
       <div className="clonbselect">
         {stage === "start" ? (
           <React.Fragment>
-            <h3 className="clonbheadtxt">Choose One</h3>
+            <div className="clonbheado">
+              <div className="clongoback" onClick={goBack}>
+                <IoMdArrowRoundBack className="icon" />
+              </div>
+              <h3 className="clonbheadtxt">Choose One</h3>
+            </div>
             <div className="clselectvalid">
               <div
                 className={
