@@ -5,8 +5,16 @@ import TextInput from "../shared/TextInput";
 import PasswordInput from "../shared/PasswordInput";
 import { useContext, useEffect, useState } from "react";
 import CheckUser from "../utils/CheckUser";
+import bcrypt from "bcryptjs";
 import { useParams, useNavigate } from "react-router-dom";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { auth, db } from "../../Firebase-config";
 import Loader from "../shared/Loader";
 import Button from "../shared/Button";
@@ -14,18 +22,34 @@ import Select from "react-select";
 import axios from "axios";
 import AnchorLink from "../shared/AnchorLink";
 import { AppContext } from "../../context/AppContext";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 
 function Account() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const { backendUrl } = useContext(AppContext);
+  const {
+    setNotifyDuration,
+    setNotifyType,
+    backendUrl,
+    setNotifyMessage,
+    siteTitle,
+    setNotifyVisibility,
+  } = useContext(AppContext);
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState(null);
   const [panelOptions, setPanelOptions] = useState([]);
   const [savingPassword, setSavingPassword] = useState(false);
+  const [savingName, setSavingName] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [hashedPassword, setHashedPassword] = useState("");
+  const [btnSavingPassword, setBtnSavingPassword] = useState("Save Changes");
+  const [btnSavingName, setBtnSavingName] = useState("Save Changes");
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedPanel, setSelectedPanel] = useState([]);
 
@@ -37,9 +61,20 @@ function Account() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    document.title = `Account | ${siteTitle}`;
+  }, [siteTitle]);
+
   const handleTextChange = (e, setChange) => {
     const value = e.target.value;
     setChange(value);
+  };
+
+  const Notify = (type, message, duration) => {
+    setNotifyType(type);
+    setNotifyMessage(message);
+    setNotifyVisibility(true);
+    if (duration > 0) setNotifyDuration(duration);
   };
 
   const selectStyles = {
@@ -80,6 +115,16 @@ function Account() {
   }, [panelId, currentUser]);
 
   useEffect(() => {
+    const hashPassword = async () => {
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hashed = await bcrypt.hash(newPassword, salt);
+      setHashedPassword(hashed);
+    };
+    hashPassword();
+  }, [newPassword]);
+
+  useEffect(() => {
     const getPanelOptions = async () => {
       if (currentUser) {
         const response = await axios.post(`${backendUrl}/panel/get`, {
@@ -93,7 +138,7 @@ function Account() {
       }
     };
     getPanelOptions();
-  }, [currentUser, backendUrl]);
+  }, [currentUser, backendUrl, panelId]);
 
   if (!currentUser || adminData === null) {
     return <Loader />;
@@ -105,6 +150,77 @@ function Account() {
     navigate(`/control-panel/${id}/dashboard`);
   };
 
+  const handlePasswordChange = async () => {
+    setBtnSavingPassword("Saving...");
+    setSavingPassword(true);
+    if (
+      oldPassword.trim() === "" ||
+      newPassword.trim() === "" ||
+      confirmNewPassword.trim() === ""
+    ) {
+      Notify("error", "Please fill all fields");
+      setBtnSavingPassword("Save Changes");
+      setSavingPassword(false);
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      Notify("error", "New password and confirm new password doesn't match");
+      setBtnSavingPassword("Save Changes");
+      setSavingPassword(false);
+      return;
+    }
+    try {
+      const credentials = EmailAuthProvider.credential(
+        currentUser.email,
+        oldPassword
+      );
+      await reauthenticateWithCredential(currentUser, credentials);
+      const userDocRef = doc(db, `/panels/${panelId}/admins`, currentUser.uid);
+      await updateDoc(userDocRef, { password: hashedPassword });
+      await updatePassword(currentUser, newPassword);
+      setBtnSavingPassword("Save Changes");
+      setSavingPassword(false);
+      Notify("success", "Changed Successfully");
+    } catch (error) {
+      setBtnSavingPassword("Save Changes");
+      console.log(error);
+      setSavingPassword(false);
+      if (error.code === "auth/invalid-credential") {
+        Notify("error", "Incorrect Old Password");
+      }
+      if (error.code === "auth/weak-password") {
+        Notify("error", "Password should be at least 6 characters");
+      }
+      if (error.code === "auth/network-request-failed") {
+        Notify("error", "Kindly check your network connection");
+      }
+      if (error.code === "auth/too-many-requests") {
+        Notify("error", "Too many requests, please wait..");
+      }
+    }
+  };
+
+  const handleNameChange = async () => {
+    setBtnSavingName("Saving...");
+    setSavingName(true);
+    if (name === "") {
+      Notify("error", "Kindly enter a name");
+      setBtnSavingName("Save Changes");
+      setSavingName(false);
+      return;
+    }
+    try {
+      const userDocRef = doc(db, `/panels/${panelId}/admins`, currentUser.uid);
+      await updateDoc(userDocRef, { name: name });
+      setBtnSavingName("Save Changes");
+      setSavingName(false);
+      Notify("success", "Changed Successfully");
+    } catch (error) {
+      setBtnSavingName("Save Changes");
+      setSavingName(false);
+    }
+  };
+
   return (
     <>
       <CheckUser />
@@ -112,7 +228,7 @@ function Account() {
       <div className="claccount">
         <div className="clwelcometxt">
           <div className="container">
-            <span>Hello, {adminData.name}👋🏽</span>
+            <span>Hello, {name}👋🏽</span>
           </div>
         </div>
         <div className="claccountbd">
@@ -120,30 +236,37 @@ function Account() {
             <div className="p-3 m-auto claccheadtxt">
               <h1>Account</h1>
             </div>
-            <div className="claccnaem">
-              <div className="claccname">
-                <label htmlFor="name" className="clacclabel">
-                  Name
-                </label>
-                <TextInput
-                  value={name}
-                  setState={setName}
-                  placeholder="Name"
-                  onChange={handleTextChange}
-                />
+            <div className="claccnaembd">
+              <div className="claccnaem">
+                <div className="claccname">
+                  <label htmlFor="name" className="clacclabel">
+                    Name
+                  </label>
+                  <TextInput
+                    value={name}
+                    setState={setName}
+                    placeholder="Name"
+                    onChange={handleTextChange}
+                  />
+                </div>
+                <div className="claccemail">
+                  <label className="clacclabel" htmlFor="email">
+                    Email
+                  </label>
+                  <TextInput
+                    value={email}
+                    disabled={true}
+                    setState={setEmail}
+                    placeholder="Email"
+                    onChange={handleTextChange}
+                  />
+                </div>
               </div>
-              <div className="claccemail">
-                <label className="clacclabel" htmlFor="email">
-                  Email
-                </label>
-                <TextInput
-                  value={email}
-                  disabled={true}
-                  setState={setEmail}
-                  placeholder="Email"
-                  onChange={handleTextChange}
-                />
-              </div>
+              <Button
+                name={btnSavingName}
+                loading={savingName}
+                onClick={handleNameChange}
+              />
             </div>
             <div className="claccpass">
               <div className="flex-center">
@@ -180,7 +303,11 @@ function Account() {
                     onChange={handleTextChange}
                   />
                 </div>
-                <Button name="Save Changes" loading={savingPassword} />
+                <Button
+                  name={btnSavingPassword}
+                  loading={savingPassword}
+                  onClick={handlePasswordChange}
+                />
               </div>
             </div>
             <div className="claccpanel">
