@@ -139,6 +139,35 @@ panel.post("/create", async (req, res) => {
             .doc(mainPanelId)
             .set({ id: parseInt(mainPanelId) });
         }
+        const siteDoc = db.collection(`panels/${panelId}/general`).doc("site");
+        await siteDoc.set({
+          backend_url: `https://${domain}:3001`,
+          title: "Panel",
+          adminStyles: {
+            "--adbasebgcolor": "#24003d",
+            "--adbaseactcolor": "#2f0050",
+            "--adbasehvcolor": "rgb(71, 3, 119)",
+            "--addarkbgcolor": "",1
+            "--adtextbgcolor": "",
+            "--bodyfontsize": "10px",
+            "--sitecolor": "#fb95ff",
+          },
+          defaultCurrency: {
+            label: "USD - United States Dollar",
+            value: "1",
+          },
+          clientStyles: {
+            "--bgdarkcolor": "#1c031a",
+            "--bglightcolor": "#f6eff3",
+            "--sitecolor": "#6a0083",
+            "--stbaseactcolor": "#aa19d2",
+            "--stbasebgcolor": "#b46bd6",
+            "--stbasehvcolor": "#d123c3",
+            "--sttextbgcolor": "#c58cc0",
+            "--bodyfontsize": "10px",
+            "--sitecolor": "#fb95ff",
+          },
+        });
         break;
       }
     }

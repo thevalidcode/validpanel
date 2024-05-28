@@ -3,11 +3,11 @@ import { useState, useRef, useEffect } from "react";
 import { IoOpen } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
-import { FaLightbulb, FaSquareXTwitter } from "react-icons/fa6";
+import { FaLightbulb, FaSquareXTwitter, FaUser } from "react-icons/fa6";
 import { IoIosPricetags, IoLogoInstagram } from "react-icons/io";
 import { IoLogoWhatsapp } from "react-icons/io5";
 import { RiMenu2Line } from "react-icons/ri";
-import { MdOutlineCancel } from "react-icons/md";
+import { MdDashboard, MdOutlineCancel } from "react-icons/md";
 import { FaListUl } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
 import { onAuthStateChanged } from "firebase/auth";
@@ -103,7 +103,11 @@ function NavBar() {
 
   return (
     <div className="clnavbarmain">
-      <div className={scrolled ? "clnavbarcon-scroll" : "clnavbarcon"}>
+      <div
+        className={
+          scrolled && !isLoggedIn ? "clnavbarcon-scroll" : "clnavbarcon"
+        }
+      >
         <div className="clnavbar">
           <img
             src={Logo}
@@ -123,7 +127,10 @@ function NavBar() {
             </Link>
           </div>
           <div className="clnavbarother">
-            <Link to="/#" className="navbarother">
+            <Link
+              to={isLoggedIn ? `/control-panel/${panelId}/dashboard` : "/"}
+              className="navbarother"
+            >
               <IoIosPricetags className="clnavbarsocialIcon" />
               Pricing
             </Link>
@@ -140,7 +147,11 @@ function NavBar() {
               </Link>
             </div>
           ) : (
-            <Link to="/request-feature" className="clnavbarreq">
+            <Link
+              to={`https://t.me/validpanel`}
+              target="blank"
+              className="clnavbarreq"
+            >
               <FaLightbulb className="clnavbaricon" />
               Improve Valid Panel
             </Link>
@@ -175,10 +186,30 @@ function NavBar() {
               </div>
             </div>
             {isLoggedIn ? (
-              <Link to="/request-feature" className="clmbnavbarreq">
-                <FaLightbulb className="clmbnavbaricon" />
-                Improve Valid Panel
-              </Link>
+              <div className="clmbnbmenu">
+                <Link
+                  to={`/control-panel/${panelId}/dashboard`}
+                  className="clmbnavbarreq"
+                >
+                  <MdDashboard className="clmbnavbaricon" />
+                  Dashboard
+                </Link>
+                <Link
+                  to={`/control-panel/${panelId}/account`}
+                  className="clmbnavbarreq"
+                >
+                  <FaUser className="clmbnavbaricon" />
+                  Account
+                </Link>
+                <Link
+                  to={`https://t.me/validpanel`}
+                  target="blank"
+                  className="clmbnavbarreq"
+                >
+                  <FaLightbulb className="clmbnavbaricon" />
+                  Improve Valid Panel
+                </Link>
+              </div>
             ) : (
               <div className="clmbnbmenu">
                 <Link to="/login" className="clmbnblink">
@@ -196,6 +227,30 @@ function NavBar() {
           ""
         )}
       </div>
+      {isLoggedIn ? (
+        <div
+          className={scrolled && isLoggedIn ? "clusernav-scroll" : "clusernav"}
+        >
+          <div className="clusernavlinks">
+            <Link
+              to={`/control-panel/${panelId}/dashboard`}
+              className="clusernavlink"
+            >
+              <MdDashboard className="clusernavicon" />
+              Dashboard
+            </Link>
+            <Link
+              to={`/control-panel/${panelId}/account`}
+              className="clusernavlink"
+            >
+              <FaUser className="clusernavicon" />
+              Account
+            </Link>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 .claccount {
   position: relative;
-  top: 150px;
+  top: 250px;
 }
 
 .claccheadtxt h1 {
@@ -68,9 +68,10 @@
 }
 
 .claccpass,
-.claccpanel {
+.claccpanel,
+.clacclogout {
   border-top: 1px solid var(--clbgcolor);
-  margin: 30px 0px;
+  margin: 30px 0px 0px 0px;
   width: 100%;
 }
 
@@ -122,6 +123,9 @@
 }
 
 @media (max-width: 800px) {
+  .claccount {
+    top: 150px;
+  }
   .clacclabel {
     letter-spacing: 0px;
     font-size: 1rem;

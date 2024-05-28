@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.be93d42a.css",
+    "main.js": "/static/js/main.cb65146d.js",
+    "static/js/453.76688dcc.chunk.js": "/static/js/453.76688dcc.chunk.js",
+    "static/media/dotted-black-background.jpg": "/static/media/dotted-black-background.653228b5c98fe28bda22.jpg",
+    "static/media/ValidPanel.png": "/static/media/ValidPanel.34911b9bf50d8973166c.png",
+    "static/media/DeskDarkStyle.png": "/static/media/DeskDarkStyle.2d3122be7d0d3fe3c11b.png",
+    "static/media/DeskLightStyle.png": "/static/media/DeskLightStyle.346c7eefac3d92184c93.png",
+    "static/media/panel-image.png": "/static/media/panel-image.653e4f991b462e304433.png",
+    "static/media/Light-Theme.png": "/static/media/Light-Theme.0101a02aad8cd37ad9b4.png",
+    "static/media/Dark-Theme.png": "/static/media/Dark-Theme.35681cd8ecf0cb790f4c.png",
+    "static/media/domain.png": "/static/media/domain.d7a6f9406eb8ba1c3361.png",
+    "static/media/MB-Style.png": "/static/media/MB-Style.b29ae8ce6e74364f792d.png",
+    "index.html": "/index.html",
+    "main.be93d42a.css.map": "/static/css/main.be93d42a.css.map",
+    "main.cb65146d.js.map": "/static/js/main.cb65146d.js.map",
+    "453.76688dcc.chunk.js.map": "/static/js/453.76688dcc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be93d42a.css",
+    "static/js/main.cb65146d.js"
+  ]
+}

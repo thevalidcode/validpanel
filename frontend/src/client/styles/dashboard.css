@@ -1,6 +1,6 @@
 .cldashbd {
   position: relative;
-  top: 150px;
+  top: 250px;
   background-color: var(--clbasebgcolor);
   border-radius: 15px;
   height: 100%;
@@ -35,6 +35,9 @@
 }
 
 @media (max-width: 800px) {
+  .cldashbd {
+    top: 150px;
+  }
   .clntcdashbdiimg {
     width: 100px;
     height: 100px;

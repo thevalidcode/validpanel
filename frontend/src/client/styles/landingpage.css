@@ -540,6 +540,9 @@ body {
 }
 
 @media (max-width: 800px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
   .clheadcenter h1 {
     font-size: 2.5rem;
   }

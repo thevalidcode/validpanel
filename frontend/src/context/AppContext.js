@@ -31,7 +31,7 @@ const AppProvider = ({ children }) => {
     bodyStyle.setProperty("--clbasebgcolor", clientStyles["--clbasebgcolor"]);
     bodyStyle.backgroundColor = "var(--clbgcolor)";
   }, [clientStyles]);
-  const backendUrl = "http://localhost:3002";
+  const backendUrl = "https://validpanel.com:3002";
   const siteTitle = "Valid Panel";
   return (
     <AppContext.Provider

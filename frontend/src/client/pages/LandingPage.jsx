@@ -9,6 +9,7 @@ import { FaArrowRight, FaSync, FaSyncAlt } from "react-icons/fa";
 import ScrollAnimation from "react-animate-on-scroll";
 import DarkThemeImg from "../assets/images/Dark-Theme.png";
 import LightThemeImg from "../assets/images/Light-Theme.png";
+import { auth } from "../../Firebase-config";
 import MbStyle from "../assets/images/MB-Style.png";
 import DeskDarkStyle from "../assets/images/DeskDarkStyle.png";
 import DeskLightStyle from "../assets/images/DeskLightStyle.png";
@@ -20,17 +21,40 @@ import { FaUsers } from "react-icons/fa";
 import { RiUserLocationLine } from "react-icons/ri";
 import Footer from "../components/Footer";
 import AuthRedirect from "../utils/AuthRedirect";
+import Loader from "../shared/Loader";
 
 function LandingPage() {
-  const { clientStyles, siteTitle } = useContext(AppContext);
+  const { loading, setLoading, siteTitle } = useContext(AppContext);
   const [lightThemeImage, setLightThemeImage] = useState(true);
-  
+
   useEffect(() => {
     document.title = siteTitle;
   }, [siteTitle]);
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 20000);
+      } else {
+        setLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [setLoading]);
+
+  if (loading) {
+    return (
+      <>
+        <AuthRedirect />
+        <Loader />
+      </>
+    );
+  }
+
   return (
-    <div className="landingpage" style={clientStyles}>
+    <div className="landingpage">
       <AuthRedirect />
       <img src={BG} alt="background" className="landingpagedots" />
       <NavBar />

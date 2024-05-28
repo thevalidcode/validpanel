@@ -25,6 +25,7 @@ import { AppContext } from "../../context/AppContext";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
+  signOut,
   updatePassword,
 } from "firebase/auth";
 
@@ -57,9 +58,12 @@ function Account() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      if (!user) {
+        navigate("/");
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     document.title = `Account | ${siteTitle}`;
@@ -221,6 +225,10 @@ function Account() {
     }
   };
 
+  const logout = async () => {
+    await signOut(auth);
+  };
+
   return (
     <>
       <CheckUser />
@@ -333,6 +341,9 @@ function Account() {
                   <AnchorLink to="/onboarding" name="Create Panel" />
                 </div>
               </div>
+            </div>
+            <div className="clacclogout">
+              <Button name="Logout" onClick={logout} />
             </div>
           </div>
         </div>

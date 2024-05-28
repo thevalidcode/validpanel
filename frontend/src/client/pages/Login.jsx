@@ -15,6 +15,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import AuthRedirect from "../utils/AuthRedirect";
 import TextInput from "../shared/TextInput";
 import PasswordInput from "../shared/PasswordInput";
+import Loader from "../shared/Loader";
 
 function Login() {
   const [password, setPassword] = useState("");
@@ -22,6 +23,8 @@ function Login() {
   const [btnName, setBtnName] = useState("Login");
   const {
     setNotifyDuration,
+    loading,
+    setLoading,
     setNotifyType,
     setNotifyMessage,
     siteTitle,
@@ -37,6 +40,28 @@ function Login() {
   useEffect(() => {
     document.title = `Login | ${siteTitle}`;
   }, [siteTitle]);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 20000);
+      } else {
+        setLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [setLoading]);
+
+  if (loading) {
+    return (
+      <>
+        <AuthRedirect />
+        <Loader />
+      </>
+    );
+  }
   const Notify = (type, message, duration) => {
     setNotifyType(type);
     setNotifyMessage(message);

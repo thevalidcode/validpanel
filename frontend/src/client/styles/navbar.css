@@ -1,5 +1,5 @@
 .clnavbarcon {
-  position: fixed;
+  position: absolute;
   top: 30px;
   transition: 0.5s;
   width: 100%;
@@ -225,11 +225,11 @@
   background-color: transparent;
   color: white;
   margin-top: 10px;
-  padding: 10px 15px
+  padding: 10px 15px;
 }
 .clmbnbmenu .clmbnblink:hover {
   background-color: var(--clbuttoncolor);
-  transition: 0.4s;
+  transition: 0.7s;
 }
 
 .clmbnbmenu .clmbnblink .clmbnbiconli {
@@ -291,9 +291,83 @@
   transition: 0.5s;
 }
 
+.clusernav {
+  position: absolute;
+  top: 150px;
+  background-color: transparent;
+  right: 0;
+  transition: background-color 0.5s;
+  width: 100%;
+}
+
+.clusernav-scroll {
+  position: fixed;
+  background-color: var(--clbgcolor);
+  padding: 20px 0px;
+  z-index: 10000;
+  width: 100%;
+  transition: background-color 0.5s;
+}
+
+.clusernavlinks {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  border: 2px solid var(--clbasebgcolor);
+  border-radius: 90px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clusernavlink {
+  padding: 15px;
+  border-radius: 90px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  transition: 0.7s;
+  font-weight: 600;
+  align-items: center;
+}
+
+.clusernavlink:hover {
+  background: linear-gradient(
+    to top right,
+    var(--clbgcolor),
+    var(--clbgcolor),
+    var(--clhovercolor)
+  );
+  transition: 0.7s;
+}
+
+.clusernavlink .clusernavicon {
+  font-size: 1.3rem;
+  transition: 0.7s;
+  margin-right: 10px;
+}
+
+.clusernavlink:hover .clusernavicon {
+  color: var(--cltextcolor);
+  transition: 0.7s;
+}
+
 @media (max-width: 1320px) {
+  .clnavbarcon {
+    position: fixed;
+    top: 0px;
+    padding: 20px 0px;
+    background-color: var(--clbgcolor);
+  }
   .clnavbar {
     height: 50px;
+  }
+  .clusernav,
+  .clusernav-scroll {
+    display: none;
   }
   .clmbnavbar {
     display: block;

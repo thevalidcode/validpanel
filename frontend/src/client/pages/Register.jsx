@@ -17,6 +17,7 @@ import Button from "../shared/Button";
 import AuthRedirect from "../utils/AuthRedirect";
 import TextInput from "../shared/TextInput";
 import PasswordInput from "../shared/PasswordInput";
+import Loader from "../shared/Loader";
 
 function Register() {
   const [password, setPassword] = useState("");
@@ -30,6 +31,8 @@ function Register() {
     setNotifyType,
     backendUrl,
     setNotifyMessage,
+    loading,
+    setLoading,
     siteTitle,
     setNotifyVisibility,
   } = useContext(AppContext);
@@ -58,6 +61,27 @@ function Register() {
   useEffect(() => {
     document.title = `Register | ${siteTitle}`;
   }, [siteTitle]);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 20000);
+      } else {
+        setLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [setLoading]);
+
+  if (loading) {
+    return (
+      <>
+        <AuthRedirect />
+        <Loader />
+      </>
+    );
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email.trim() === "" || password.trim() === "" || name.trim() === "") {
