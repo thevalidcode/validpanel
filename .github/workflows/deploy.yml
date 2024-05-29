@@ -24,4 +24,4 @@ jobs:
           username: ${{ secrets.FTP_BACKEND_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./backend/"
-          timeout: 900
+          timeout: 900 
