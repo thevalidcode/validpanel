@@ -1,5 +1,5 @@
 import "../styles/navbar.css";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IoOpen } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
@@ -23,6 +23,7 @@ function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [panelId, setPanelId] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(0);
   const buttonRef = useRef();
   const containerRef = useRef();
   const navigate = useNavigate();
@@ -49,7 +50,6 @@ function NavBar() {
 
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup function to remove the event listener when component unmounts
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -97,95 +97,182 @@ function NavBar() {
     }
   }, [backendUrl, currentUser]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const goHome = () => {
     navigate(panelId !== 0 ? `/control-panel/${panelId}/dashboard` : "/");
   };
 
   return (
     <div className="clnavbarmain">
-      <div
-        className={
-          scrolled && !isLoggedIn ? "clnavbarcon-scroll" : "clnavbarcon"
-        }
-      >
-        <div className="clnavbar">
-          <img
-            src={Logo}
-            alt="logo"
-            className="clnavbarlogoimg"
-            onClick={goHome}
-          />
-          <div className="clnavbarsocials">
-            <Link to="/#" className="navbarsocial">
-              <FaSquareXTwitter className="clnavbarsocialIcon" />
-            </Link>
-            <Link to="/#" className="navbarsocial">
-              <IoLogoInstagram className="clnavbarsocialIcon" />
-            </Link>
-            <Link to="/#" className="navbarsocial">
-              <IoLogoWhatsapp className="clnavbarsocialIcon" />
-            </Link>
-          </div>
-          <div className="clnavbarother">
-            <Link
-              to={isLoggedIn ? `/control-panel/${panelId}/dashboard` : "/"}
-              className="navbarother"
-            >
-              <IoIosPricetags className="clnavbarsocialIcon" />
-              Pricing
-            </Link>
-          </div>
-          {!isLoggedIn ? (
-            <div className="clnavbarlinks">
-              <Link to="/register" className="clnavbarregis">
-                <IoOpen className="clnavbaricon" />
-                Register
-              </Link>
-              <Link to="/login" className="clnavbarlogin">
-                <IoLogIn className="clnavbaricon" />
-                Login
-              </Link>
-            </div>
-          ) : (
-            <Link
-              to={`https://t.me/validpanel`}
-              target="blank"
-              className="clnavbarreq"
-            >
-              <FaLightbulb className="clnavbaricon" />
-              Improve Valid Panel
-            </Link>
-          )}
-          <RiMenu2Line className="clnavbarhbmenu" onClick={toogleOpen} />
-        </div>
-        {isOpen ? (
-          <div className="clmbnavbar" ref={containerRef}>
-            <div className="clmbnavbarhead">
+      {!isLoggedIn ? (
+        // User Is Logged Out
+        <React.Fragment>
+          <div className={scrolled ? "clnavbarcon-scroll" : "clnavbarcon"}>
+            <div className="clnavbar">
               <img
                 src={Logo}
                 alt="logo"
                 className="clnavbarlogoimg"
                 onClick={goHome}
               />
-              <div className="clmbnavbarsocials">
+              <div className="clnavbarsocials">
                 <Link to="/#" className="navbarsocial">
-                  <FaSquareXTwitter className="clmbnavbarsocialIcon" />
+                  <FaSquareXTwitter className="clnavbarsocialIcon" />
                 </Link>
                 <Link to="/#" className="navbarsocial">
-                  <IoLogoInstagram className="clmbnavbarsocialIcon" />
+                  <IoLogoInstagram className="clnavbarsocialIcon" />
                 </Link>
                 <Link to="/#" className="navbarsocial">
-                  <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
+                  <IoLogoWhatsapp className="clnavbarsocialIcon" />
                 </Link>
               </div>
-              <div ref={buttonRef}>
-                <MdOutlineCancel
-                  className="clmbnavbarcancel"
-                  onClick={cancelOpen}
+              <div className="clnavbarother">
+                <Link to={"/"} className="navbarother">
+                  <IoIosPricetags className="clnavbarsocialIcon" />
+                  Pricing
+                </Link>
+              </div>
+              <div className="clnavbarlinks">
+                <Link to="/register" className="clnavbarregis">
+                  <IoOpen className="clnavbaricon" />
+                  Register
+                </Link>
+                <Link to="/login" className="clnavbarlogin">
+                  <IoLogIn className="clnavbaricon" />
+                  Login
+                </Link>
+              </div>
+              <RiMenu2Line className="clnavbarhbmenu" onClick={toogleOpen} />
+            </div>
+          </div>
+          {isOpen ? (
+            <div className="clmbnavbar" ref={containerRef}>
+              <div className="clmbnavbarhead">
+                <img
+                  src={Logo}
+                  alt="logo"
+                  className="clnavbarlogoimg"
+                  onClick={goHome}
                 />
+                <div className="clmbnavbarsocials">
+                  <Link to="/#" className="navbarsocial">
+                    <FaSquareXTwitter className="clmbnavbarsocialIcon" />
+                  </Link>
+                  <Link to="/#" className="navbarsocial">
+                    <IoLogoInstagram className="clmbnavbarsocialIcon" />
+                  </Link>
+                  <Link to="/#" className="navbarsocial">
+                    <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
+                  </Link>
+                </div>
+                <div ref={buttonRef}>
+                  <MdOutlineCancel
+                    className="clmbnavbarcancel"
+                    onClick={cancelOpen}
+                  />
+                </div>
+              </div>
+              <div className="clmbnbmenu">
+                <Link to="/login" className="clmbnblink">
+                  <IoPerson className="clmbnbiconli" />
+                  Login
+                </Link>
+                <Link to="/register" className="clmbnblink">
+                  <FaListUl className="clmbnbiconli" />
+                  Register
+                </Link>
               </div>
             </div>
-            {isLoggedIn ? (
+          ) : (
+            ""
+          )}
+        </React.Fragment>
+      ) : (
+        // User Is Logged In
+        <React.Fragment>
+          <div
+            className={
+              scrolled && windowWidth <= 1320
+                ? "clnavbarcon-scroll"
+                : "clnavbarcon"
+            }
+          >
+            <div className="clnavbar">
+              <img
+                src={Logo}
+                alt="logo"
+                className="clnavbarlogoimg"
+                onClick={goHome}
+              />
+              <div className="clnavbarsocials">
+                <Link to="/#" className="navbarsocial">
+                  <FaSquareXTwitter className="clnavbarsocialIcon" />
+                </Link>
+                <Link to="/#" className="navbarsocial">
+                  <IoLogoInstagram className="clnavbarsocialIcon" />
+                </Link>
+                <Link to="/#" className="navbarsocial">
+                  <IoLogoWhatsapp className="clnavbarsocialIcon" />
+                </Link>
+              </div>
+              <div className="clnavbarother">
+                <Link
+                  to={`/control-panel/${panelId}/dashboard`}
+                  className="navbarother"
+                >
+                  <IoIosPricetags className="clnavbarsocialIcon" />
+                  Pricing
+                </Link>
+              </div>
+              <Link
+                to={`https://t.me/validpanel`}
+                target="blank"
+                className="clnavbarreq"
+              >
+                <FaLightbulb className="clnavbaricon" />
+                Improve Valid Panel
+              </Link>
+              <RiMenu2Line className="clnavbarhbmenu" onClick={toogleOpen} />
+            </div>
+          </div>
+          {isOpen ? (
+            <div className="clmbnavbar" ref={containerRef}>
+              <div className="clmbnavbarhead">
+                <img
+                  src={Logo}
+                  alt="logo"
+                  className="clnavbarlogoimg"
+                  onClick={goHome}
+                />
+                <div className="clmbnavbarsocials">
+                  <Link to="/#" className="navbarsocial">
+                    <FaSquareXTwitter className="clmbnavbarsocialIcon" />
+                  </Link>
+                  <Link to="/#" className="navbarsocial">
+                    <IoLogoInstagram className="clmbnavbarsocialIcon" />
+                  </Link>
+                  <Link to="/#" className="navbarsocial">
+                    <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
+                  </Link>
+                </div>
+                <div ref={buttonRef}>
+                  <MdOutlineCancel
+                    className="clmbnavbarcancel"
+                    onClick={cancelOpen}
+                  />
+                </div>
+              </div>
               <div className="clmbnbmenu">
                 <Link
                   to={`/control-panel/${panelId}/dashboard`}
@@ -210,46 +297,29 @@ function NavBar() {
                   Improve Valid Panel
                 </Link>
               </div>
-            ) : (
-              <div className="clmbnbmenu">
-                <Link to="/login" className="clmbnblink">
-                  <IoPerson className="clmbnbiconli" />
-                  Login
-                </Link>
-                <Link to="/register" className="clmbnblink">
-                  <FaListUl className="clmbnbiconli" />
-                  Register
-                </Link>
-              </div>
-            )}
+            </div>
+          ) : (
+            ""
+          )}
+          <div className={scrolled ? "clusernav-scroll" : "clusernav"}>
+            <div className="clusernavlinks">
+              <Link
+                to={`/control-panel/${panelId}/dashboard`}
+                className="clusernavlink"
+              >
+                <MdDashboard className="clusernavicon" />
+                Dashboard
+              </Link>
+              <Link
+                to={`/control-panel/${panelId}/account`}
+                className="clusernavlink"
+              >
+                <FaUser className="clusernavicon" />
+                Account
+              </Link>
+            </div>
           </div>
-        ) : (
-          ""
-        )}
-      </div>
-      {isLoggedIn ? (
-        <div
-          className={scrolled && isLoggedIn ? "clusernav-scroll" : "clusernav"}
-        >
-          <div className="clusernavlinks">
-            <Link
-              to={`/control-panel/${panelId}/dashboard`}
-              className="clusernavlink"
-            >
-              <MdDashboard className="clusernavicon" />
-              Dashboard
-            </Link>
-            <Link
-              to={`/control-panel/${panelId}/account`}
-              className="clusernavlink"
-            >
-              <FaUser className="clusernavicon" />
-              Account
-            </Link>
-          </div>
-        </div>
-      ) : (
-        ""
+        </React.Fragment>
       )}
     </div>
   );

@@ -1,9 +1,8 @@
 .clnavbarcon {
   position: absolute;
   top: 30px;
-  transition: 0.5s;
   width: 100%;
-  z-index: 9000;
+  z-index: 1000;
   color: white;
 }
 
@@ -13,7 +12,7 @@
   padding: 20px 0px;
   transition: 0.5s;
   width: 100%;
-  z-index: 9000;
+  z-index: 1000;
   color: white;
 }
 
@@ -134,13 +133,13 @@
 
 .clmbnavbar {
   border-radius: 20px;
-  position: relative;
+  position: fixed;
   display: none;
-  top: -50px;
+  top: 20px;
+  left: 5%;
+  right: 5%;
   padding: 10px 15px;
-  z-index: 1000;
-  margin-left: auto;
-  margin-right: auto;
+  z-index: 10000;
   background-color: #32005e;
   width: 90%;
   animation: zoom-in-with-opacity 1s forwards;
@@ -154,6 +153,7 @@
 
 .clmbnavbarcancel {
   font-size: 2rem;
+  color: white;
   cursor: pointer;
 }
 
@@ -360,7 +360,6 @@
     position: fixed;
     top: 0px;
     padding: 20px 0px;
-    background-color: var(--clbgcolor);
   }
   .clnavbar {
     height: 50px;
