@@ -147,7 +147,7 @@ panel.post("/create", async (req, res) => {
             "--adbasebgcolor": "#24003d",
             "--adbaseactcolor": "#2f0050",
             "--adbasehvcolor": "rgb(71, 3, 119)",
-            "--addarkbgcolor": "",1
+            "--addarkbgcolor": "",
             "--adtextbgcolor": "",
             "--bodyfontsize": "10px",
             "--sitecolor": "#fb95ff",
