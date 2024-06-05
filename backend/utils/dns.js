@@ -22,6 +22,7 @@ function createServer(domain, panelId, res) {
 `;
     if (domain.includes(".validpanel.com")) {
       createARecord(domain, "5.196.190.226");
+      createVirtualHost(domain);
       res.json({ message: "Created successfully" });
     } else {
       // Write updated content back to named.conf.local
@@ -76,7 +77,8 @@ www IN A ${ipAddress}
       }
       const updatedContent =
         data +
-        `${domain}. IN A ${ipAddress}
+        `
+${domain}. IN A ${ipAddress}
 www.${domain}. IN A ${ipAddress}
 `;
       fs.writeFile(
