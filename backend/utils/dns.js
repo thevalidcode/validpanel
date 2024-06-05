@@ -146,30 +146,30 @@ function createVirtualHost(domain) {
         console.error(`Error writing zone file: ${err.message}`);
         return;
       }
-      // Enable the site
-      exec(
-        `a2ensite /etc/apache2/sites-available/${domain}.conf`,
-        (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error enabling site: ${error.message}`);
-            return;
-          }
-          if (stderr) {
-            console.error(`Error enabling site: ${stderr}`);
-            return;
-          }
-          exec("systemctl restart apache2", (error, stdout, stderr) => {
-            if (error) {
-              console.error(`Error restarting Apache: ${error.message}`);
-              return;
-            }
-            if (stderr) {
-              console.error(`Error restarting Apache: ${stderr}`);
-              return;
-            }
-          });
+    }
+  );
+  // Enable the site
+  exec(
+    `a2ensite /etc/apache2/sites-available/${domain}.conf`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error enabling site: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Error enabling site: ${stderr}`);
+        return;
+      }
+      exec("systemctl restart apache2", (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error restarting Apache: ${error.message}`);
+          return;
         }
-      );
+        if (stderr) {
+          console.error(`Error restarting Apache: ${stderr}`);
+          return;
+        }
+      });
     }
   );
 }
