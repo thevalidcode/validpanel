@@ -46,7 +46,10 @@ function createServer(domain, panelId, res) {
           }
           createARecord(domain, "5.196.190.226");
           createVirtualHost(domain);
-          res.json({ panelId: panelId, message: "Server created successfully" });
+          res.json({
+            panelId: panelId,
+            message: "Server created successfully",
+          });
         });
       });
     }
@@ -71,12 +74,10 @@ www IN A ${ipAddress}
         console.error(`Error reading validpanel.com.hosts: ${err.message}`);
         return;
       }
-      const domainValue = domain.replace(/\.validpanel\.com$/, "");
       const updatedContent =
         data +
-        `
-    ${domainValue} IN A ${ipAddress}
-    www.${domainValue} IN A ${ipAddress}
+        `${domain}. IN A ${ipAddress}
+www.${domain}. IN A ${ipAddress}
 `;
       fs.writeFile(
         `/var/lib/bind/validpanel.com.hosts`,
