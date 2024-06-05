@@ -149,29 +149,26 @@ function createVirtualHost(domain) {
     }
   );
   // Enable the site
-  exec(
-    `a2ensite /etc/apache2/sites-available/${domain}.conf`,
-    (error, stdout, stderr) => {
+  exec(`a2ensite ${domain}.conf`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error enabling site: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Error enabling site: ${stderr}`);
+      return;
+    }
+    exec("systemctl restart apache2", (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error enabling site: ${error.message}`);
+        console.error(`Error restarting Apache: ${error.message}`);
         return;
       }
       if (stderr) {
-        console.error(`Error enabling site: ${stderr}`);
+        console.error(`Error restarting Apache: ${stderr}`);
         return;
       }
-      exec("systemctl restart apache2", (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error restarting Apache: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          console.error(`Error restarting Apache: ${stderr}`);
-          return;
-        }
-      });
-    }
-  );
+    });
+  });
 }
 
 async function createSSL() {
