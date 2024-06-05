@@ -139,7 +139,7 @@ panel.post("/create", async (req, res) => {
             .doc(mainPanelId)
             .set({ id: parseInt(mainPanelId) });
         }
-        const siteDoc = db.collection(`panels/${panelId}/general`).doc("site");
+        const siteDoc = db.collection(`panels/${mainPanelId}/general`).doc("site");
         await siteDoc.set({
           backend_url: `https://${domain}:3001`,
           title: "Panel",

@@ -145,26 +145,29 @@ function createVirtualHost(domain) {
         return;
       }
       // Enable the site
-      exec(`a2ensite ${domain}.conf`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error enabling site: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          console.error(`Error enabling site: ${stderr}`);
-          return;
-        }
-        exec("systemctl restart apache2", (error, stdout, stderr) => {
+      exec(
+        `a2ensite /etc/apache2/sites-available/${domain}.conf`,
+        (error, stdout, stderr) => {
           if (error) {
-            console.error(`Error restarting Apache: ${error.message}`);
+            console.error(`Error enabling site: ${error.message}`);
             return;
           }
           if (stderr) {
-            console.error(`Error restarting Apache: ${stderr}`);
+            console.error(`Error enabling site: ${stderr}`);
             return;
           }
-        });
-      });
+          exec("systemctl restart apache2", (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error restarting Apache: ${error.message}`);
+              return;
+            }
+            if (stderr) {
+              console.error(`Error restarting Apache: ${stderr}`);
+              return;
+            }
+          });
+        }
+      );
     }
   );
 }
@@ -197,9 +200,9 @@ async function createSSL() {
             const indexToInsert = paragraphs.length - 3;
 
             const newParagraphContent = `
-            ProxyPreserveHost On
-            ProxyPass /api/v2 https://${regPanel.id}:3001/api/v2
-            ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
+ProxyPreserveHost On
+ProxyPass /api/v2 https://${regPanel.id}:3001/api/v2
+ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
             paragraphs.splice(indexToInsert, 0, newParagraphContent);
 
             const newData = paragraphs.join("\n\n");
