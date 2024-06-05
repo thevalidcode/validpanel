@@ -15,18 +15,18 @@ app.use(cors());
 app.use("/user", usersRouter);
 app.use("/panel", panel);
 
-// const options = {
-//   key: fs.readFileSync("/etc/letsencrypt/live/validpanel.com-0004/privkey.pem"),
-//   cert: fs.readFileSync(
-//     "/etc/letsencrypt/live/validpanel.com-0004/fullchain.pem"
-//   ),
-// };
-// const server = https.createServer(options, app);
+const options = {
+  key: fs.readFileSync("/etc/letsencrypt/live/validpanel.com-0004/privkey.pem"),
+  cert: fs.readFileSync(
+    "/etc/letsencrypt/live/validpanel.com-0004/fullchain.pem"
+  ),
+};
+const server = https.createServer(options, app);
 
 cron.schedule("0 */3 * * *", () => {
   createSSL();
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on https://validpanel.com:${PORT}/`);
 });

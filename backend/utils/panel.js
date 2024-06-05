@@ -147,9 +147,8 @@ panel.post("/create", async (req, res) => {
             "--adbasebgcolor": "#24003d",
             "--adbaseactcolor": "#2f0050",
             "--adbasehvcolor": "rgb(71, 3, 119)",
-            "--addarkbgcolor": "",
-            "--adtextbgcolor": "",
-            "--bodyfontsize": "10px",
+            "--addarkbgcolor": "#1a0029",
+            "--adtextbgcolor": "rgb(163, 141, 179)",
             "--sitecolor": "#fb95ff",
           },
           defaultCurrency: {
@@ -164,7 +163,6 @@ panel.post("/create", async (req, res) => {
             "--stbasebgcolor": "#b46bd6",
             "--stbasehvcolor": "#d123c3",
             "--sttextbgcolor": "#c58cc0",
-            "--bodyfontsize": "10px",
             "--sitecolor": "#fb95ff",
           },
         });
