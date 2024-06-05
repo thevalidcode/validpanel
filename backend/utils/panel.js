@@ -90,7 +90,7 @@ panel.post("/checkuser", async (req, res) => {
 panel.post("/create", async (req, res) => {
   const { domain, panelId, uid } = req.body;
 
-  if (!domain || !panelId) {
+  if (!domain) {
     return res.status(400).json({ error: "Missing body" });
   }
 
