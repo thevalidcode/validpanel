@@ -89,11 +89,11 @@ panel.post("/checkuser", async (req, res) => {
 
 panel.post("/create", async (req, res) => {
   const { domain, panelId, uid } = req.body;
-
   if (!domain) {
     return res.status(400).json({ error: "Missing body" });
   }
 
+  const lowerCaseDomain = domain.toLowerCase();
   let mainPanelId = panelId ? panelId : 0;
   if (panelId === null) {
     const panelsCollectionRef = db.collection("panels");
@@ -139,9 +139,11 @@ panel.post("/create", async (req, res) => {
             .doc(mainPanelId)
             .set({ id: parseInt(mainPanelId) });
         }
-        const siteDoc = db.collection(`panels/${mainPanelId}/general`).doc("site");
+        const siteDoc = db
+          .collection(`panels/${mainPanelId}/general`)
+          .doc("site");
         await siteDoc.set({
-          backend_url: `https://${domain}:3001`,
+          backend_url: `https://${lowerCaseDomain}:3001`,
           title: "Panel",
           adminStyles: {
             "--adbasebgcolor": "#24003d",
@@ -173,9 +175,9 @@ panel.post("/create", async (req, res) => {
 
   const registeredPanelsCol = db.collection("registeredPanels");
   await registeredPanelsCol
-    .doc(domain)
+    .doc(lowerCaseDomain)
     .set({ panelId: parseInt(mainPanelId), ssl: false, adminUid: uid });
-  createServer(domain, mainPanelId, res);
+  createServer(lowerCaseDomain, mainPanelId, res);
 });
 
 module.exports = { panel };
