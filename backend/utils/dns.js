@@ -1,6 +1,6 @@
 const { exec } = require("child_process");
 const fs = require("fs").promises;
-const db = require("./db"); // Adjust the path to your db module
+const {db} = require("../db"); // Adjust the path to your db module
 
 async function createServer(domain, panelId, res) {
   try {
