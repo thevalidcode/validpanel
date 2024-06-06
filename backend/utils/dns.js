@@ -178,37 +178,33 @@ async function createSSL() {
   for (const regPanel of registeredPanelsSnap.docs) {
     exec(
       `certbot --apache --redirect -d ${regPanel.id}`,
-      (error, stdout, stderr) => {
-        fs.readFile(
-          `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
-          "utf8",
-          (err, data) => {
-            if (err) {
-              console.error(`Error reading file: ${err.message}`);
-              res.status(500).json({ error: "Internal server error" });
-              return;
-            }
-            const paragraphs = data.split(/\n\s*\n/);
-            const indexToInsert = paragraphs.length - 3;
-            const newParagraphContent = `
+      (error, stdout, stderr) => {}
+    );
+    fs.readFile(
+      `etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
+      "utf8",
+      (err, data) => {
+        if (err) {
+          console.error(`Error reading file: ${err.message}`);
+          return;
+        }
+        const paragraphs = data.split(/\n\s*\n/);
+        const indexToInsert = paragraphs.length - 3;
+        const newParagraphContent = `
 ProxyPreserveHost On
 ProxyPass /api/v2 https://${regPanel.id}:3001/api/v2
 ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
-            paragraphs.splice(indexToInsert, 0, newParagraphContent);
-
-            const newData = paragraphs.join("\n\n");
-
-            fs.writeFile(
-              `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
-              newData,
-              "utf8",
-              (err) => {
-                if (err) {
-                  console.error("Error writing file:", err);
-                  return;
-                }
-              }
-            );
+        paragraphs.splice(indexToInsert, 0, newParagraphContent);
+        const newData = paragraphs.join("\n\n");
+        fs.writeFile(
+          `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
+          newData,
+          "utf8",
+          (err) => {
+            if (err) {
+              console.error("Error writing file:", err);
+              return;
+            }
           }
         );
       }
