@@ -308,6 +308,7 @@
 
 @media (max-width: 800px) {
   .clonbselect {
+    top: 150px;
     width: 90%;
   }
   .clonbheadtxt {

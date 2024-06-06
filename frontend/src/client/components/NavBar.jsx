@@ -138,13 +138,16 @@ function NavBar() {
                 onClick={goHome}
               />
               <div className="clnavbarsocials">
-                <Link to="/#" className="navbarsocial">
+                <Link to="https://x.com/validpanel" className="navbarsocial">
                   <FaSquareXTwitter className="clnavbarsocialIcon" />
                 </Link>
-                <Link to="/#" className="navbarsocial">
+                <Link
+                  to="https://instagram.com/validpanel"
+                  className="navbarsocial"
+                >
                   <IoLogoInstagram className="clnavbarsocialIcon" />
                 </Link>
-                <Link to="/#" className="navbarsocial">
+                <Link to="#" className="navbarsocial">
                   <IoLogoWhatsapp className="clnavbarsocialIcon" />
                 </Link>
               </div>
@@ -177,13 +180,13 @@ function NavBar() {
                   onClick={goHome}
                 />
                 <div className="clmbnavbarsocials">
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="https://x.com/validpanel" className="navbarsocial">
                     <FaSquareXTwitter className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="https://instagram.com/validpanel" className="navbarsocial">
                     <IoLogoInstagram className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="#" className="navbarsocial">
                     <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
                   </Link>
                 </div>
@@ -227,13 +230,13 @@ function NavBar() {
                 onClick={goHome}
               />
               <div className="clnavbarsocials">
-                <Link to="/#" className="navbarsocial">
+                <Link to="https://x.com/validpanel" className="navbarsocial">
                   <FaSquareXTwitter className="clnavbarsocialIcon" />
                 </Link>
-                <Link to="/#" className="navbarsocial">
+                <Link to="https://instagram.com/validpanel" className="navbarsocial">
                   <IoLogoInstagram className="clnavbarsocialIcon" />
                 </Link>
-                <Link to="/#" className="navbarsocial">
+                <Link to="#" className="navbarsocial">
                   <IoLogoWhatsapp className="clnavbarsocialIcon" />
                 </Link>
               </div>
@@ -267,13 +270,13 @@ function NavBar() {
                   onClick={goHome}
                 />
                 <div className="clmbnavbarsocials">
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="https://x.com/validpanel" className="navbarsocial">
                     <FaSquareXTwitter className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="https://instagram.com/validpanel" className="navbarsocial">
                     <IoLogoInstagram className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="/#" className="navbarsocial">
+                  <Link to="#" className="navbarsocial">
                     <IoLogoWhatsapp className="clmbnavbarsocialIcon" />
                   </Link>
                 </div>
