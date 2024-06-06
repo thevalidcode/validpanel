@@ -23,6 +23,7 @@ function createServer(domain, panelId, res) {
     if (domain.includes(".validpanel.com")) {
       createARecord(domain, "5.196.190.226");
       createVirtualHost(domain);
+      createSSL();
       res.json({ message: "Created successfully" });
     } else {
       // Write updated content back to named.conf.local
@@ -181,7 +182,7 @@ async function createSSL() {
       (error, stdout, stderr) => {}
     );
     fs.readFile(
-      `etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
+      `/etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
       "utf8",
       (err, data) => {
         if (err) {
@@ -197,7 +198,7 @@ ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
         paragraphs.splice(indexToInsert, 0, newParagraphContent);
         const newData = paragraphs.join("\n\n");
         fs.writeFile(
-          `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
+          `/etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
           newData,
           "utf8",
           (err) => {
