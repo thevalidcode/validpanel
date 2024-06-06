@@ -79,8 +79,7 @@ www IN A ${ipAddress}
         data +
         `
 ${domain}. IN A ${ipAddress}
-www.${domain}. IN A ${ipAddress}
-`;
+www.${domain}. IN A ${ipAddress}`;
       fs.writeFile(
         `/var/lib/bind/validpanel.com.hosts`,
         updatedContent,
@@ -177,14 +176,9 @@ async function createSSL() {
     .where("ssl", "==", false);
   const registeredPanelsSnap = await registeredPanelsCol.get();
   for (const regPanel of registeredPanelsSnap.docs) {
-    exec(`certbot --apache -d ${regPanel.id}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error creating ssl: ${error.message}`);
-        return;
-      } else if (stderr) {
-        console.error(`Error creating ssl: ${stderr}`);
-        return;
-      } else {
+    exec(
+      `certbot --apache --redirect -d ${regPanel.id}`,
+      (error, stdout, stderr) => {
         fs.readFile(
           `etc/apache2/sites-available/${regPanel.id}-le-ssl.conf`,
           "utf8",
@@ -195,9 +189,7 @@ async function createSSL() {
               return;
             }
             const paragraphs = data.split(/\n\s*\n/);
-
             const indexToInsert = paragraphs.length - 3;
-
             const newParagraphContent = `
 ProxyPreserveHost On
 ProxyPass /api/v2 https://${regPanel.id}:3001/api/v2
@@ -219,20 +211,8 @@ ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
             );
           }
         );
-        exec(
-          `ln -s /etc/apache2/sites-available/${regPanel.id}-le-ssl.conf /etc/apache2/sites-enabled/${regPanel.id}-le-ssl.conf`,
-          (error, stdout, stderr) => {
-            if (error) {
-              console.error(`Error linking ssl file: ${error.message}`);
-              return;
-            } else if (stderr) {
-              console.error(`Error linking ssl file: ${stderr}`);
-              return;
-            }
-          }
-        );
       }
-    });
+    );
     exec(`systemctl reload apache2`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error reloading apache2: ${error.message}`);
@@ -245,6 +225,7 @@ ProxyPassReverse /api/v2 https://${regPanel.id}:3001/api/v2`;
     await db.collection("registeredPanels").doc(regPanel.id).update({
       ssl: true,
     });
+    console.log(`SSL created for ${regPanel.id}`);
   }
 }
 module.exports = { createServer, createSSL };
