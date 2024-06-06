@@ -90,11 +90,11 @@ function Onboarding() {
   const isDomain = domainRegex.test(domain);
 
   const goToNameServersStage = () => {
-    if (!isDomain && stage === "domain") {
+    if ((!isDomain && stage === "domain") || domain === "") {
       Notify("error", "Invalid domain");
       return;
     }
-    if (isDomain && stage === "subDomain") {
+    if ((isDomain && stage === "subDomain") || domain === "") {
       Notify("error", "Invalid domain");
       return;
     }
@@ -232,7 +232,9 @@ function Onboarding() {
               <TextInput
                 name="domain"
                 value={domain}
-                placeholder="validplug.com.ng"
+                placeholder={
+                  stage === "subDomain" ? "panel" : "validplug.com.ng"
+                }
                 setState={setDomain}
                 onChange={handleTextChange}
               />

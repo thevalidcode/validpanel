@@ -9,7 +9,7 @@ function Footer() {
   return (
     <div className="loclfooter">
       <div className="loclfootercont">
-        <Link to="mailto:info@example.com">Contact Us</Link>
+        <Link to="mailto:contact@validpanel.com">Contact Us</Link>
         <span>
           © {currentYear} {siteTitle}. All rights reserved.
         </span>
