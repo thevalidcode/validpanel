@@ -23,7 +23,7 @@ const options = {
 };
 const server = https.createServer(options, app);
 
-cron.schedule("* * * * *", () => {
+cron.schedule("0 */3 * * *", () => {
   createSSL();
 });
 
