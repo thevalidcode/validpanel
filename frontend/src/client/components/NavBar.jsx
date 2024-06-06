@@ -1,7 +1,7 @@
 import "../styles/navbar.css";
 import React, { useState, useRef, useEffect } from "react";
 import { IoOpen } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
 import { FaLightbulb, FaSquareXTwitter, FaUser } from "react-icons/fa6";
 import { IoIosPricetags, IoLogoInstagram } from "react-icons/io";
@@ -22,7 +22,8 @@ function NavBar() {
   const { backendUrl } = useContext(AppContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [panelId, setPanelId] = useState(0);
+  const [gottenPanelId, setGottenPanelId] = useState(0);
+  const [mainPanelId, setMainPanelId] = useState(0);
   const [windowWidth, setWindowWidth] = useState(0);
   const buttonRef = useRef();
   const containerRef = useRef();
@@ -37,7 +38,7 @@ function NavBar() {
   };
 
   const { currentUser } = auth;
-
+  const { panelId } = useParams();
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -90,8 +91,8 @@ function NavBar() {
         const response = await axios.post(`${backendUrl}/panel/getId`, {
           uid: currentUser.uid,
         });
-        const panelId = response.data.id;
-        setPanelId(panelId);
+        const gottenPanelId = response.data.id;
+        setGottenPanelId(gottenPanelId);
       };
       getPanel();
     }
@@ -109,8 +110,18 @@ function NavBar() {
     };
   }, []);
 
+  useEffect(() => {
+    if (panelId) {
+      setMainPanelId(panelId);
+    } else {
+      setMainPanelId(gottenPanelId);
+    }
+  }, [panelId, gottenPanelId]);
+
   const goHome = () => {
-    navigate(panelId !== 0 ? `/control-panel/${panelId}/dashboard` : "/");
+    navigate(
+      gottenPanelId !== 0 ? `/control-panel/${mainPanelId}/dashboard` : "/"
+    );
   };
 
   return (
@@ -228,7 +239,7 @@ function NavBar() {
               </div>
               <div className="clnavbarother">
                 <Link
-                  to={`/control-panel/${panelId}/dashboard`}
+                  to={`/control-panel/${mainPanelId}/dashboard`}
                   className="navbarother"
                 >
                   <IoIosPricetags className="clnavbarsocialIcon" />
@@ -275,14 +286,14 @@ function NavBar() {
               </div>
               <div className="clmbnbmenu">
                 <Link
-                  to={`/control-panel/${panelId}/dashboard`}
+                  to={`/control-panel/${mainPanelId}/dashboard`}
                   className="clmbnavbarreq"
                 >
                   <MdDashboard className="clmbnavbaricon" />
                   Dashboard
                 </Link>
                 <Link
-                  to={`/control-panel/${panelId}/account`}
+                  to={`/control-panel/${mainPanelId}/account`}
                   className="clmbnavbarreq"
                 >
                   <FaUser className="clmbnavbaricon" />
@@ -304,14 +315,14 @@ function NavBar() {
           <div className={scrolled ? "clusernav-scroll" : "clusernav"}>
             <div className="clusernavlinks">
               <Link
-                to={`/control-panel/${panelId}/dashboard`}
+                to={`/control-panel/${mainPanelId}/dashboard`}
                 className="clusernavlink"
               >
                 <MdDashboard className="clusernavicon" />
                 Dashboard
               </Link>
               <Link
-                to={`/control-panel/${panelId}/account`}
+                to={`/control-panel/${mainPanelId}/account`}
                 className="clusernavlink"
               >
                 <FaUser className="clusernavicon" />

@@ -142,12 +142,10 @@ function Onboarding() {
       if (!panelId) {
         data.uid = auth.currentUser.uid;
       }
-      const response = await axios.post(`${backendUrl}/panel/create`, data);
-      const mainPanelId = response.data.panelId;
+      await axios.post(`${backendUrl}/panel/create`, data);
       setBtnLoading(false);
       setBtnName("Create");
       setStage("success");
-      navigate(`/control-panel/${mainPanelId}/dashboard`);
     } catch (error) {
       setBtnLoading(false);
       setBtnName("Create");
@@ -317,6 +315,7 @@ function Onboarding() {
                     ? `https://${domain}`
                     : `https://${domain}.validpanel.com`
                 }
+                target="blank"
               >
                 View Panel
               </Link>
@@ -326,6 +325,7 @@ function Onboarding() {
                     ? `https://${domain}/control-panel/login`
                     : `https://${domain}.validpanel.com/control-panel/login`
                 }
+                target="blank"
               >
                 View Admin
               </Link>
