@@ -139,6 +139,7 @@ function Login() {
                 value={email}
                 onChange={handleTextChange}
                 setState={setEmail}
+                autoComplete="off"
                 name="email"
                 placeholder="Email"
               />

@@ -113,7 +113,7 @@ function Register() {
       Notify("success", "Registered Successfully");
       navigate(`/control-panel/${userData.panelId}/dashboard`);
     } catch (error) {
-      console.error(error)
+      console.error(error);
       Notify("error", error.response.data.error);
       setLoadingBtn(false);
       setBtnName("Register");
@@ -148,6 +148,7 @@ function Register() {
                 value={name}
                 onChange={handleTextChange}
                 setState={setName}
+                autoComplete="off"
                 name="name"
                 placeholder="Full Name"
               />
@@ -159,6 +160,7 @@ function Register() {
               <TextInput
                 value={email}
                 onChange={handleTextChange}
+                autoComplete="off"
                 setState={setEmail}
                 name="email"
                 placeholder="Email"
