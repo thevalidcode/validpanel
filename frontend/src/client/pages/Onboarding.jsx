@@ -7,17 +7,16 @@ import Panel from "../assets/images/select-panel.png";
 import Shop from "../assets/images/select-shop.png";
 import Button from "../shared/Button";
 import TextInput from "../shared/TextInput";
+import { getData } from "../../utils/indexedDB";
 import Domain from "../assets/images/domain.png";
 import dns from "../assets/images/dns.png";
 import success from "../assets/images/success.png";
-import { auth } from "../../Firebase-config";
 import selectDomain from "../assets/images/selectDomain.png";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { FaAngleRight } from "react-icons/fa6";
 import { IoCopy } from "react-icons/io5";
 import axios from "axios";
-import { onAuthStateChanged } from "firebase/auth";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 function Onboarding() {
@@ -26,6 +25,8 @@ function Onboarding() {
   const {
     setNotifyDuration,
     setNotifyType,
+    currentUser,
+    setCurrentUser,
     setNotifyMessage,
     backendUrl,
     siteTitle,
@@ -49,12 +50,16 @@ function Onboarding() {
   }, [location.state, navigate]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (!currentUser) {
+        setCurrentUser(null);
         navigate("/");
       }
-    });
-  }, [navigate]);
+    };
+    onAuth();
+  }, [navigate, setCurrentUser]);
+
   useEffect(() => {
     document.title = `Onboarding | ${siteTitle}`;
   }, [siteTitle]);
@@ -140,7 +145,7 @@ function Onboarding() {
         panelId: panelId,
       };
       if (!panelId) {
-        data.uid = auth.currentUser.uid;
+        data.uid = currentUser.uid;
       }
       await axios.post(`${backendUrl}/panel/create`, data);
       setBtnLoading(false);

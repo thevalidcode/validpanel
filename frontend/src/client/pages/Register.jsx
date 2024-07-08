@@ -6,13 +6,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
-import { auth } from "../../Firebase-config";
 import { IoMail } from "react-icons/io5";
 import { IoIosLock } from "react-icons/io";
 import { AppContext } from "../../context/AppContext";
 import { FaRegUser } from "react-icons/fa";
 import axios from "axios";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { addData, getData } from "../../utils/indexedDB";
 import Button from "../shared/Button";
 import AuthRedirect from "../utils/AuthRedirect";
 import TextInput from "../shared/TextInput";
@@ -61,17 +60,19 @@ function Register() {
   useEffect(() => {
     document.title = `Register | ${siteTitle}`;
   }, [siteTitle]);
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (currentUser) {
         setTimeout(() => {
           setLoading(false);
         }, 20000);
       } else {
         setLoading(false);
       }
-    });
-    return () => unsubscribe();
+    };
+    onAuth();
   }, [setLoading]);
 
   if (loading) {
@@ -91,42 +92,29 @@ function Register() {
     setLoadingBtn(true);
     setBtnName("Registering...");
     try {
-      const newUser = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = newUser.user;
-      const userUid = user.uid;
       const data = {
-        uid: userUid,
         email: email,
         name: name,
         password: hashedPassword,
       };
       const response = await axios.post(`${backendUrl}/user/create`, data);
-      const panelId = response.data.id;
-      Notify("success", "Registered Successfully");
+      const userData = response.data.user;
+      await addData({
+        email: email,
+        uid: userData.uid,
+        created_at: userData.timestamp,
+        id: "user_auth",
+      });
       setEmail("");
       setName("");
       setPassword("");
       setBtnName("Register");
       setLoadingBtn(false);
-      navigate(`/control-panel/${panelId}/dashboard`);
+      Notify("success", "Registered Successfully");
+      navigate(`/control-panel/${userData.panelId}/dashboard`);
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        Notify(
-          "error",
-          "Email is already in use. Please use a different email."
-        );
-      } else if (error.code === "auth/weak-password") {
-        Notify("error", "Password should be at least 6 characters.");
-      } else if (error.code === "auth/invalid-email") {
-        Notify("error", "Invalid email");
-      }
-      if (error.code === "auth/network-request-failed") {
-        Notify("error", "Please check your device's network connection");
-      }
+      console.error(error)
+      Notify("error", error.response.data.error);
       setLoadingBtn(false);
       setBtnName("Register");
     }

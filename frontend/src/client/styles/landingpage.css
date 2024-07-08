@@ -4,22 +4,6 @@ body {
   font-family: "Prompt", sans-serif !important;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--clbgcolor);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--clhovercolor);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--clactivecolor);
-  width: 12px;
-}
-
 .landingpage {
   background-color: #1f0f2e;
   color: white;

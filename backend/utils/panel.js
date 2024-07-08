@@ -1,6 +1,6 @@
 const express = require("express");
 const panel = express.Router();
-const { db } = require("../db");
+const { getDocs, addPanelDoc, addDoc } = require("../crud");
 const { createServer } = require("./dns");
 
 panel.post("/getId", async (req, res) => {
@@ -9,25 +9,12 @@ panel.post("/getId", async (req, res) => {
   if (!uid) {
     return res.status(400).json({ error: "Missing uid" });
   }
-  const panelsCollectionRef = db.collection("panels");
-  const panelsQuerySnapshot = await panelsCollectionRef.get();
-  let foundPanelId = null;
 
-  for (const panelDoc of panelsQuerySnapshot.docs) {
-    const adminsCollectionRef = panelDoc.ref.collection("admins");
-    const adminsQuerySnapShot = await adminsCollectionRef
-      .where("uid", "==", uid)
-      .get();
-    if (!adminsQuerySnapShot.empty) {
-      const admin = adminsQuerySnapShot.docs[0].data();
-      const { panelId } = admin;
-      foundPanelId = panelId;
-      break;
-    }
-  }
+  const users = getDocs("users");
+  const user = users.find((user) => user.uid === uid);
 
-  if (foundPanelId) {
-    res.status(200).send({ id: foundPanelId });
+  if (user) {
+    res.status(200).send({ id: user.panelId });
   } else {
     res.status(404).json({ error: "Not found" });
   }
@@ -39,21 +26,16 @@ panel.post("/get", async (req, res) => {
   if (!uid) {
     return res.status(400).json({ error: "Missing uid" });
   }
-  const panelsCollectionRef = db
-    .collection("registeredPanels")
-    .where("adminUid", "==", uid);
-  const panelsQuerySnapshot = await panelsCollectionRef.get();
-  const panelData = [];
-  if (!panelsQuerySnapshot.empty) {
-    for (const panelDoc of panelsQuerySnapshot.docs) {
-      const domain = panelDoc.id;
-      const panelId = panelDoc.data().panelId;
-      panelData.push({ value: panelId, label: domain });
-    }
-    return res.status(200).send(panelData);
-  } else {
-    return res.status(200).send([]);
-  }
+
+  const registeredPanels = getDocs("registeredPanels");
+  const panels = registeredPanels.filter((panel) => panel.userUid === uid);
+
+  const panelData = panels.map((panel) => ({
+    value: panel.panelId,
+    label: panel.domain,
+  }));
+
+  res.status(200).send(panelData);
 });
 
 panel.post("/checkuser", async (req, res) => {
@@ -62,23 +44,11 @@ panel.post("/checkuser", async (req, res) => {
   if (!uid) {
     return res.status(400).json({ error: "Missing uid" });
   }
-  const panelsCollectionRef = db.collection("panels");
-  const panelsQuerySnapshot = await panelsCollectionRef.get();
-  let foundUser = false;
 
-  for (const panelDoc of panelsQuerySnapshot.docs) {
-    const adminsCollectionRef = panelDoc.ref.collection("admins");
-    const adminsQuerySnapShot = await adminsCollectionRef
-      .where("uid", "==", uid)
-      .get();
-    if (!adminsQuerySnapShot.empty) {
-      const adminData = adminsQuerySnapShot.docs[0].data();
-      if (adminData.panelId === parseInt(panelId)) {
-        foundUser = true;
-        break;
-      }
-    }
-  }
+  const users = getDocs("users");
+  const foundUser = users.some(
+    (user) => user.uid === uid && user.panelId === parseInt(panelId)
+  );
 
   if (foundUser) {
     res.status(200).send({ success: true });
@@ -89,94 +59,60 @@ panel.post("/checkuser", async (req, res) => {
 
 panel.post("/create", async (req, res) => {
   const { domain, panelId, uid } = req.body;
+
   if (!domain) {
-    return res.status(400).json({ error: "Missing body" });
+    return res.status(400).json({ error: "Missing domain" });
   }
 
   const lowerCaseDomain = domain.toLowerCase();
   let mainPanelId = panelId ? panelId : 0;
-  if (panelId === null) {
-    const panelsCollectionRef = db.collection("panels");
-    const panelsQuerySnapshot = await panelsCollectionRef.get();
-    for (const panelDoc of panelsQuerySnapshot.docs) {
-      const adminsCollectionRef = panelDoc.ref.collection("admins");
-      const adminsQuerySnapShot = await adminsCollectionRef
-        .where("uid", "==", uid)
-        .get();
-      if (!adminsQuerySnapShot.empty) {
-        const adminData = adminsQuerySnapShot.docs[0].data();
-        const panelQuery = db
-          .collection("panels")
-          .orderBy("id", "desc")
-          .limit(1);
-        const panelDocs = await panelQuery.get();
 
-        if (!panelDocs.empty) {
-          const panelDoc = panelDocs.docs[0];
-          mainPanelId = String(parseInt(panelDoc.data().id) + 1);
-        } else {
-          mainPanelId = "1";
-        }
+  if (!panelId) {
+    const users = getDocs("users");
+    const user = users.find((user) => user.uid === uid);
 
-        const panelRef = db
-          .collection("panels")
-          .doc(mainPanelId)
-          .collection("admins")
-          .doc(uid);
-        await panelRef.set(adminData);
-        await panelRef.update({ panelId: parseInt(mainPanelId) });
+    if (user) {
+      const panels = getDocs("users");
+      const latestPanel = panels.sort((a, b) => b.panelId - a.panelId)[0];
+      mainPanelId = latestPanel ? String(parseInt(latestPanel.id) + 1) : "1";
 
-        const panelDoc = await db.collection("panels").doc(mainPanelId).get();
-        if (panelDoc.exists) {
-          await db
-            .collection("panels")
-            .doc(mainPanelId)
-            .update({ id: parseInt(mainPanelId) });
-        } else {
-          // Create the document if it doesn't exist
-          await db
-            .collection("panels")
-            .doc(mainPanelId)
-            .set({ id: parseInt(mainPanelId) });
-        }
-        const siteDoc = db
-          .collection(`panels/${mainPanelId}/general`)
-          .doc("site");
-        await siteDoc.set({
-          backend_url: `https://${lowerCaseDomain}:3001`,
-          title: "Panel",
-          adminStyles: {
-            "--adbasebgcolor": "#24003d",
-            "--adbaseactcolor": "#2f0050",
-            "--adbasehvcolor": "rgb(71, 3, 119)",
-            "--addarkbgcolor": "#1a0029",
-            "--adtextbgcolor": "rgb(163, 141, 179)",
-            "--sitecolor": "#fb95ff",
-          },
-          defaultCurrency: {
-            label: "USD - United States Dollar",
-            value: "1",
-          },
-          clientStyles: {
-            "--bgdarkcolor": "#1c031a",
-            "--bglightcolor": "#f6eff3",
-            "--sitecolor": "#6a0083",
-            "--stbaseactcolor": "#aa19d2",
-            "--stbasebgcolor": "#b46bd6",
-            "--stbasehvcolor": "#d123c3",
-            "--sttextbgcolor": "#c58cc0",
-            "--sitecolor": "#fb95ff",
-          },
-        });
-        break;
-      }
+      const siteData = {
+        backend_url: `https://${lowerCaseDomain}:3001`,
+        title: "Panel",
+        userstyles: {
+          "--adbasebgcolor": "#24003d",
+          "--adbaseactcolor": "#2f0050",
+          "--adbasehvcolor": "rgb(71, 3, 119)",
+          "--addarkbgcolor": "#1a0029",
+          "--adtextbgcolor": "rgb(163, 141, 179)",
+          "--sitecolor": "#fb95ff",
+        },
+        defaultCurrency: {
+          label: "USD - United States Dollar",
+          value: "1",
+        },
+        clientStyles: {
+          "--bgdarkcolor": "#1c031a",
+          "--bglightcolor": "#f6eff3",
+          "--sitecolor": "#6a0083",
+          "--stbaseactcolor": "#aa19d2",
+          "--stbasebgcolor": "#b46bd6",
+          "--stbasehvcolor": "#d123c3",
+          "--sttextbgcolor": "#c58cc0",
+          "--sitecolor": "#fb95ff",
+        },
+      };
+      addPanelDoc(`general`, siteData, parseInt(mainPanelId));
     }
   }
 
-  const registeredPanelsCol = db.collection("registeredPanels");
-  await registeredPanelsCol
-    .doc(lowerCaseDomain)
-    .set({ panelId: parseInt(mainPanelId), ssl: false, adminUid: uid });
+  const registeredPanelData = {
+    panelId: parseInt(mainPanelId),
+    ssl: false,
+    uid: lowerCaseDomain,
+    userUid: uid,
+  };
+  addDoc("registeredPanels", registeredPanelData);
   createServer(lowerCaseDomain, mainPanelId, res);
 });
 

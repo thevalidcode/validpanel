@@ -4,31 +4,35 @@ import Footer from "../components/Footer";
 import "../styles/dashboard.css";
 import { useParams } from "react-router-dom";
 import smile from "../assets/images/smile.png";
-import { useState, useEffect, useContext } from "react";
-import { db } from "../../Firebase-config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import Loader from "../shared/Loader";
 import AnchorLink from "../shared/AnchorLink";
 
 function Dashboard() {
-  const { loading, setLoading, siteTitle } = useContext(AppContext);
+  const { loading, setLoading, siteTitle, backendUrl, currentUser } =
+    useContext(AppContext);
   const { panelId } = useParams();
-  const [domain, setDomain] = useState();
+  const [domain, setDomain] = useState("");
 
   useEffect(() => {
     const getDomain = async () => {
-      const registeredPanelsQuery = query(
-        collection(db, "registeredPanels"),
-        where("panelId", "==", parseInt(panelId))
-      );
-      const registeredPanelsSnap = await getDocs(registeredPanelsQuery);
-      if (!registeredPanelsSnap.empty) {
-        setDomain(registeredPanelsSnap.docs[0].id);
+      if (currentUser) {
+        const response = await axios.post(`${backendUrl}/crud/get/docs`, {
+          collection: "registeredPanels",
+          key: currentUser.apiKey,
+        });
+        const foundDomain = response.data.find(
+          (panel) => panel.panelId === parseInt(panelId)
+        );
+        if (foundDomain) {
+          setDomain(foundDomain.uid);
+        }
       }
     };
     getDomain();
-  }, [panelId]);
+  }, [backendUrl, panelId, currentUser]);
 
   useEffect(() => {
     document.title = `Dashboard | ${siteTitle}`;
@@ -45,7 +49,7 @@ function Dashboard() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <CheckUser />
       <NavBar />
       <div className="cldashbd">
@@ -67,7 +71,7 @@ function Dashboard() {
       <div className="clfooter">
         <Footer />
       </div>
-    </>
+    </React.Fragment>
   );
 }
 

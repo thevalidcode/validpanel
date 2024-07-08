@@ -1,49 +1,61 @@
 import { useEffect, useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-import { auth, db } from "../../Firebase-config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteData, getData } from "../../utils/indexedDB";
 
 function CheckUser() {
-  const { backendUrl } = useContext(AppContext);
+  const { backendUrl, currentUser } = useContext(AppContext);
   const { panelId } = useParams();
   const navigate = useNavigate();
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const checkPanel = async () => {
-          const registeredPanelsQuery = query(
-            collection(db, "registeredPanels"),
-            where("panelId", "==", parseInt(panelId))
+    const checkPanel = async () => {
+      if (currentUser) {
+        try {
+          const registeredPanelsDocs = await axios.post(
+            `${backendUrl}/crud/get/docs`,
+            {
+              collection: "registeredPanels",
+              key: currentUser.apiKey,
+            }
           );
-          const registeredPanelsSnap = await getDocs(registeredPanelsQuery);
+          const panelExist = registeredPanelsDocs.data.some(
+            (panel) => panel.panelId === parseInt(panelId)
+          );
           const response = await axios.post(`${backendUrl}/panel/checkuser`, {
-            uid: user.uid,
+            uid: currentUser.uid,
             panelId: panelId,
           });
           if (!response.data.success) {
             navigate("/");
-            await signOut(auth);
+            await deleteData("user_auth");
           }
-          if (registeredPanelsSnap.empty) {
+          if (!panelExist) {
             navigate("/onboarding", {
               state: {
                 id: panelId,
               },
             });
           }
-        };
-        checkPanel();
-      } else {
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    checkPanel();
+  }, [panelId, navigate, backendUrl, currentUser]);
+
+  useEffect(() => {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (!currentUser) {
         navigate("/");
       }
-    });
-    return () => {
-      unsubscribe();
     };
-  }, [panelId, navigate, backendUrl]);
+    onAuth();
+  }, [navigate]);
+
   return null;
 }
 

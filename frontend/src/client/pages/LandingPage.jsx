@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 import { FaArrowRight, FaSync, FaSyncAlt } from "react-icons/fa";
 import ScrollAnimation from "react-animate-on-scroll";
 import DarkThemeImg from "../assets/images/Dark-Theme.png";
-import LightThemeImg from "../assets/images/Light-Theme.png";
-import { auth } from "../../Firebase-config";
+import LightThemeImg from "../assets/images/Light-Theme.png"
 import MbStyle from "../assets/images/MB-Style.png";
 import DeskDarkStyle from "../assets/images/DeskDarkStyle.png";
 import DeskLightStyle from "../assets/images/DeskLightStyle.png";
@@ -22,6 +21,7 @@ import { RiUserLocationLine } from "react-icons/ri";
 import Footer from "../components/Footer";
 import AuthRedirect from "../utils/AuthRedirect";
 import Loader from "../shared/Loader";
+import { getData } from "../../utils/indexedDB";
 
 function LandingPage() {
   const { loading, setLoading, siteTitle } = useContext(AppContext);
@@ -32,16 +32,17 @@ function LandingPage() {
   }, [siteTitle]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (currentUser) {
         setTimeout(() => {
           setLoading(false);
         }, 20000);
       } else {
         setLoading(false);
       }
-    });
-    return () => unsubscribe();
+    };
+    onAuth();
   }, [setLoading]);
 
   if (loading) {

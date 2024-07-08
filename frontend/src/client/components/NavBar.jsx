@@ -10,8 +10,6 @@ import { RiMenu2Line } from "react-icons/ri";
 import { MdDashboard, MdOutlineCancel } from "react-icons/md";
 import { FaListUl } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../Firebase-config";
 import Logo from "../assets/images/ValidPanel.png";
 import axios from "axios";
 import { useContext } from "react";
@@ -19,7 +17,7 @@ import { AppContext } from "../../context/AppContext";
 
 function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { backendUrl } = useContext(AppContext);
+  const { backendUrl, currentUser } = useContext(AppContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [gottenPanelId, setGottenPanelId] = useState(0);
@@ -37,7 +35,6 @@ function NavBar() {
     setIsOpen(false);
   };
 
-  const { currentUser } = auth;
   const { panelId } = useParams();
   useEffect(() => {
     const handleScroll = () => {
@@ -57,15 +54,10 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    const unsuscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.uid) {
-        setIsLoggedIn(true);
-      }
-    });
-    return () => {
-      unsuscribe();
-    };
-  }, []);
+    if (currentUser && currentUser.uid) {
+      setIsLoggedIn(true);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     let handler = (e) => {
@@ -183,7 +175,10 @@ function NavBar() {
                   <Link to="https://x.com/validpanel" className="navbarsocial">
                     <FaSquareXTwitter className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="https://instagram.com/validpanel" className="navbarsocial">
+                  <Link
+                    to="https://instagram.com/validpanel"
+                    className="navbarsocial"
+                  >
                     <IoLogoInstagram className="clmbnavbarsocialIcon" />
                   </Link>
                   <Link to="#" className="navbarsocial">
@@ -233,7 +228,10 @@ function NavBar() {
                 <Link to="https://x.com/validpanel" className="navbarsocial">
                   <FaSquareXTwitter className="clnavbarsocialIcon" />
                 </Link>
-                <Link to="https://instagram.com/validpanel" className="navbarsocial">
+                <Link
+                  to="https://instagram.com/validpanel"
+                  className="navbarsocial"
+                >
                   <IoLogoInstagram className="clnavbarsocialIcon" />
                 </Link>
                 <Link to="#" className="navbarsocial">
@@ -273,7 +271,10 @@ function NavBar() {
                   <Link to="https://x.com/validpanel" className="navbarsocial">
                     <FaSquareXTwitter className="clmbnavbarsocialIcon" />
                   </Link>
-                  <Link to="https://instagram.com/validpanel" className="navbarsocial">
+                  <Link
+                    to="https://instagram.com/validpanel"
+                    className="navbarsocial"
+                  >
                     <IoLogoInstagram className="clmbnavbarsocialIcon" />
                   </Link>
                   <Link to="#" className="navbarsocial">

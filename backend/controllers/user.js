@@ -1,56 +1,66 @@
-const admin = require("firebase-admin");
-const serverTimestamp = admin.firestore.FieldValue.serverTimestamp();
-const { db } = require("../db");
+const { getDocs, addDoc, addPanelDoc } = require("../crud");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+
+exports.userAuth = async (req, res) => {
+  const { email, password } = req.body;
+  const allUsers = getDocs("users");
+  const userData = allUsers.find((user) => user.email === email);
+  if (userData) {
+    const isMatch = await bcrypt.compare(password, userData.password);
+    if (isMatch) {
+      return res.status(200).send(userData);
+    }
+  } else {
+    return res.status(400).send({ error: "Invalid Login Details" });
+  }
+};
+
+exports.userData = async (req, res) => {
+  const { uid } = req.body;
+  const allUsers = getDocs("users");
+  const userData = allUsers.find((user) => user.uid === uid);
+  if (userData) {
+    return res.status(200).send(userData);
+  } else {
+    return res.status(400).send({ error: "Invalid Login Details" });
+  }
+};
 
 exports.createUser = async (req, res) => {
-  const { name, email, uid, password } = req.body;
+  const { name, email, password } = req.body;
   try {
+    const uuid = uuidv4();
     const userData = {
-      uid: uid,
+      uid: uuid,
       email: email,
       name: name,
-      timestamp: serverTimestamp,
+      timestamp: new Date(),
       password: password,
-      apiKey: uid,
+      apiKey: uuid,
     };
 
     let panelId;
-    const panelQuery = db.collection("panels").orderBy("id", "desc").limit(1);
-    const panelDocs = await panelQuery.get();
+    const usersDocs = getDocs("users");
+    const emailExist = usersDocs.some((user) => user.email === email);
+    if (emailExist) {
+      return res.status(400).send({ error: "Email already exist" });
+    }
+    const sortedUsers = usersDocs.sort((a, b) => b.panelId - a.panelId);
 
-    if (!panelDocs.empty) {
-      const panelDoc = panelDocs.docs[0];
-      panelId = String(parseInt(panelDoc.data().id) + 1);
+    if (sortedUsers.length !== 0) {
+      const userDoc = sortedUsers[0];
+      panelId = String(parseInt(userDoc.panelId) + 1);
     } else {
       panelId = "1";
     }
-
-    const panelRef = db
-      .collection("panels")
-      .doc(panelId)
-      .collection("admins")
-      .doc(uid);
-    await panelRef.set(userData);
-    await panelRef.update({ panelId: parseInt(panelId) });
-
-    const panelDoc = await db.collection("panels").doc(panelId).get();
-    if (panelDoc.exists) {
-      await db
-        .collection("panels")
-        .doc(panelId)
-        .update({ id: parseInt(panelId) });
-    } else {
-      // Create the document if it doesn't exist
-      await db
-        .collection("panels")
-        .doc(panelId)
-        .set({ id: parseInt(panelId) });
-    }
-    res
+    userData.panelId = parseInt(panelId);
+    addPanelDoc("admins", userData, panelId);
+    addDoc("users", userData);
+    return res
       .status(200)
-      .send({ id: parseInt(panelId), success: "User Created Successfully" });
+      .send({ user: userData, success: "User Created Successfully" });
   } catch (error) {
     res.status(500).send({ error: "Error creating user" });
-    console.log(error);
   }
 };

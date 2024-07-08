@@ -1,36 +1,34 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import { useContext, useEffect } from "react";
-import { auth } from "../../Firebase-config";
+import { getData, deleteData } from "../../utils/indexedDB";
 
 function AuthRedirect() {
   const { backendUrl } = useContext(AppContext);
   const navigate = useNavigate();
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (currentUser) {
         const getPanelId = async () => {
           try {
-            await new Promise((resolve) => setTimeout(resolve, 3000));
             const response = await axios.post(`${backendUrl}/panel/getId`, {
-              uid: user.uid,
+              uid: currentUser.uid,
             });
             const panelId = response.data.id;
             navigate(`/control-panel/${panelId}/dashboard`);
           } catch (error) {
             if (error.response.data.error === "Not Found") {
-              await signOut(auth);
+              await deleteData("user_auth");
             }
           }
         };
         getPanelId();
       }
-    });
-    return () => {
-      unsubscribe();
     };
+    onAuth();
   }, [navigate, backendUrl]);
   return null;
 }

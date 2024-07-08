@@ -188,17 +188,18 @@
 .clloginform form .cllogemaildiv,
 .clloginform form .cllogpasswdiv {
   align-self: center;
-  margin-top: 10px;
+  margin-top: 20px;
   display: flex;
   width: 100%;
 }
 
 .clloginform form .cllogicondiv {
-  padding: 10px 18px;
+  padding: 12px 18px;
   border-radius: 13px;
   background-color: #2f0653;
-  border: 0.25rem solid var(--clactivecolor);
+  border: 1px solid var(--clactivecolor);
   border-right: none;
+  margin-right: 18px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 }
@@ -209,7 +210,7 @@
 }
 
 .clloginform form .cllogpassicon {
-  font-size: 2rem;
+  /* font-size: 2rem; */
   color: #bbbbbb;
   position: relative;
   cursor: pointer;
@@ -218,7 +219,7 @@
 }
 
 .clloginform form .cllogicon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #bbbbbb;
 }
 
@@ -241,6 +242,7 @@
 
 .cllognot {
   color: white;
+  margin-top: 30px;
   font-size: 1.2rem;
   font-weight: 500;
 }

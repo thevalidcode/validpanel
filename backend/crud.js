@@ -1,0 +1,515 @@
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
+
+const env = process.env.NODE_ENV;
+
+const getCollectionPath = (col) => {
+  return env === "production"
+    ? `/validpanel_db/${col}.json`
+    : path.join(__dirname, `/fake_validpanel_db/${col}.json`);
+};
+
+const getPanelCollectionPath = (col) => {
+  return env === "production"
+    ? `/panels_db/${col}.json`
+    : path.join(__dirname, `/fake_panels_db/${col}.json`);
+};
+
+const readData = (collection) => {
+  if (fs.existsSync(collection)) {
+    const fileContent = fs.readFileSync(collection, "utf8");
+    try {
+      return JSON.parse(fileContent);
+    } catch (error) {
+      return {};
+    }
+  }
+  return {};
+};
+
+const writeData = (collection, data) => {
+  fs.writeFileSync(collection, JSON.stringify(data, null, 2));
+};
+
+const getDocs = (col, panel_id) => {
+  const collection = getCollectionPath(col);
+  const data = readData(collection);
+  if (panel_id) {
+    return data[col]?.[panel_id] || [];
+  } else {
+    return data[col] || [];
+  }
+};
+
+const addDoc = (col, data) => {
+  const collection = getCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (!Array.isArray(existingData[col])) {
+    return { error: "Collection is not an array" };
+  }
+
+  if (!data.uid) {
+    data.uid = uuidv4();
+  } else if (existingData[col].some((doc) => doc.uid === data.uid)) {
+    return { error: "UID already exists" };
+  }
+
+  existingData[col].push(data);
+  writeData(collection, existingData);
+  return { uid: data.uid };
+};
+
+const addPanelDoc = (col, data, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (Array.isArray(existingData[col])) {
+    return { error: "Collection is an array" };
+  }
+
+  if (!existingData[col]) {
+    existingData[col] = {};
+  }
+
+  if (!Array.isArray(existingData[col][panel_id])) {
+    existingData[col][panel_id] = [];
+  }
+
+  if (!data.uid) {
+    data.uid = uuidv4();
+  } else if (existingData[col][panel_id].some((doc) => doc.uid === data.uid)) {
+    return { error: "UID already exists" };
+  }
+
+  existingData[col][panel_id].push(data);
+  writeData(collection, existingData);
+  return { uid: data.uid };
+};
+
+const addDocs = (col, data) => {
+  const collection = getCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (!Array.isArray(existingData[col])) {
+    return { error: "Collection is not an array" };
+  }
+
+  const docsToAdd = data.filter((doc) => {
+    if (!doc.uid) {
+      doc.uid = uuidv4();
+      return true;
+    }
+    return !existingData[col].some(
+      (existingDoc) => existingDoc.uid === doc.uid
+    );
+  });
+
+  existingData[col].push(...docsToAdd);
+  writeData(collection, existingData);
+};
+
+const addPanelDocs = (col, data, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (Array.isArray(existingData[col])) {
+    return { error: "Collection is an array" };
+  }
+
+  if (!existingData[col]) {
+    existingData[col] = {};
+  }
+
+  if (!Array.isArray(existingData[col][panel_id])) {
+    existingData[col][panel_id] = [];
+  }
+
+  const docsToAdd = data.filter((doc) => {
+    if (!doc.uid) {
+      doc.uid = uuidv4();
+      return true;
+    }
+    return !existingData[col][panel_id].some(
+      (existingDoc) => existingDoc.uid === doc.uid
+    );
+  });
+
+  existingData[col][panel_id].push(...docsToAdd);
+  writeData(collection, existingData);
+};
+
+const addSubDoc = (col, subDocKey, data) => {
+  const collection = getCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (!Array.isArray(existingData[col])) {
+    return { error: "Collection is not an array" };
+  }
+
+  let subDoc = existingData[col].find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc) {
+    subDoc = { [subDocKey]: [] };
+    existingData[col].push(subDoc);
+  }
+
+  if (!Array.isArray(subDoc[subDocKey])) {
+    subDoc[subDocKey] = [];
+  }
+
+  if (!data.uid) {
+    data.uid = uuidv4();
+  } else if (
+    subDoc[subDocKey].some((subDocItem) => subDocItem.uid === data.uid)
+  ) {
+    return { error: "UID already exists" };
+  }
+
+  subDoc[subDocKey].push(data);
+  writeData(collection, existingData);
+  return { uid: data.uid };
+};
+
+const addPanelSubDoc = (col, subDocKey, data, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (Array.isArray(existingData[col])) {
+    return { error: "Collection is an array" };
+  }
+
+  if (!existingData[col]) {
+    existingData[col] = {};
+  }
+
+  if (!Array.isArray(existingData[col][panel_id])) {
+    existingData[col][panel_id] = [];
+  }
+
+  let subDoc = existingData[col][panel_id].find(
+    (doc) => doc[subDocKey] !== undefined
+  );
+  if (!subDoc) {
+    subDoc = { [subDocKey]: [] };
+    existingData[col][panel_id].push(subDoc);
+  }
+
+  if (!Array.isArray(subDoc[subDocKey])) {
+    subDoc[subDocKey] = [];
+  }
+
+  if (!data.uid) {
+    data.uid = uuidv4();
+  } else if (
+    subDoc[subDocKey].some((subDocItem) => subDocItem.uid === data.uid)
+  ) {
+    return { error: "UID already exists" };
+  }
+
+  subDoc[subDocKey].push(data);
+  writeData(collection, existingData);
+  return { uid: data.uid };
+};
+
+const addSubDocs = (col, subDocKey, docs) => {
+  const collection = getCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (!Array.isArray(existingData[col])) {
+    return { error: "Collection is not an array" };
+  }
+
+  let subDoc = existingData[col].find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc) {
+    subDoc = { [subDocKey]: [] };
+    existingData[col].push(subDoc);
+  }
+
+  if (!Array.isArray(subDoc[subDocKey])) {
+    subDoc[subDocKey] = [];
+  }
+
+  const docsToAdd = docs.filter((doc) => {
+    if (!doc.uid) {
+      doc.uid = uuidv4();
+      return true;
+    }
+    return !subDoc[subDocKey].some(
+      (existingDoc) => existingDoc.uid === doc.uid
+    );
+  });
+
+  subDoc[subDocKey].push(...docsToAdd);
+  writeData(collection, existingData);
+};
+
+const addPanelSubDocs = (col, subDocKey, docs, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const existingData = readData(collection);
+
+  if (Array.isArray(existingData[col])) {
+    return { error: "Collection is an array" };
+  }
+
+  if (!existingData[col]) {
+    existingData[col] = {};
+  }
+
+  if (!Array.isArray(existingData[col][panel_id])) {
+    existingData[col][panel_id] = [];
+  }
+
+  let subDoc = existingData[col][panel_id].find(
+    (doc) => doc[subDocKey] !== undefined
+  );
+  if (!subDoc) {
+    subDoc = { [subDocKey]: [] };
+    existingData[col][panel_id].push(subDoc);
+  }
+
+  if (!Array.isArray(subDoc[subDocKey])) {
+    subDoc[subDocKey] = [];
+  }
+
+  const docsToAdd = docs.filter((doc) => {
+    if (!doc.uid) {
+      doc.uid = uuidv4();
+      return true;
+    }
+    return !subDoc[subDocKey].some(
+      (existingDoc) => existingDoc.uid === doc.uid
+    );
+  });
+
+  subDoc[subDocKey].push(...docsToAdd);
+  writeData(collection, existingData);
+};
+
+const deleteDoc = (col, uid) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const filteredData = data.filter((doc) => doc.uid !== uid);
+  mainData[col] = filteredData;
+  writeData(collection, mainData);
+};
+
+const deletePanelDoc = (col, uid, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const filteredData = panelData.filter((doc) => doc.uid !== uid);
+  mainData[col][panel_id] = filteredData;
+  writeData(collection, mainData);
+};
+
+const deleteDocs = (col, uids) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const filteredData = data.filter((doc) => !uids.includes(doc.uid));
+  mainData[col] = filteredData;
+  writeData(collection, mainData);
+};
+
+const deletePanelDocs = (col, uids, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const filteredData = panelData.filter((doc) => !uids.includes(doc.uid));
+  mainData[col][panel_id] = filteredData;
+  writeData(collection, mainData);
+};
+
+const updateDoc = (col, uid, newData) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const updatedData = data.map((doc) =>
+    doc.uid === uid ? { ...doc, ...newData } : doc
+  );
+  mainData[col] = updatedData;
+  writeData(collection, mainData);
+};
+
+const updatePanelDoc = (col, uid, newData, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const updatedData = panelData.map((doc) =>
+    doc.uid === uid ? { ...doc, ...newData } : doc
+  );
+  mainData[col][panel_id] = updatedData;
+  writeData(collection, mainData);
+};
+
+const deleteSubDocs = (col, subDocKey, uids) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const subDoc = data.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].filter(
+    (doc) => !uids.includes(doc.uid)
+  );
+  writeData(collection, mainData);
+};
+
+const deleteSubDoc = (col, subDocKey, uid) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const subDoc = data.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].filter((doc) => doc.uid !== uid);
+  writeData(collection, mainData);
+};
+
+const updateSubDoc = (col, subDocKey, uid, newData) => {
+  const collection = getCollectionPath(col);
+  const mainData = readData(collection);
+  const data = mainData[col];
+
+  if (!Array.isArray(data)) {
+    return { error: "Collection is not an array" };
+  }
+
+  const subDoc = data.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].map((doc) =>
+    doc.uid === uid ? { ...doc, ...newData } : doc
+  );
+  writeData(collection, mainData);
+};
+
+const updatePanelSubDoc = (col, subDocKey, uid, newData, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Panel data is not an array" };
+  }
+
+  let subDoc = panelData.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].map((doc) =>
+    doc.uid === uid ? { ...doc, ...newData } : doc
+  );
+  writeData(collection, mainData);
+};
+
+const deletePanelSubDocs = (col, subDocKey, uids, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Panel data is not an array" };
+  }
+
+  let subDoc = panelData.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].filter(
+    (doc) => !uids.includes(doc.uid)
+  );
+  writeData(collection, mainData);
+};
+
+const deletePanelSubDoc = (col, subDocKey, uid, panel_id) => {
+  const collection = getPanelCollectionPath(col);
+  const mainData = readData(collection);
+  const panelData = mainData[col]?.[panel_id];
+
+  if (!Array.isArray(panelData)) {
+    return { error: "Panel data is not an array" };
+  }
+
+  let subDoc = panelData.find((doc) => doc[subDocKey] !== undefined);
+  if (!subDoc || !Array.isArray(subDoc[subDocKey])) {
+    return { error: "Sub-collection is not an array" };
+  }
+
+  subDoc[subDocKey] = subDoc[subDocKey].filter((doc) => doc.uid !== uid);
+  writeData(collection, mainData);
+};
+
+module.exports = {
+  getDocs,
+  addDoc,
+  addPanelDoc,
+  addDocs,
+  addPanelDocs,
+  addSubDoc,
+  addPanelSubDoc,
+  addSubDocs,
+  addPanelSubDocs,
+  deleteDoc,
+  deletePanelDoc,
+  deleteDocs,
+  deletePanelDocs,
+  updateDoc,
+  updatePanelDoc,
+  deleteSubDocs,
+  deleteSubDoc,
+  updateSubDoc,
+  updatePanelSubDoc,
+  deletePanelSubDocs,
+  deletePanelSubDoc,
+};

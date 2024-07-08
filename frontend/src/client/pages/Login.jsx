@@ -2,17 +2,16 @@ import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import BG from "../assets/images/dotted-black-background.jpg";
 import "../styles/login.css";
-import { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { IoMail } from "react-icons/io5";
 import { IoIosLock } from "react-icons/io";
 import { AppContext } from "../../context/AppContext";
-import { auth } from "../../Firebase-config";
 import { useNavigate } from "react-router-dom";
 import Button from "../shared/Button";
 import axios from "axios";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import AuthRedirect from "../utils/AuthRedirect";
+import { addData, getData } from "../../utils/indexedDB";
 import TextInput from "../shared/TextInput";
 import PasswordInput from "../shared/PasswordInput";
 import Loader from "../shared/Loader";
@@ -29,6 +28,8 @@ function Login() {
     setNotifyMessage,
     siteTitle,
     backendUrl,
+    checkAuth,
+    setCheckAuth,
     setNotifyVisibility,
   } = useContext(AppContext);
   const [email, setEmail] = useState("");
@@ -42,24 +43,25 @@ function Login() {
   }, [siteTitle]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (currentUser) {
         setTimeout(() => {
           setLoading(false);
         }, 20000);
       } else {
         setLoading(false);
       }
-    });
-    return () => unsubscribe();
+    };
+    onAuth();
   }, [setLoading]);
 
   if (loading) {
     return (
-      <>
+      <React.Fragment>
         <AuthRedirect />
         <Loader />
-      </>
+      </React.Fragment>
     );
   }
   const Notify = (type, message, duration) => {
@@ -78,32 +80,36 @@ function Login() {
     setLoadingBtn(true);
     setBtnName("Logging in...");
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userResponse = await axios.post(`${backendUrl}/user/auth`, {
+        email: email,
+        password: password,
+      });
+      const userData = userResponse.data;
       const response = await axios.post(`${backendUrl}/panel/getId`, {
-        uid: userCredential.user.uid,
+        uid: userData.uid,
+        key: userData.apiKey,
       });
       const panelId = response.data.id;
       setEmail("");
       setPassword("");
+      await addData({
+        email: email,
+        uid: userData.uid,
+        created_at: userData.timestamp,
+        id: "user_auth",
+      });
       setBtnName("Login");
       setLoadingBtn(false);
+      setCheckAuth(!checkAuth);
       Notify("success", "Logged in successfully");
       navigate(`/control-panel/${panelId}/dashboard`);
     } catch (error) {
-      if (error.code === "auth/invalid-credential") {
-        Notify("error", "Invalid email or password");
-      }
-      if (error.code === "auth/network-request-failed") {
-        Notify("error", "Please check your device's network connection");
-      }
+      Notify("error", error.response.data.error);
       setLoadingBtn(false);
       setBtnName("Login");
     }
   };
+
   return (
     <div className="cllogin">
       <img src={BG} alt="background" className="loginpagedots" />

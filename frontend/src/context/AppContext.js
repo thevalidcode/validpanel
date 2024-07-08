@@ -1,4 +1,7 @@
 import { createContext, useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { getData } from "../utils/indexedDB";
+
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
@@ -16,6 +19,8 @@ const AppProvider = ({ children }) => {
   );
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyVisibility, setNotifyVisibility] = useState(false);
+  const [checkAuth, setCheckAuth] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifyType, setNotifyType] = useState("");
   const [notifyDuration, setNotifyDuration] = useState(4000);
@@ -31,22 +36,49 @@ const AppProvider = ({ children }) => {
     bodyStyle.setProperty("--clbasebgcolor", clientStyles["--clbasebgcolor"]);
     bodyStyle.backgroundColor = "var(--clbgcolor)";
   }, [clientStyles]);
-  const backendUrl = "https://validpanel.com:3002";
+
+  const env = process.env.NODE_ENV;
+
+  const backendUrl =
+    env === "production"
+      ? "https://validpanel.com:3002"
+      : "http://localhost:3002";
+
   const siteTitle = "Valid Panel";
+
+  useEffect(() => {
+    const getUserAuth = async () => {
+      const inUserDt = await getData("user_auth");
+      if (inUserDt) {
+        const response = await axios.post(`${backendUrl}/user/data`, {
+          uid: inUserDt.uid,
+        });
+        setCurrentUser(response.data);
+      } else {
+        setCurrentUser(null);
+      }
+    };
+    getUserAuth();
+  }, [backendUrl, checkAuth]);
+
   return (
     <AppContext.Provider
       value={{
         clientStyles,
         loading,
+        checkAuth,
+        setCheckAuth,
         setLoading,
-        notifyMessage,
         siteTitle,
+        backendUrl,
         notifyType,
         setNotifyType,
         setNotifyMessage,
-        backendUrl,
+        currentUser,
+        setCurrentUser,
         notifyVisibility,
         setNotifyVisibility,
+        notifyMessage,
         setNotifyDuration,
         notifyDuration,
       }}

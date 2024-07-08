@@ -6,7 +6,7 @@ import React, { useState } from "react";
 function PasswordInput({ value, onChange, setState }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <React.Fragment>
+    <div className="flex-center w-100">
       <input
         type={showPassword ? "text" : "password"}
         placeholder="Password"
@@ -28,7 +28,7 @@ function PasswordInput({ value, onChange, setState }) {
           />
         )}
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 

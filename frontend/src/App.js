@@ -13,9 +13,7 @@ function App() {
   return (
     <AppProvider>
       <Router>
-        <div className="app">
-          <Notify />
-        </div>
+        <Notify />
         <Routes>
           <Route
             path="/"

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.bf36c024.css",
-    "main.js": "/static/js/main.10faf155.js",
+    "main.css": "/static/css/main.77f73736.css",
+    "main.js": "/static/js/main.a0f8fae6.js",
     "static/js/453.76688dcc.chunk.js": "/static/js/453.76688dcc.chunk.js",
     "static/media/dotted-black-background.jpg": "/static/media/dotted-black-background.653228b5c98fe28bda22.jpg",
     "static/media/ValidPanel.png": "/static/media/ValidPanel.34911b9bf50d8973166c.png",
@@ -13,12 +13,12 @@
     "static/media/domain.png": "/static/media/domain.d7a6f9406eb8ba1c3361.png",
     "static/media/MB-Style.png": "/static/media/MB-Style.b29ae8ce6e74364f792d.png",
     "index.html": "/index.html",
-    "main.bf36c024.css.map": "/static/css/main.bf36c024.css.map",
-    "main.10faf155.js.map": "/static/js/main.10faf155.js.map",
+    "main.77f73736.css.map": "/static/css/main.77f73736.css.map",
+    "main.a0f8fae6.js.map": "/static/js/main.a0f8fae6.js.map",
     "453.76688dcc.chunk.js.map": "/static/js/453.76688dcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bf36c024.css",
-    "static/js/main.10faf155.js"
+    "static/css/main.77f73736.css",
+    "static/js/main.a0f8fae6.js"
   ]
 }

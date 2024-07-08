@@ -1,9 +1,8 @@
 const fs = require("fs");
 const exec = require("child_process").exec;
-const { db } = require("../db");
+const { getDocs, updateDoc } = require("../crud");
 
 function createServer(domain, panelId, res) {
-  // Read existing content of named.conf.local
   fs.readFile("/etc/bind/named.conf.local", "utf8", (err, data) => {
     if (err) {
       console.error(`Error reading named.conf.local: ${err.message}`);
@@ -11,22 +10,19 @@ function createServer(domain, panelId, res) {
       return;
     }
 
-    // Append zoneConfig to the existing content
-    const updatedContent =
-      data +
-      `
-  zone "${domain}" {
-    type master;
-    file "/var/lib/bind/${domain}.hosts";
-  };
-`;
+    const updatedContent = `${data}
+    zone "${domain}" {
+      type master;
+      file "/var/lib/bind/${domain}.hosts";
+    };
+    `;
+
     if (domain.includes(".validpanel.com")) {
       createARecord(domain, "5.196.190.226");
       createVirtualHost(domain);
       createSSL();
       res.json({ message: "Created successfully" });
     } else {
-      // Write updated content back to named.conf.local
       fs.writeFile("/etc/bind/named.conf.local", updatedContent, (err) => {
         if (err) {
           console.error(`Error writing named.conf.local: ${err.message}`);
@@ -34,7 +30,6 @@ function createServer(domain, panelId, res) {
           return;
         }
 
-        // Execute BIND reload command
         exec("systemctl reload bind9", (error, stdout, stderr) => {
           if (error) {
             console.error(`Error reloading BIND: ${error.message}`);
@@ -70,19 +65,18 @@ function createARecord(domain, ipAddress) {
 @ IN A ${ipAddress}
 www IN A ${ipAddress}
 `;
+
   if (domain.includes(".validpanel.com")) {
     fs.readFile("/var/lib/bind/validpanel.com.hosts", "utf8", (err, data) => {
       if (err) {
         console.error(`Error reading validpanel.com.hosts: ${err.message}`);
         return;
       }
-      const updatedContent =
-        data +
-        `
-${domain}. IN A ${ipAddress}
-www.${domain}. IN A ${ipAddress}`;
+      const updatedContent = `${data}
+      ${domain}. IN A ${ipAddress}
+      www.${domain}. IN A ${ipAddress}`;
       fs.writeFile(
-        `/var/lib/bind/validpanel.com.hosts`,
+        "/var/lib/bind/validpanel.com.hosts",
         updatedContent,
         (err) => {
           if (err) {
@@ -138,6 +132,7 @@ function createVirtualHost(domain) {
   RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 `;
+
   fs.writeFile(
     `/etc/apache2/sites-available/${domain}.conf`,
     fileContent,
@@ -146,41 +141,50 @@ function createVirtualHost(domain) {
         console.error(`Error writing zone file: ${err.message}`);
         return;
       }
+      exec(`a2ensite ${domain}.conf`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error enabling site: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.error(`Error enabling site: ${stderr}`);
+          return;
+        }
+        exec("systemctl restart apache2", (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error restarting Apache: ${error.message}`);
+            return;
+          }
+          if (stderr) {
+            console.error(`Error restarting Apache: ${stderr}`);
+            return;
+          }
+        });
+      });
     }
   );
-  // Enable the site
-  exec(`a2ensite ${domain}.conf`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error enabling site: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Error enabling site: ${stderr}`);
-      return;
-    }
-    exec("systemctl restart apache2", (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error restarting Apache: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.error(`Error restarting Apache: ${stderr}`);
-        return;
-      }
-    });
-  });
 }
 
 async function createSSL() {
-  const registeredPanelsCol = db
-    .collection("registeredPanels")
-    .where("ssl", "==", false);
-  const registeredPanelsSnap = await registeredPanelsCol.get();
-  for (const regPanel of registeredPanelsSnap.docs) {
-    exec(`certbot --apache --redirect -d ${regPanel.id}`);
-    await db.collection("registeredPanels").doc(regPanel.id).update({
-      ssl: true,
-    });
+  const registeredPanels = getDocs("registeredPanels");
+  const panelsWithoutSSL = registeredPanels.filter((panel) => !panel.ssl);
+
+  for (const panel of panelsWithoutSSL) {
+    exec(
+      `certbot --apache --redirect -d ${panel.domain}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error creating SSL: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.error(`Stderr creating SSL: ${stderr}`);
+          return;
+        }
+        updateDoc("registeredPanels", panel.uid, { ssl: true });
+      }
+    );
   }
 }
+
 module.exports = { createServer, createSSL };

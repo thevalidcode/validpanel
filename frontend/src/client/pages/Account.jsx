@@ -7,27 +7,13 @@ import { useContext, useEffect, useState } from "react";
 import CheckUser from "../utils/CheckUser";
 import bcrypt from "bcryptjs";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { auth, db } from "../../Firebase-config";
 import Loader from "../shared/Loader";
 import Button from "../shared/Button";
 import Select from "react-select";
 import axios from "axios";
+import { deleteData, getData } from "../../utils/indexedDB";
 import AnchorLink from "../shared/AnchorLink";
 import { AppContext } from "../../context/AppContext";
-import {
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  signOut,
-  updatePassword,
-} from "firebase/auth";
 
 function Account() {
   const [name, setName] = useState("");
@@ -39,6 +25,7 @@ function Account() {
     setNotifyType,
     backendUrl,
     setNotifyMessage,
+    currentUser,
     siteTitle,
     setNotifyVisibility,
   } = useContext(AppContext);
@@ -51,18 +38,17 @@ function Account() {
   const [hashedPassword, setHashedPassword] = useState("");
   const [btnSavingPassword, setBtnSavingPassword] = useState("Save Changes");
   const [btnSavingName, setBtnSavingName] = useState("Save Changes");
-  const [currentUser, setCurrentUser] = useState(null);
   const [selectedPanel, setSelectedPanel] = useState([]);
-
   const { panelId } = useParams();
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      if (!user) {
+    const onAuth = async () => {
+      const currentUser = await getData("user_auth");
+      if (!currentUser) {
         navigate("/");
       }
-    });
-    return () => unsubscribe();
+    };
+    onAuth();
   }, [navigate]);
 
   useEffect(() => {
@@ -97,26 +83,12 @@ function Account() {
   };
 
   useEffect(() => {
-    const getAdminData = async () => {
-      if (currentUser) {
-        try {
-          const adminCol = collection(db, `panels/${panelId}/admins`);
-          const adminSnap = await getDocs(
-            query(adminCol, where("uid", "==", currentUser.uid))
-          );
-          if (!adminSnap.empty) {
-            const data = adminSnap.docs[0].data();
-            setAdminData(data);
-            setName(data.name);
-            setEmail(data.email);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    getAdminData();
-  }, [panelId, currentUser]);
+    if (currentUser) {
+      setAdminData(currentUser);
+      setName(currentUser.name);
+      setEmail(currentUser.email);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const hashPassword = async () => {
@@ -174,33 +146,26 @@ function Account() {
       return;
     }
     try {
-      const credentials = EmailAuthProvider.credential(
-        currentUser.email,
-        oldPassword
-      );
-      await reauthenticateWithCredential(currentUser, credentials);
-      const userDocRef = doc(db, `/panels/${panelId}/admins`, currentUser.uid);
-      await updateDoc(userDocRef, { password: hashedPassword });
-      await updatePassword(currentUser, newPassword);
+      await axios.post(`${backendUrl}/crud/update/doc`, {
+        collection: "users",
+        uid: currentUser.uid,
+        data: { password: hashedPassword },
+        key: currentUser.apiKey,
+      });
+      await axios.post(`${backendUrl}/crud/update/doc`, {
+        collection: "admins",
+        uid: currentUser.uid,
+        panelId: panelId,
+        data: { password: hashedPassword },
+        key: currentUser.apiKey,
+      });
       setBtnSavingPassword("Save Changes");
       setSavingPassword(false);
       Notify("success", "Changed Successfully");
     } catch (error) {
       setBtnSavingPassword("Save Changes");
-      console.log(error);
       setSavingPassword(false);
-      if (error.code === "auth/invalid-credential") {
-        Notify("error", "Incorrect Old Password");
-      }
-      if (error.code === "auth/weak-password") {
-        Notify("error", "Password should be at least 6 characters");
-      }
-      if (error.code === "auth/network-request-failed") {
-        Notify("error", "Kindly check your network connection");
-      }
-      if (error.code === "auth/too-many-requests") {
-        Notify("error", "Too many requests, please wait..");
-      }
+      Notify("error", "Something went wrong");
     }
   };
 
@@ -214,8 +179,19 @@ function Account() {
       return;
     }
     try {
-      const userDocRef = doc(db, `/panels/${panelId}/admins`, currentUser.uid);
-      await updateDoc(userDocRef, { name: name });
+      await axios.post(`${backendUrl}/crud/update/doc`, {
+        collection: "users",
+        uid: currentUser.uid,
+        data: { name: name },
+        key: currentUser.apiKey,
+      });
+      await axios.post(`${backendUrl}/crud/update/doc`, {
+        collection: "admins",
+        uid: currentUser.uid,
+        panelId: panelId,
+        data: { name: name },
+        key: currentUser.apiKey,
+      });
       setBtnSavingName("Save Changes");
       setSavingName(false);
       Notify("success", "Changed Successfully");
@@ -226,7 +202,7 @@ function Account() {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    await deleteData("user_auth");
   };
 
   return (
