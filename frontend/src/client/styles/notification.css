@@ -62,4 +62,7 @@
   .notifyText .icon {
     font-size: 1.5rem;
   }
+  .notifyText {
+    font-size: 0.9rem;
+  }
 }
