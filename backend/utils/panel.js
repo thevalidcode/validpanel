@@ -78,18 +78,21 @@ panel.post("/create", async (req, res) => {
 
       const siteData = {
         backend_url: `https://${lowerCaseDomain}:3001`,
+        uid: "site",
         title: "Panel",
-        userstyles: {
+        defaultCurrency: {
+          label: "USD - United States Dollar",
+          value: "1",
+        },
+      };
+      const designData = {
+        adminstyles: {
           "--adbasebgcolor": "#24003d",
           "--adbaseactcolor": "#2f0050",
           "--adbasehvcolor": "rgb(71, 3, 119)",
           "--addarkbgcolor": "#1a0029",
           "--adtextbgcolor": "rgb(163, 141, 179)",
           "--sitecolor": "#fb95ff",
-        },
-        defaultCurrency: {
-          label: "USD - United States Dollar",
-          value: "1",
         },
         clientStyles: {
           "--bgdarkcolor": "#1c031a",
@@ -101,8 +104,10 @@ panel.post("/create", async (req, res) => {
           "--sttextbgcolor": "#c58cc0",
           "--sitecolor": "#fb95ff",
         },
+        uid: "design",
       };
-      addPanelDoc(`general`, siteData, parseInt(mainPanelId));
+      addPanelDoc("general", siteData, parseInt(mainPanelId));
+      addPanelDoc("design", designData, parseInt(mainPanelId));
     }
   }
 

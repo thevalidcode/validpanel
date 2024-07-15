@@ -33,11 +33,13 @@ const writeData = (collection, data) => {
 };
 
 const getDocs = (col, panel_id) => {
-  const collection = getCollectionPath(col);
-  const data = readData(collection);
   if (panel_id) {
+    const collection = getPanelCollectionPath(col);
+    const data = readData(collection);
     return data[col]?.[panel_id] || [];
   } else {
+    const collection = getCollectionPath(col);
+    const data = readData(collection);
     return data[col] || [];
   }
 };
