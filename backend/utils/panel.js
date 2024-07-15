@@ -77,7 +77,6 @@ panel.post("/create", async (req, res) => {
       mainPanelId = latestPanel ? String(parseInt(latestPanel.id) + 1) : "1";
 
       const siteData = {
-        backend_url: `https://${lowerCaseDomain}:3001`,
         uid: "site",
         title: "Panel",
         defaultCurrency: {
