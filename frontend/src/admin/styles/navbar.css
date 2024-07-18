@@ -1,0 +1,23 @@
+.advpnavbar {
+  padding: 20px;
+  width: 80%;
+  align-items: center;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.advpnavlogo {
+  width: 90px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.advpnavbar .advplinks a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  background-color: var(--clbasebgcolor);
+}

@@ -115,6 +115,7 @@ panel.post("/create", async (req, res) => {
     ssl: false,
     uid: lowerCaseDomain,
     userUid: uid,
+    createdAt: new Date(),
   };
   addDoc("registeredPanels", registeredPanelData);
   createServer(lowerCaseDomain, mainPanelId, res);

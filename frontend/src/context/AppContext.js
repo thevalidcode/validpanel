@@ -20,7 +20,9 @@ const AppProvider = ({ children }) => {
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyVisibility, setNotifyVisibility] = useState(false);
   const [checkAuth, setCheckAuth] = useState(false);
+  const [checkAdminAuth, setCheckAdminAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentAdmin, setCurrentAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifyType, setNotifyType] = useState("");
   const [notifyDuration, setNotifyDuration] = useState(4000);
@@ -61,6 +63,21 @@ const AppProvider = ({ children }) => {
     getUserAuth();
   }, [backendUrl, checkAuth]);
 
+  useEffect(() => {
+    const getAdminAuth = async () => {
+      const adminAuthData = await getData("admin_auth");
+      if (adminAuthData) {
+        const response = await axios.post(`${backendUrl}/admin/data`, {
+          uid: adminAuthData.uid,
+        });
+        setCurrentAdmin(response.data.adminData);
+      } else {
+        setCurrentAdmin(null);
+      }
+    };
+    getAdminAuth();
+  }, [backendUrl, checkAdminAuth]);
+
   return (
     <AppContext.Provider
       value={{
@@ -69,6 +86,10 @@ const AppProvider = ({ children }) => {
         checkAuth,
         setCheckAuth,
         setLoading,
+        checkAdminAuth,
+        setCheckAdminAuth,
+        currentAdmin,
+        setCurrentAdmin,
         siteTitle,
         backendUrl,
         notifyType,

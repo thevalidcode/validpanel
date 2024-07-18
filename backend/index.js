@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 const usersRouter = require("./routes/user");
+const adminsRouter = require("./routes/admin");
 const crudRouter = require("./routes/crud");
 const { panel } = require("./utils/panel");
 const cron = require("node-cron");
@@ -17,6 +18,7 @@ const env = process.env.NODE_ENV;
 app.use(bodyParser.json());
 app.use(cors());
 app.use("/user", usersRouter);
+app.use("/admin", adminsRouter);
 app.use("/panel", panel);
 app.use("/crud", crudRouter);
 

@@ -10,7 +10,7 @@ import { RiMenu2Line } from "react-icons/ri";
 import { MdDashboard, MdOutlineCancel } from "react-icons/md";
 import { FaListUl } from "react-icons/fa";
 import { IoPerson } from "react-icons/io5";
-import Logo from "../assets/images/ValidPanel.png";
+import Logo from "../../assets/images/ValidPanel.png";
 import axios from "axios";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";

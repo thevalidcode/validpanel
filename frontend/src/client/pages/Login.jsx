@@ -1,6 +1,6 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import BG from "../assets/images/dotted-black-background.jpg";
+import BG from "../../assets/images/dotted-black-background.jpg";
 import "../styles/login.css";
 import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";

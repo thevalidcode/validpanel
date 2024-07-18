@@ -3,7 +3,7 @@ import CheckUser from "../utils/CheckUser";
 import Footer from "../components/Footer";
 import "../styles/dashboard.css";
 import { useParams } from "react-router-dom";
-import smile from "../assets/images/smile.png";
+import smile from "../../assets/images/smile.png";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";

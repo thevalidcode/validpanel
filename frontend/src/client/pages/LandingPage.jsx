@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../styles/landingpage.css";
-import BG from "../assets/images/dotted-black-background.jpg";
-import PanelImage from "../assets/images/panel-image.png";
+import BG from "../../assets/images/dotted-black-background.jpg";
+import PanelImage from "../../assets/images/panel-image.png";
 import NavBar from "../components/NavBar";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaSync, FaSyncAlt } from "react-icons/fa";
 import ScrollAnimation from "react-animate-on-scroll";
-import DarkThemeImg from "../assets/images/Dark-Theme.png";
-import LightThemeImg from "../assets/images/Light-Theme.png"
-import MbStyle from "../assets/images/MB-Style.png";
-import DeskDarkStyle from "../assets/images/DeskDarkStyle.png";
-import DeskLightStyle from "../assets/images/DeskLightStyle.png";
+import DarkThemeImg from "../../assets/images/Dark-Theme.png";
+import LightThemeImg from "../../assets/images/Light-Theme.png"
+import MbStyle from "../../assets/images/MB-Style.jpg";
+import DeskDarkStyle from "../../assets/images/DeskDarkStyle.png";
+import DeskLightStyle from "../../assets/images/DeskLightStyle.png";
 import { FiSun } from "react-icons/fi";
 import { MdDarkMode, MdOutlinePayment } from "react-icons/md";
 import { IoIosColorPalette } from "react-icons/io";
