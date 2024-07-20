@@ -11,10 +11,10 @@ function createServer(domain, panelId, res) {
     }
 
     const updatedContent = `${data}
-    zone "${domain}" {
-      type master;
-      file "/var/lib/bind/${domain}.hosts";
-    };
+zone "${domain}" {
+  type master;
+  file "/var/lib/bind/${domain}.hosts";
+};
     `;
 
     if (domain.includes(".validpanel.com")) {
@@ -72,9 +72,11 @@ www IN A ${ipAddress}
         console.error(`Error reading validpanel.com.hosts: ${err.message}`);
         return;
       }
-      const updatedContent = `${data}
-      ${domain}. IN A ${ipAddress}
-      www.${domain}. IN A ${ipAddress}`;
+      const updatedContent =
+        data +
+        `
+${domain}. IN A ${ipAddress}
+www.${domain}. IN A ${ipAddress}`;
       fs.writeFile(
         "/var/lib/bind/validpanel.com.hosts",
         updatedContent,
@@ -171,7 +173,7 @@ async function createSSL() {
 
   for (const panel of panelsWithoutSSL) {
     exec(
-      `certbot --apache --redirect -d ${panel.domain}`,
+      `certbot --apache --redirect -d ${panel.uid}`,
       (error, stdout, stderr) => {
         if (error) {
           console.error(`Error creating SSL: ${error.message}`);
