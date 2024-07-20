@@ -41,20 +41,25 @@ exports.createUser = async (req, res) => {
     };
 
     let panelId;
+    let userId;
     const usersDocs = getDocs("users");
     const emailExist = usersDocs.some((user) => user.email === email);
     if (emailExist) {
       return res.status(400).send({ error: "Email already exist" });
     }
+    const sortedUsersId = [...usersDocs].sort((a, b) => b.id - a.id)[0];
     const sortedUsers = usersDocs.sort((a, b) => b.panelId - a.panelId);
 
     if (sortedUsers.length !== 0) {
       const userDoc = sortedUsers[0];
       panelId = String(parseInt(userDoc.panelId) + 1);
+      userId = parseInt(sortedUsersId.id) + 1;
     } else {
       panelId = "1";
+      userId = 1;
     }
     userData.panelId = parseInt(panelId);
+    userData.id = userId;
     addPanelDoc("admins", userData, panelId);
     addDoc("users", userData);
     return res

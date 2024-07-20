@@ -74,7 +74,7 @@ panel.post("/create", async (req, res) => {
     if (user) {
       const panels = getDocs("users");
       const latestPanel = panels.sort((a, b) => b.panelId - a.panelId)[0];
-      mainPanelId = latestPanel ? String(parseInt(latestPanel.id) + 1) : "1";
+      mainPanelId = latestPanel ? String(parseInt(latestPanel.panelId) + 1) : "1";
 
       const siteData = {
         uid: "site",
