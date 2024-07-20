@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
       return res.status(400).send({ error: "Incorrect Password" });
     }
   } catch (error) {
-    return res.status(400).send({ error: "Error checking admin details" });
+    return res.status(400).send({ error: error.message });
   }
 };
 

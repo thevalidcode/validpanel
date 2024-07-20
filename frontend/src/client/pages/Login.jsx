@@ -28,8 +28,7 @@ function Login() {
     setNotifyMessage,
     siteTitle,
     backendUrl,
-    checkAuth,
-    setCheckAuth,
+    setCurrentUser,
     setNotifyVisibility,
   } = useContext(AppContext);
   const [email, setEmail] = useState("");
@@ -100,7 +99,7 @@ function Login() {
       });
       setBtnName("Login");
       setLoadingBtn(false);
-      setCheckAuth(!checkAuth);
+      setCurrentUser(userData);
       Notify("success", "Logged in successfully");
       navigate(`/control-panel/${panelId}/dashboard`);
     } catch (error) {

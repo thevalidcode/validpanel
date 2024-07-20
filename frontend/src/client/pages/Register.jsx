@@ -34,6 +34,7 @@ function Register() {
     setLoading,
     siteTitle,
     setNotifyVisibility,
+    setCurrentUser,
   } = useContext(AppContext);
   const navigate = useNavigate();
   const handleTextChange = (e, setChange) => {
@@ -110,6 +111,7 @@ function Register() {
       setPassword("");
       setBtnName("Register");
       setLoadingBtn(false);
+      setCurrentUser(userData);
       Notify("success", "Registered Successfully");
       navigate(`/control-panel/${userData.panelId}/dashboard`);
     } catch (error) {
