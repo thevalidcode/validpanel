@@ -142,11 +142,10 @@ function Onboarding() {
     try {
       const data = {
         domain: isDomain ? `${domain}` : `${domain}.validpanel.com`,
+        uid: currentUser.uid,
         panelId: panelId,
       };
-      if (!panelId) {
-        data.uid = currentUser.uid;
-      }
+
       await axios.post(`${backendUrl}/panel/create`, data);
       setBtnLoading(false);
       setBtnName("Create");
