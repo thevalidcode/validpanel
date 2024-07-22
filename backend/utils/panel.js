@@ -47,15 +47,15 @@ panel.post("/checkuser", async (req, res) => {
     return res.status(400).json({ error: "Missing uid" });
   }
 
-  const users = getDocs("users");
-  const foundUser = users.some(
-    (user) => user.uid === uid && user.panelIds.includes(panelId)
-  );
+  try {
+    const users = getDocs("users");
+    const foundUser = users.some(
+      (user) => user.uid === uid && user.panelIds.includes(parseInt(panelId))
+    );
 
-  if (foundUser) {
-    res.status(200).send({ success: true });
-  } else {
-    res.status(200).send({ success: false });
+    res.status(200).json({ success: foundUser });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -115,7 +115,7 @@ panel.post("/create", async (req, res) => {
 
   addPanelDoc("general", siteData, parseInt(mainPanelId));
   addPanelDoc("design", designData, parseInt(mainPanelId));
-  
+
   const registeredPanelData = {
     panelId: parseInt(mainPanelId),
     ssl: false,

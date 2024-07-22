@@ -10,6 +10,8 @@ exports.userAuth = async (req, res) => {
     const isMatch = await bcrypt.compare(password, userData.password);
     if (isMatch) {
       return res.status(200).send(userData);
+    } else {
+      return res.status(400).send({ error: "Invalid Login Details" });
     }
   } else {
     return res.status(400).send({ error: "Invalid Login Details" });
