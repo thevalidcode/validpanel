@@ -1,6 +1,6 @@
 const express = require("express");
 const panel = express.Router();
-const { getDocs, addPanelDoc, addDoc } = require("../crud");
+const { getDocs, addPanelDoc, addDoc, updateDoc } = require("../crud");
 const { createServer } = require("./dns");
 
 panel.post("/getId", async (req, res) => {
@@ -14,7 +14,7 @@ panel.post("/getId", async (req, res) => {
   const user = users.find((user) => user.uid === uid);
 
   if (user) {
-    res.status(200).send({ id: user.panelId });
+    res.status(200).send({ id: user.panelIds[0] });
   } else {
     res.status(404).json({ error: "Not found" });
   }
@@ -28,7 +28,9 @@ panel.post("/get", async (req, res) => {
   }
 
   const registeredPanels = getDocs("registeredPanels");
-  const panels = registeredPanels.filter((panel) => panel.userUid === uid);
+  const panels = registeredPanels.filter((panel) =>
+    panel.userUids.includes(uid)
+  );
 
   const panelData = panels.map((panel) => ({
     value: panel.panelId,
@@ -47,7 +49,7 @@ panel.post("/checkuser", async (req, res) => {
 
   const users = getDocs("users");
   const foundUser = users.some(
-    (user) => user.uid === uid && user.panelId === parseInt(panelId)
+    (user) => user.uid === uid && user.panelIds.includes(panelId)
   );
 
   if (foundUser) {
@@ -72,11 +74,13 @@ panel.post("/create", async (req, res) => {
     const user = users.find((user) => user.uid === uid);
 
     if (user) {
-      const panels = getDocs("registeredPanels"); 
+      const panels = getDocs("registeredPanels");
       const latestPanel = panels.sort((a, b) => b.panelId - a.panelId)[0];
       mainPanelId = latestPanel
         ? String(parseInt(latestPanel.panelId) + 1)
         : "1";
+      const panelIds = user.panelIds.push(parseInt(mainPanelId));
+      updateDoc("users", uid, { panelIds: panelIds });
     }
   }
   const siteData = {
@@ -111,12 +115,12 @@ panel.post("/create", async (req, res) => {
 
   addPanelDoc("general", siteData, parseInt(mainPanelId));
   addPanelDoc("design", designData, parseInt(mainPanelId));
-
+  
   const registeredPanelData = {
     panelId: parseInt(mainPanelId),
     ssl: false,
     uid: lowerCaseDomain,
-    userUid: uid,
+    userUids: [uid],
     timestamp: new Date(),
   };
   addDoc("registeredPanels", registeredPanelData);
