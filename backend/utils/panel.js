@@ -72,43 +72,45 @@ panel.post("/create", async (req, res) => {
     const user = users.find((user) => user.uid === uid);
 
     if (user) {
-      const panels = getDocs("users");
+      const panels = getDocs("registeredPanels"); 
       const latestPanel = panels.sort((a, b) => b.panelId - a.panelId)[0];
-      mainPanelId = latestPanel ? String(parseInt(latestPanel.panelId) + 1) : "1";
-
-      const siteData = {
-        uid: "site",
-        title: "Panel",
-        defaultCurrency: {
-          label: "USD - United States Dollar",
-          value: "1",
-        },
-      };
-      const designData = {
-        adminstyles: {
-          "--adbasebgcolor": "#24003d",
-          "--adbaseactcolor": "#2f0050",
-          "--adbasehvcolor": "rgb(71, 3, 119)",
-          "--addarkbgcolor": "#1a0029",
-          "--adtextbgcolor": "rgb(163, 141, 179)",
-          "--sitecolor": "#fb95ff",
-        },
-        clientStyles: {
-          "--bgdarkcolor": "#1c031a",
-          "--bglightcolor": "#f6eff3",
-          "--sitecolor": "#6a0083",
-          "--stbaseactcolor": "#aa19d2",
-          "--stbasebgcolor": "#b46bd6",
-          "--stbasehvcolor": "#d123c3",
-          "--sttextbgcolor": "#c58cc0",
-          "--sitecolor": "#fb95ff",
-        },
-        uid: "design",
-      };
-      addPanelDoc("general", siteData, parseInt(mainPanelId));
-      addPanelDoc("design", designData, parseInt(mainPanelId));
+      mainPanelId = latestPanel
+        ? String(parseInt(latestPanel.panelId) + 1)
+        : "1";
     }
   }
+  const siteData = {
+    uid: "site",
+    title: "Panel",
+    defaultCurrency: {
+      label: "USD - United States Dollar",
+      value: "1",
+    },
+  };
+  const designData = {
+    adminstyles: {
+      "--adbasebgcolor": "#24003d",
+      "--adbaseactcolor": "#2f0050",
+      "--adbasehvcolor": "rgb(71, 3, 119)",
+      "--addarkbgcolor": "#1a0029",
+      "--adtextbgcolor": "rgb(163, 141, 179)",
+      "--sitecolor": "#fb95ff",
+    },
+    clientStyles: {
+      "--bgdarkcolor": "#1c031a",
+      "--bglightcolor": "#f6eff3",
+      "--sitecolor": "#6a0083",
+      "--stbaseactcolor": "#aa19d2",
+      "--stbasebgcolor": "#b46bd6",
+      "--stbasehvcolor": "#d123c3",
+      "--sttextbgcolor": "#c58cc0",
+      "--sitecolor": "#fb95ff",
+    },
+    uid: "design",
+  };
+
+  addPanelDoc("general", siteData, parseInt(mainPanelId));
+  addPanelDoc("design", designData, parseInt(mainPanelId));
 
   const registeredPanelData = {
     panelId: parseInt(mainPanelId),
