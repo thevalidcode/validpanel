@@ -27,6 +27,7 @@ function Account() {
     setNotifyMessage,
     currentUser,
     siteTitle,
+    setCurrentUser,
     setNotifyVisibility,
   } = useContext(AppContext);
   const navigate = useNavigate();
@@ -202,7 +203,9 @@ function Account() {
   };
 
   const logout = async () => {
+    setCurrentUser(null);
     await deleteData("user_auth");
+    navigate("/");
   };
 
   return (
