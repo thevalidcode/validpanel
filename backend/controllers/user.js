@@ -43,10 +43,10 @@ exports.createUser = async (req, res) => {
       panelIds: [],
     };
 
-    const usersDocs = getDocs("users");
+    const usersDocs = getDocs('users');
     const emailExist = usersDocs.some((user) => user.email === email);
     if (emailExist) {
-      return res.status(400).send({ error: "Email already exists" });
+      return res.status(400).send({ error: 'Email already exists' });
     }
 
     let userId;
@@ -54,28 +54,31 @@ exports.createUser = async (req, res) => {
       userId = 1;
     } else {
       const sortedUsers = usersDocs.sort((a, b) => b.id - a.id);
-      userId = parseInt(sortedUsers[0].id) + 1;
+      userId = sortedUsers[0].id + 1;
     }
     userData.id = userId;
 
-    const panelsDocs = getDocs("registeredPanels");
+    const panelsDocs = getDocs('registeredPanels');
     let panelId;
     if (panelsDocs.length === 0) {
       panelId = 1;
     } else {
       const sortedPanels = panelsDocs.sort((a, b) => b.panelId - a.panelId);
-      panelId = parseInt(sortedPanels[0].panelId) + 1;
+      panelId = sortedPanels[0].panelId + 1;
     }
+
+    while (usersDocs.some((user) => user.panelIds.includes(panelId))) {
+      panelId++;
+    }
+
     userData.panelIds.push(panelId);
 
-    addPanelDoc("admins", userData, panelId);
-    addDoc("users", userData);
+    addPanelDoc('admins', userData, panelId);
+    addDoc('users', userData);
 
-    return res
-      .status(200)
-      .send({ user: userData, success: "User Created Successfully" });
+    return res.status(200).send({ user: userData, success: 'User Created Successfully' });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ error: "Error creating user" });
+    return res.status(500).send({ error: 'Error creating user' });
   }
 };

@@ -33,7 +33,7 @@ const authenticate = (key) => {
 exports.getData = async (req, res) => {
   const { panelId, collection, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let data;
@@ -48,7 +48,7 @@ exports.getData = async (req, res) => {
 exports.addData = async (req, res) => {
   const { panelId, collection, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -63,7 +63,7 @@ exports.addData = async (req, res) => {
 exports.deleteData = async (req, res) => {
   const { panelId, collection, uid, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   if (panelId) {
@@ -77,7 +77,7 @@ exports.deleteData = async (req, res) => {
 exports.updateData = async (req, res) => {
   const { panelId, collection, uid, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   if (panelId) {
@@ -92,7 +92,7 @@ exports.updateData = async (req, res) => {
 exports.addMultipleDocs = async (req, res) => {
   const { panelId, collection, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -107,7 +107,7 @@ exports.addMultipleDocs = async (req, res) => {
 exports.addSubDocument = async (req, res) => {
   const { panelId, collection, subDocKey, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -122,7 +122,7 @@ exports.addSubDocument = async (req, res) => {
 exports.addMultipleSubDocs = async (req, res) => {
   const { panelId, collection, subDocKey, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -137,7 +137,7 @@ exports.addMultipleSubDocs = async (req, res) => {
 exports.deleteMultipleDocs = async (req, res) => {
   const { panelId, collection, uids, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -152,7 +152,7 @@ exports.deleteMultipleDocs = async (req, res) => {
 exports.deleteSubDocuments = async (req, res) => {
   const { panelId, collection, subDocKey, uids, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -167,7 +167,7 @@ exports.deleteSubDocuments = async (req, res) => {
 exports.deleteSubDocument = async (req, res) => {
   const { panelId, collection, subDocKey, uid, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;
@@ -182,7 +182,7 @@ exports.deleteSubDocument = async (req, res) => {
 exports.updateSubDocument = async (req, res) => {
   const { panelId, collection, subDocKey, uid, data, key } = req.body;
   if (!authenticate(key)) {
-    return res.status(200).send({ error: "Unauthorized Access" });
+    return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let response;

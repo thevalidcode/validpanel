@@ -1,7 +1,15 @@
 const express = require("express");
 const panel = express.Router();
-const { getDocs, addPanelDoc, addDoc, updateDoc } = require("../crud");
+const {
+  getDocs,
+  addPanelDoc,
+  addDoc,
+  updateDoc,
+  getPanelCollectionPath,
+  readData,
+} = require("../crud");
 const { createServer } = require("./dns");
+const { checkKey } = require("./checkKey");
 
 panel.post("/getId", async (req, res) => {
   const { uid } = req.body;
@@ -18,6 +26,48 @@ panel.post("/getId", async (req, res) => {
   } else {
     res.status(404).json({ error: "Not found" });
   }
+});
+
+panel.post("/get/orders", async (req, res) => {
+  const { key } = req.body;
+  if (!checkKey(key)) {
+    return res.status(400).send({ error: "Unauthorized Access" });
+  }
+  const collection = getPanelCollectionPath("orders");
+  const panelOrders = readData(collection).orders;
+  const combinedArray = [];
+
+  for (const key in panelOrders) {
+    if (panelOrders.hasOwnProperty(key)) {
+      const orders = panelOrders[key].map((order) => ({
+        ...order,
+        panelId: parseInt(key),
+      }));
+      combinedArray.push(...orders);
+    }
+  }
+  return res.status(200).send(combinedArray);
+});
+
+panel.post("/get/users", async (req, res) => {
+  const { key } = req.body;
+  if (!checkKey(key)) {
+    return res.status(400).send({ error: "Unauthorized Access" });
+  }
+  const collection = getPanelCollectionPath("users");
+  const panelUsers = readData(collection).users;
+  const combinedArray = [];
+
+  for (const key in panelUsers) {
+    if (panelUsers.hasOwnProperty(key)) {
+      const users = panelUsers[key].map((user) => ({
+        ...user,
+        panelId: parseInt(key),
+      }));
+      combinedArray.push(...users);
+    }
+  }
+  return res.status(200).send(combinedArray);
 });
 
 panel.post("/get", async (req, res) => {

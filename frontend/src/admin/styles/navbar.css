@@ -13,8 +13,17 @@
   cursor: pointer;
 }
 
+.advplinks {
+  display: flex;
+  align-items: center;
+  width: 40%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .advpnavbar .advplinks a {
   color: white;
+  margin: 10px;
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 10px;

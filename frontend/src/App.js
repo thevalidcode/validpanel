@@ -10,6 +10,9 @@ import Dashboard from "./client/pages/Dashboard";
 import Account from "./client/pages/Account";
 import Panels from "./admin/pages/Panels";
 import AdminLogin from "./admin/pages/AdminLogin";
+import Users from "./admin/pages/Users";
+import Orders from "./admin/pages/Orders";
+import PanelUsers from "./admin/pages/PanelUsers";
 
 function App() {
   return (
@@ -38,6 +41,9 @@ function App() {
           />
           <Route path="/admin/panels" exact element={<Panels />} />
           <Route path="/admin/login" exact element={<AdminLogin />} />
+          <Route path="/admin/users" exact element={<Users />} />
+          <Route path="/admin/panels/orders" exact element={<Orders />} />
+          <Route path="/admin/panels/users" exact element={<PanelUsers />} />
         </Routes>
       </Router>
     </AppProvider>

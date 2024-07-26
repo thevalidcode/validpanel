@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteData, getData } from "../../utils/indexedDB";
 
 function CheckAdmin() {
-  const { backendUrl, currentAdmin } = useContext(AppContext);
+  const { backendUrl, currentAdmin, setCurrentAdmin } = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +34,17 @@ function CheckAdmin() {
     };
     checkPanel();
   }, [navigate, backendUrl, currentAdmin]);
+
+  useEffect(() => {
+    const onAuth = async () => {
+      const currentAdmin = await getData("admin_auth");
+      if (!currentAdmin) {
+        setCurrentAdmin(null);
+        navigate("/admin/login");
+      }
+    };
+    onAuth();
+  }, [navigate, setCurrentAdmin]);
 
   return null;
 }

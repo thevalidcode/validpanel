@@ -514,4 +514,7 @@ module.exports = {
   updatePanelSubDoc,
   deletePanelSubDocs,
   deletePanelSubDoc,
+  getPanelCollectionPath,
+  getCollectionPath,
+  readData,
 };

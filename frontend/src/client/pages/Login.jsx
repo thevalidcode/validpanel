@@ -67,7 +67,7 @@ function Login() {
     setNotifyType(type);
     setNotifyMessage(message);
     setNotifyVisibility(true);
-    if (duration > 0) setNotifyDuration(duration);
+    if (duration >= 0) setNotifyDuration(duration);
   };
 
   const handleSubmit = async (e) => {
