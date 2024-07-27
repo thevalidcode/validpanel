@@ -121,7 +121,7 @@ panel.post("/create", async (req, res) => {
 
   if (!panelId) {
     const users = getDocs("users");
-    const user = users.find((user) => user.uid === uid);
+    const user = [...users].find((user) => user.uid === uid);
 
     if (user) {
       const panels = getDocs("registeredPanels");
@@ -130,6 +130,11 @@ panel.post("/create", async (req, res) => {
         ? String(parseInt(latestPanel.panelId) + 1)
         : "1";
       const panelIds = user.panelIds.push(parseInt(mainPanelId));
+      while (
+        users.some((user) => user.panelIds.includes(parseInt(mainPanelId)))
+      ) {
+        panelId++;
+      }
       updateDoc("users", uid, { panelIds: panelIds });
     }
   }
