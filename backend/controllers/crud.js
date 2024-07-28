@@ -31,16 +31,16 @@ const authenticate = (key) => {
 };
 
 exports.getData = async (req, res) => {
-  const { panelId, collection, key } = req.body;
+  const { panelId, collection, key, query } = req.body;
   if (!authenticate(key)) {
     return res.status(400).send({ error: "Unauthorized Access" });
   }
 
   let data;
   if (panelId) {
-    data = getDocs(collection, panelId);
+    data = getDocs(collection, panelId, query);
   } else {
-    data = getDocs(collection);
+    data = getDocs(collection, query);
   }
   return res.status(200).send(data);
 };

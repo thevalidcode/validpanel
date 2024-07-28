@@ -72,8 +72,6 @@ exports.createUser = async (req, res) => {
     }
 
     userData.panelIds.push(panelId);
-
-    addPanelDoc("admins", userData, panelId);
     addDoc("users", userData);
 
     return res

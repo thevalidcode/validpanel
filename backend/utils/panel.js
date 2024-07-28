@@ -133,7 +133,7 @@ panel.post("/create", async (req, res) => {
       while (
         users.some((user) => user.panelIds.includes(parseInt(mainPanelId)))
       ) {
-        panelId++;
+        parseInt(mainPanelId)++;
       }
       updateDoc("users", uid, { panelIds: panelIds });
     }
@@ -167,8 +167,26 @@ panel.post("/create", async (req, res) => {
     },
     uid: "design",
   };
+  const user = getDocs("users", null, {
+    find: { field: "uid", operator: "===", value: uid },
+  });
+  const adminData = {
+    uid: user.uid,
+    apiKey: user.uid,
+    email: user.email,
+    password: user.password,
+    timestamp: user.timestamp,
+    name: user.name,
+  };
+  const homeData = {
+    title: "The Best SMM Panel",
+    uid: "home",
+    tutorial: ""
+  };
 
   addPanelDoc("general", siteData, parseInt(mainPanelId));
+  addPanelDoc("admins", adminData, parseInt(mainPanelId));
+  addPanelDoc("pages", homeData, parseInt(mainPanelId));
   addPanelDoc("design", designData, parseInt(mainPanelId));
 
   const registeredPanelData = {

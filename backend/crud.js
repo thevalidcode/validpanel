@@ -4,16 +4,16 @@ const { v4: uuidv4 } = require("uuid");
 
 const env = process.env.NODE_ENV;
 
-const getCollectionPath = (col) => {
-  return env === "production"
-    ? `/validpanel_db/${col}.json`
-    : path.join(__dirname, `/fake_validpanel_db/${col}.json`);
-};
-
 const getPanelCollectionPath = (col) => {
   return env === "production"
     ? `/panels_db/${col}.json`
     : path.join(__dirname, `/fake_panels_db/${col}.json`);
+};
+
+const getCollectionPath = (col) => {
+  return env === "production"
+    ? `/validpanel_db/${col}.json`
+    : path.join(__dirname, `/fake_validpanel_db/${col}.json`);
 };
 
 const readData = (collection) => {
@@ -32,16 +32,77 @@ const writeData = (collection, data) => {
   fs.writeFileSync(collection, JSON.stringify(data, null, 2));
 };
 
-const getDocs = (col, panel_id) => {
-  if (panel_id) {
-    const collection = getPanelCollectionPath(col);
-    const data = readData(collection);
-    return data[col]?.[panel_id] || [];
-  } else {
-    const collection = getCollectionPath(col);
-    const data = readData(collection);
-    return data[col] || [];
+const removeKeysFromObject = (obj, keysToRemove) => {
+  keysToRemove.forEach((key) => {
+    delete obj[key];
+  });
+  return obj;
+};
+
+const getDocs = (col, panel_id, query = {}) => {
+  const collection = panel_id
+    ? getPanelCollectionPath(col)
+    : getCollectionPath(col);
+  const data = readData(collection);
+
+  let docs = panel_id ? data[col]?.[panel_id] || [] : data[col] || [];
+
+  if (!Array.isArray(docs) && typeof docs !== "object") {
+    return [];
   }
+
+  // Apply query filters if any
+  if (query.find) {
+    docs = docs.find(createQueryFunction(query.find));
+  } else if (query.some) {
+    docs = docs.some(createQueryFunction(query.some));
+  } else if (query.includes) {
+    docs = docs.includes(query.includes);
+  } else if (query.filter) {
+    docs = docs.filter(createQueryFunction(query.filter));
+  }
+
+  // Apply sorting if specified
+  if (query.sort) {
+    const { property, order = "asc" } = query.sort;
+    docs = docs.sort((a, b) => {
+      if (a[property] < b[property]) return order === "asc" ? -1 : 1;
+      if (a[property] > b[property]) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  if (query.removeKeys) {
+    const keysToRemove = query.removeKeys;
+    if (Array.isArray(docs)) {
+      docs = docs.map((doc) => removeKeysFromObject(doc, keysToRemove));
+    } else if (typeof docs === "object") {
+      docs = removeKeysFromObject(docs, keysToRemove);
+    }
+  }
+
+  return docs;
+};
+
+const createQueryFunction = ({ field, operator, value }) => {
+  return (doc) => {
+    switch (operator) {
+      case "===":
+        return doc[field] === value;
+      case "!==":
+        return doc[field] !== value;
+      case "<":
+        return doc[field] < value;
+      case ">":
+        return doc[field] > value;
+      case "<=":
+        return doc[field] <= value;
+      case ">=":
+        return doc[field] >= value;
+      default:
+        throw new Error(`Unsupported operator: ${operator}`);
+    }
+  };
 };
 
 const addDoc = (col, data) => {
@@ -49,7 +110,7 @@ const addDoc = (col, data) => {
   const existingData = readData(collection);
 
   if (!Array.isArray(existingData[col])) {
-    return { error: "Collection is not an array" };
+    existingData[col] = [];
   }
 
   if (!data.uid) {
@@ -514,7 +575,5 @@ module.exports = {
   updatePanelSubDoc,
   deletePanelSubDocs,
   deletePanelSubDoc,
-  getPanelCollectionPath,
-  getCollectionPath,
   readData,
 };

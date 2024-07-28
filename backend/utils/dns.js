@@ -64,6 +64,9 @@ function createARecord(domain, ipAddress) {
 
 @ IN A ${ipAddress}
 www IN A ${ipAddress}
+${domain}. IN NS ns1.validpanel.com.
+${domain}. IN NS ns2.validpanel.com.
+
 `;
 
   if (domain.includes(".validpanel.com")) {
