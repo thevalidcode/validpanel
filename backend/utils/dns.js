@@ -186,10 +186,70 @@ async function createSSL() {
           console.error(`Stderr creating SSL: ${stderr}`);
           return;
         }
+        addProxies(panel.uid);
         updateDoc("registeredPanels", panel.uid, { ssl: true });
       }
     );
   }
+}
+
+function addProxies(domain) {
+  fs.readFile(
+    `/etc/apache2/sites-enabled/${domain}-le-ssl.conf`,
+    "utf8",
+    (err, data) => {
+      if (err) {
+        console.error(`Error reading file: ${err.message}`);
+        res.status(500).send("Internal server error");
+        return;
+      }
+
+      // Split file content by lines
+      const lines = data.split("\n");
+      const newLines = [
+        "ProxyPreserveHost On",
+        `ProxyPass /api/v2 https://${domain}:3001/api/v2`,
+        `ProxyPassReverse /api/v2 https://${domain}:3001/api/v2`,
+        `ProxyPass /sys/api http://${domain}:3001`,
+        `ProxyPassReverse /sys/api http://${domain}:3001`,
+      ];
+
+      // Insert the new lines before the last 2nd line
+      const indexToInsert = lines.length - 2;
+      lines.splice(indexToInsert, 0, ...newLines);
+
+      // Join lines back into a single string
+      const newData = lines.join("\n");
+
+      // Write the updated content to the file
+      fs.writeFile(
+        `/etc/apache2/sites-enabled/${domain}-le-ssl.conf`,
+        newData,
+        "utf8",
+        (err) => {
+          if (err) {
+            console.error(`Error writing file: ${err.message}`);
+            res.status(500).send("Internal server error");
+            return;
+          }
+
+          // Reload Apache
+          exec("systemctl reload apache2", (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error reloading apache2: ${error.message}`);
+              res.status(500).send("Internal server error");
+              return;
+            }
+            if (stderr) {
+              console.error(`Error reloading apache2: ${stderr}`);
+              res.status(500).send("Internal server error");
+              return;
+            }
+          });
+        }
+      );
+    }
+  );
 }
 
 module.exports = { createServer, createSSL };
