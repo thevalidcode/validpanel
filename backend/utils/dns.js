@@ -208,8 +208,8 @@ function addProxies(domain) {
       const lines = data.split("\n");
       const newLines = [
         "ProxyPreserveHost On",
-        `ProxyPass /api/v2 https://${domain}:3001/api/v2`,
-        `ProxyPassReverse /api/v2 https://${domain}:3001/api/v2`,
+        `ProxyPass /api/v2 http://${domain}:3001/api/v2`,
+        `ProxyPassReverse /api/v2 http://${domain}:3001/api/v2`,
         `ProxyPass /sys/api http://${domain}:3001`,
         `ProxyPassReverse /sys/api http://${domain}:3001`,
       ];
