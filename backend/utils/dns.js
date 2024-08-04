@@ -1,4 +1,5 @@
 const fs = require("fs");
+const https = require("https");
 const exec = require("child_process").exec;
 const { getDocs, updateDoc } = require("../crud");
 
@@ -170,26 +171,48 @@ function createVirtualHost(domain) {
   );
 }
 
+async function checkSSL(url) {
+  return new Promise((resolve) => {
+    const req = https.request(`https://${url}`, (res) => {
+      if (res.statusCode === 200) {
+        resolve(true); // Site is using SSL
+      } else {
+        resolve(false); // Site is not using SSL
+      }
+    });
+
+    req.on("error", (e) => {
+      if (e.code === "ECONNREFUSED" || e.code === "ENOTFOUND") {
+        resolve(false); // Site is not using SSL
+      } else {
+        resolve(false); // Treat all other errors as non-SSL for simplicity
+      }
+    });
+
+    req.end();
+  });
+}
+
 async function createSSL() {
   const registeredPanels = getDocs("registeredPanels");
   const panelsWithoutSSL = registeredPanels.filter((panel) => !panel.ssl);
 
   for (const panel of panelsWithoutSSL) {
-    exec(
-      `certbot --apache --redirect -d ${panel.uid}`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error creating SSL: ${error.message}`);
-          return;
+    const isSecured = await checkSSL(panel.uid);
+    if (isSecured) {
+      updateDoc("registeredPanels", panel.uid, { ssl: true });
+      addProxies(panel.uid);
+    } else {
+      exec(
+        `certbot --apache --redirect -d ${panel.uid}`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error creating SSL: ${error.message}`);
+            return;
+          }
         }
-        if (stderr) {
-          console.error(`Stderr creating SSL: ${stderr}`);
-          return;
-        }
-        addProxies(panel.uid);
-        updateDoc("registeredPanels", panel.uid, { ssl: true });
-      }
-    );
+      );
+    }
   }
 }
 
@@ -200,7 +223,6 @@ function addProxies(domain) {
     (err, data) => {
       if (err) {
         console.error(`Error reading file: ${err.message}`);
-        res.status(500).send("Internal server error");
         return;
       }
 
@@ -229,7 +251,6 @@ function addProxies(domain) {
         (err) => {
           if (err) {
             console.error(`Error writing file: ${err.message}`);
-            res.status(500).send("Internal server error");
             return;
           }
 
@@ -237,12 +258,10 @@ function addProxies(domain) {
           exec("systemctl reload apache2", (error, stdout, stderr) => {
             if (error) {
               console.error(`Error reloading apache2: ${error.message}`);
-              res.status(500).send("Internal server error");
               return;
             }
             if (stderr) {
               console.error(`Error reloading apache2: ${stderr}`);
-              res.status(500).send("Internal server error");
               return;
             }
           });
