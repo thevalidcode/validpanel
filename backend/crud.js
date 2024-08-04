@@ -573,6 +573,7 @@ module.exports = {
   deleteSubDoc,
   updateSubDoc,
   updatePanelSubDoc,
+  getPanelCollectionPath,
   deletePanelSubDocs,
   deletePanelSubDoc,
   readData,
