@@ -7,6 +7,7 @@ const {
   updateDoc,
   getPanelCollectionPath,
   readData,
+  addPanelDocs,
 } = require("../crud");
 const { createServer } = require("./dns");
 const { checkKey } = require("./checkKey");
@@ -183,11 +184,26 @@ panel.post("/create", async (req, res) => {
     uid: "home",
     tutorial: ""
   };
+  const notificationData = [
+    {
+      uid: "admin_emails",
+      emails: [`${user.email
+      }`]
+    },
+    {
+      uid: "email_templates",
+      newUser: "",
+      newService: "",
+      newOrder: "",
+      fundsAdded: ""
+    }
+  ]
 
   addPanelDoc("general", siteData, parseInt(mainPanelId));
   addPanelDoc("admins", adminData, parseInt(mainPanelId));
   addPanelDoc("pages", homeData, parseInt(mainPanelId));
   addPanelDoc("design", designData, parseInt(mainPanelId));
+  addPanelDocs("notifications", notificationData, parseInt(mainPanelId));
 
   const registeredPanelData = {
     panelId: parseInt(mainPanelId),
