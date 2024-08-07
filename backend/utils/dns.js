@@ -173,17 +173,25 @@ function createVirtualHost(domain) {
 
 async function checkSSL(url) {
   return new Promise((resolve) => {
-    const req = https.request(`https://${url}`, (res) => {
-      if (res.statusCode === 200) {
-        resolve(true); // Site is using SSL
-      } else {
-        resolve(false); // Site is not using SSL
+    const req = https.request(
+      `https://${url}`,
+      {
+        rejectUnauthorized: false, // Allow connections to sites with invalid SSL certificates
+      },
+      (res) => {
+        if (res.statusCode === 200) {
+          resolve(true); // Site is using SSL
+        } else {
+          resolve(false); // Site is not using SSL
+        }
       }
-    });
+    );
 
     req.on("error", (e) => {
       if (e.code === "ECONNREFUSED" || e.code === "ENOTFOUND") {
         resolve(false); // Site is not using SSL
+      } else if (e.code === "DEPTH_ZERO_SELF_SIGNED_CERT" || e.code === "CERT_HAS_EXPIRED" || e.code === "CERT_COMMON_NAME_INVALID") {
+        resolve(false); // SSL certificate issues
       } else {
         resolve(false); // Treat all other errors as non-SSL for simplicity
       }
@@ -199,6 +207,7 @@ async function createSSL() {
 
   for (const panel of panelsWithoutSSL) {
     const isSecured = await checkSSL(panel.uid);
+    console.log(isSecured)
     if (isSecured) {
       updateDoc("registeredPanels", panel.uid, { ssl: true });
       addProxies(panel.uid);
