@@ -184,6 +184,13 @@ panel.post("/create", async (req, res) => {
     uid: "home",
     tutorial: ""
   };
+  const providerData = {
+    url: "validplug.com.ng",
+    percentage: 100,
+    key: "39cdc01d-49ec-40c0-8dd2-42990c8d22d3",
+    sync: null,
+    id: 1
+  };
   const notificationData = [
     {
       uid: "admin_emails",
@@ -203,6 +210,7 @@ panel.post("/create", async (req, res) => {
   addPanelDoc("admins", adminData, parseInt(mainPanelId));
   addPanelDoc("pages", homeData, parseInt(mainPanelId));
   addPanelDoc("design", designData, parseInt(mainPanelId));
+  addPanelDoc("providers", providerData, parseInt(mainPanelId));
   addPanelDocs("notifications", notificationData, parseInt(mainPanelId));
 
   const registeredPanelData = {

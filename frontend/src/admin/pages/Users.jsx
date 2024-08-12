@@ -22,7 +22,7 @@ function Users() {
             collection: "users",
             key: currentAdmin.apiKey,
           });
-          const userDocs = response.data;
+          const userDocs = response.data.sort((a, b) => b.id - a.id);
           setUserDocs(userDocs);
         } catch (error) {}
       }
