@@ -176,22 +176,22 @@ async function checkSSL(url) {
     const req = https.request(
       `https://${url}`,
       {
-        rejectUnauthorized: false, // Allow connections to sites with invalid SSL certificates
+        rejectUnauthorized: true, // Enforce certificate validation
       },
       (res) => {
-        if (res.statusCode === 200) {
-          resolve(true); // Site is using SSL
-        } else {
-          resolve(false); // Site is not using SSL
-        }
+        resolve(res.statusCode === 200); // Site is using a valid SSL
       }
     );
 
     req.on("error", (e) => {
-      if (e.code === "ECONNREFUSED" || e.code === "ENOTFOUND") {
-        resolve(false); // Site is not using SSL
-      } else if (e.code === "DEPTH_ZERO_SELF_SIGNED_CERT" || e.code === "CERT_HAS_EXPIRED" || e.code === "CERT_COMMON_NAME_INVALID") {
-        resolve(false); // SSL certificate issues
+      if (
+        e.code === "ECONNREFUSED" ||
+        e.code === "ENOTFOUND" ||
+        e.code === "DEPTH_ZERO_SELF_SIGNED_CERT" ||
+        e.code === "CERT_HAS_EXPIRED" ||
+        e.code === "CERT_COMMON_NAME_INVALID"
+      ) {
+        resolve(false); // SSL certificate issues or site not found
       } else {
         resolve(false); // Treat all other errors as non-SSL for simplicity
       }
