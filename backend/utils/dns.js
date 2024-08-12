@@ -207,7 +207,6 @@ async function createSSL() {
 
   for (const panel of panelsWithoutSSL) {
     const isSecured = await checkSSL(panel.uid);
-    console.log(isSecured)
     if (isSecured) {
       updateDoc("registeredPanels", panel.uid, { ssl: true });
       addProxies(panel.uid);
