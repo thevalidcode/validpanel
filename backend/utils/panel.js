@@ -202,7 +202,9 @@ panel.post("/create", async (req, res) => {
       newUser: "",
       newService: "",
       newOrder: "",
-      fundsAdded: ""
+      fundsAdded: "",
+      newMessage: "",
+      newSupport: ""
     }
   ]
 
