@@ -204,6 +204,7 @@ panel.post("/create", async (req, res) => {
       newOrder: "",
       fundsAdded: "",
       newMessage: "",
+      verificationCode: "",
       newSupport: ""
     }
   ]
