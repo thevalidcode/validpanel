@@ -160,6 +160,9 @@ function Login() {
               width="90%"
             />
           </div>
+          <Link to="/forget-password" className="cllogfpass">
+            Forget Password?
+          </Link>
           <span className="cllognot">
             Don't have an account? <Link to="/register">Create One Now!</Link>
           </span>

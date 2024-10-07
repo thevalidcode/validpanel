@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.25154e1e.css",
-    "main.js": "/static/js/main.4d7dda23.js",
+    "main.css": "/static/css/main.f0c86335.css",
+    "main.js": "/static/js/main.c8ba7faf.js",
     "static/js/453.76688dcc.chunk.js": "/static/js/453.76688dcc.chunk.js",
     "static/media/dotted-black-background.jpg": "/static/media/dotted-black-background.653228b5c98fe28bda22.jpg",
     "static/media/DeskDarkStyle.png": "/static/media/DeskDarkStyle.df65af200f35c5294e5c.png",
@@ -13,12 +13,12 @@
     "static/media/Light-Theme.png": "/static/media/Light-Theme.84295df01a67f50ab203.png",
     "static/media/domain.png": "/static/media/domain.d7a6f9406eb8ba1c3361.png",
     "index.html": "/index.html",
-    "main.25154e1e.css.map": "/static/css/main.25154e1e.css.map",
-    "main.4d7dda23.js.map": "/static/js/main.4d7dda23.js.map",
+    "main.f0c86335.css.map": "/static/css/main.f0c86335.css.map",
+    "main.c8ba7faf.js.map": "/static/js/main.c8ba7faf.js.map",
     "453.76688dcc.chunk.js.map": "/static/js/453.76688dcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.25154e1e.css",
-    "static/js/main.4d7dda23.js"
+    "static/css/main.f0c86335.css",
+    "static/js/main.c8ba7faf.js"
   ]
 }

@@ -13,6 +13,7 @@ import AdminLogin from "./admin/pages/AdminLogin";
 import Users from "./admin/pages/Users";
 import Orders from "./admin/pages/Orders";
 import PanelUsers from "./admin/pages/PanelUsers";
+import ForgetPassword from "./client/pages/ForgetPassword";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" exact element={<LandingPage />} />
           <Route path="/login" exact element={<Login />} />
           <Route path="/register" exact element={<Register />} />
+          <Route path="/forget-password" exact element={<ForgetPassword />} />
           <Route path="/onboarding" exact element={<Onboarding />} />
           <Route
             path="/control-panel/:panelId"

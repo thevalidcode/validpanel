@@ -258,6 +258,20 @@
   color: var(--cltextcolor);
   transition: 0.5s;
 }
+
+.cllogfpass {
+  color: white;
+  text-decoration: none;
+  transition: 0.5s;
+  font-weight: 600;
+}
+
+.cllogfpass:hover {
+  color: var(--clactivecolor);
+  text-decoration: underline;
+  transition: 0.5s;
+}
+
 @media (max-width: 800px) {
   .clloginform form {
     width: 100%;

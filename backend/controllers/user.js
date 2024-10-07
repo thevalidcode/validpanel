@@ -1,6 +1,7 @@
-const { getDocs, addDoc, addPanelDoc } = require("../crud");
+const { getDocs, addDoc, addPanelDoc, updateDoc } = require("../crud");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const { sendEmail } = require("../utils/email");
 
 exports.userAuth = async (req, res) => {
   const { email, password } = req.body;
@@ -78,7 +79,36 @@ exports.createUser = async (req, res) => {
       .status(200)
       .send({ user: userData, success: "User Created Successfully" });
   } catch (error) {
-    console.error(error);
     return res.status(500).send({ error: "Error creating user" });
+  }
+};
+
+exports.forgetPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = getDocs("users", null, {
+      find: { field: "email", operator: "===", value: email },
+    });
+    if (!user) {
+      return res.status(400).send({ error: "User doesn't exist" });
+    }
+    function generatePassword(numWords, wordLength) {
+      const characters = "abcdefghijklmnopqrstuvwxyz";
+      return Array.from({ length: numWords }, () =>
+        Array.from(
+          { length: wordLength },
+          () => characters[Math.floor(Math.random() * characters.length)]
+        ).join("")
+      ).join("-");
+    }
+    const newPassword = generatePassword(4, 6);
+    await sendEmail(undefined, email, "forgetPassword", {
+      name: user.name,
+      random_password: newPassword,
+    });
+    updateDoc("users", user.uid, { password: newPassword });
+    return res.status(200).send({ error: "Email sent successfully" });
+  } catch (error) {
+    return res.status(500).send({ error: "Error sending email" });
   }
 };
