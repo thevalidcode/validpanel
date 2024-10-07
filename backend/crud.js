@@ -59,7 +59,11 @@ const getDocs = (col, panel_id, query = {}) => {
   } else if (query.includes) {
     docs = docs.includes(query.includes);
   } else if (query.filter) {
-    docs = docs.filter(createQueryFunction(query.filter));
+    if (typeof query.filter.key === "string") {
+      docs = docs.filter((doc) => doc[query.filter]);
+    } else {
+      docs = docs.filter(createQueryFunction(query.filter));
+    }
   }
 
   // Apply sorting if specified
@@ -72,6 +76,7 @@ const getDocs = (col, panel_id, query = {}) => {
     });
   }
 
+  // Apply removeKeys if specified
   if (query.removeKeys) {
     const keysToRemove = query.removeKeys;
     if (Array.isArray(docs)) {
@@ -81,7 +86,28 @@ const getDocs = (col, panel_id, query = {}) => {
     }
   }
 
+  // Apply leaveKeys if specified
+  if (query.leaveKeys) {
+    const keysToLeave = query.leaveKeys;
+    if (Array.isArray(docs)) {
+      docs = docs.map((doc) => retainKeysFromObject(doc, keysToLeave));
+    } else if (typeof docs === "object") {
+      docs = retainKeysFromObject(docs, keysToLeave);
+    }
+  }
+
   return docs;
+};
+
+// Helper function to retain only specified keys in an object
+const retainKeysFromObject = (obj, keysToLeave) => {
+  const newObj = {};
+  keysToLeave.forEach((key) => {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = obj[key];
+    }
+  });
+  return newObj;
 };
 
 const createQueryFunction = ({ field, operator, value }) => {
@@ -99,6 +125,11 @@ const createQueryFunction = ({ field, operator, value }) => {
         return doc[field] <= value;
       case ">=":
         return doc[field] >= value;
+      case "in":
+        if (!Array.isArray(value)) {
+          throw new Error(`Value for "in" operator must be an array`);
+        }
+        return value.includes(doc[field]);
       default:
         throw new Error(`Unsupported operator: ${operator}`);
     }
