@@ -142,6 +142,7 @@ panel.post("/create", async (req, res) => {
   const siteData = {
     uid: "site",
     title: "Panel",
+    showBanner: true,
     defaultCurrency: {
       label: "USD - United States Dollar",
       value: "1",
