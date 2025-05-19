@@ -1,14 +1,8 @@
 /package.json
+/node_modules
 /package-lock.json
 /.vscode
 
-/backend/node_modules
-/backend/.env
-/backend/fake_validpanel_db
-/backend/fake_panels_db
-/backend/build
-/backend/coverage
-
-/frontend/node_modules
-/frontend/coverage
-/frontend/.env
+/node_modules
+/coverage
+/.env
