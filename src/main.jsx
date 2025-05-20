@@ -4,7 +4,6 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css"
 import "animate.css/animate.compat.css"
-import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -12,5 +11,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-reportWebVitals();
