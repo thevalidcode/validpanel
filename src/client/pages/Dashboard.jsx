@@ -20,7 +20,7 @@ function Dashboard() {
     const getDomain = async () => {
       if (currentUser) {
         const response = await axios.post(`${backendUrl}/crud/get/docs`, {
-          collection: "registeredPanels",
+          collection: "registered_panels",
           key: currentUser.api_key,
         });
         const foundDomain = response.data.find(

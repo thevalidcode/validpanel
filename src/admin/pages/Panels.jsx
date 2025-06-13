@@ -19,7 +19,7 @@ function Panels() {
       if (currentAdmin) {
         try {
           const response = await axios.post(`${backendUrl}/crud/get/docs`, {
-            collection: "registeredPanels",
+            collection: "registered_panels",
             key: currentAdmin.api_key,
           });
           setRegisteredPanelsDocs(response.data);

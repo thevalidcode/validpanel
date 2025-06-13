@@ -16,7 +16,7 @@ function CheckUser() {
           const registeredPanelsDocs = await axios.post(
             `${backendUrl}/crud/get/docs`,
             {
-              collection: "registeredPanels",
+              collection: "registered_panels",
               key: currentUser.api_key,
             }
           );
