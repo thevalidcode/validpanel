@@ -14,7 +14,7 @@ function CheckAdmin() {
         try {
           const adminsDocs = await axios.post(`${backendUrl}/crud/get/docs`, {
             collection: "admins",
-            key: currentAdmin.apiKey,
+            key: currentAdmin.api_key,
           });
           const adminAuthDoc = await getData("admin_auth");
           if (!adminAuthDoc) {

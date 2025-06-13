@@ -32,7 +32,7 @@ function Onboarding() {
     siteTitle,
     setNotifyVisibility,
   } = useContext(AppContext);
-  const [panelId, setPanelId] = useState(null);
+  const [panel_id, setPanelId] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [stage, setStage] = useState("start");
   const [domain, setDomain] = useState("");
@@ -143,7 +143,7 @@ function Onboarding() {
       const data = {
         domain: isDomain ? `${domain}` : `${domain}.validpanel.com`,
         uid: currentUser.uid,
-        panelId: panelId,
+        panel_id: panel_id,
       };
 
       await axios.post(`${backendUrl}/panel/create`, data);

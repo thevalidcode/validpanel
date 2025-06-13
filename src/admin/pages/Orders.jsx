@@ -19,7 +19,7 @@ function Orders() {
       if (currentAdmin) {
         try {
           const response = await axios.post(`${backendUrl}/panel/get/orders`, {
-            key: currentAdmin.apiKey,
+            key: currentAdmin.api_key,
           });
           const orderDocs = response.data;
           setOrderDocs(orderDocs);
@@ -56,7 +56,7 @@ function Orders() {
                 <td>{order.url}</td>
                 <td>{order.status}</td>
                 <td>{order.username}</td>
-                <td>{order.panelId}</td>
+                <td>{order.panel_id}</td>
                 <td>{order.synced ? "Synced" : "Not Synced"}</td>
                 <td>{formatDate(order.timestamp)}</td>
               </tr>

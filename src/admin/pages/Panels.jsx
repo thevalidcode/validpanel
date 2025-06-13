@@ -20,7 +20,7 @@ function Panels() {
         try {
           const response = await axios.post(`${backendUrl}/crud/get/docs`, {
             collection: "registeredPanels",
-            key: currentAdmin.apiKey,
+            key: currentAdmin.api_key,
           });
           setRegisteredPanelsDocs(response.data);
         } catch (error) {}
@@ -46,7 +46,7 @@ function Panels() {
           <tbody>
             {registeredPanelsDocs.map((panel, index) => (
               <tr key={index}>
-                <td>{panel.panelId}</td>
+                <td>{panel.panel_id}</td>
                 <td>{panel.uid}</td>
                 <td className="advpminwidth190">
                   {formatDate(panel.timestamp)}

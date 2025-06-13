@@ -19,7 +19,7 @@ function PanelUsers() {
       if (currentAdmin) {
         try {
           const response = await axios.post(`${backendUrl}/panel/get/users`, {
-            key: currentAdmin.apiKey,
+            key: currentAdmin.api_key,
           });
           const userDocs = response.data;
           setUserDocs(userDocs);
@@ -57,7 +57,7 @@ function PanelUsers() {
                 <td>{order.status}</td>
                 <td>{order.balance}</td>
                 <td>{order.spent}</td>
-                <td>{order.panelId}</td>
+                <td>{order.panel_id}</td>
                 <td>{formatDate(order.lastSeen)}</td>
                 <td>{formatDate(order.timestamp)}</td>
               </tr>

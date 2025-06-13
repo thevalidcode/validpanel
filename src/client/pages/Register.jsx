@@ -113,7 +113,7 @@ function Register() {
       setLoadingBtn(false);
       setCurrentUser(userData);
       Notify("success", "Registered Successfully");
-      navigate(`/control-panel/${userData.panelIds[0]}/dashboard`);
+      navigate(`/control-panel/${userData.panel_ids[0]}/dashboard`);
     } catch (error) {
       console.error(error);
       Notify("error", error.response.data.error);

@@ -27,17 +27,17 @@ function App() {
           <Route path="/forget-password" exact element={<ForgetPassword />} />
           <Route path="/onboarding" exact element={<Onboarding />} />
           <Route
-            path="/control-panel/:panelId"
+            path="/control-panel/:panel_id"
             exact
             element={<ControlPanel />}
           />
           <Route
-            path="/control-panel/:panelId/dashboard"
+            path="/control-panel/:panel_id/dashboard"
             exact
             element={<Dashboard />}
           />
           <Route
-            path="/control-panel/:panelId/account"
+            path="/control-panel/:panel_id/account"
             exact
             element={<Account />}
           />

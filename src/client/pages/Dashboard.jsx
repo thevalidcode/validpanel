@@ -13,7 +13,7 @@ import AnchorLink from "../shared/AnchorLink";
 function Dashboard() {
   const { loading, setLoading, siteTitle, backendUrl, currentUser } =
     useContext(AppContext);
-  const { panelId } = useParams();
+  const { panel_id } = useParams();
   const [domain, setDomain] = useState("");
 
   useEffect(() => {
@@ -21,10 +21,10 @@ function Dashboard() {
       if (currentUser) {
         const response = await axios.post(`${backendUrl}/crud/get/docs`, {
           collection: "registeredPanels",
-          key: currentUser.apiKey,
+          key: currentUser.api_key,
         });
         const foundDomain = response.data.find(
-          (panel) => panel.panelId === parseInt(panelId)
+          (panel) => panel.panel_id === parseInt(panel_id)
         );
         if (foundDomain) {
           setDomain(foundDomain.uid);
@@ -32,7 +32,7 @@ function Dashboard() {
       }
     };
     getDomain();
-  }, [backendUrl, panelId, currentUser]);
+  }, [backendUrl, panel_id, currentUser]);
 
   useEffect(() => {
     document.title = `Dashboard | ${siteTitle}`;

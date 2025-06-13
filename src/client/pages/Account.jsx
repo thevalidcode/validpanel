@@ -40,7 +40,7 @@ function Account() {
   const [btnSavingPassword, setBtnSavingPassword] = useState("Save Changes");
   const [btnSavingName, setBtnSavingName] = useState("Save Changes");
   const [selectedPanel, setSelectedPanel] = useState([]);
-  const { panelId } = useParams();
+  const { panel_id } = useParams();
 
   useEffect(() => {
     const onAuth = async () => {
@@ -110,12 +110,12 @@ function Account() {
         const data = response.data;
         setPanelOptions(data);
         setSelectedPanel(
-          data.find((option) => option.value === parseInt(panelId))
+          data.find((option) => option.value === parseInt(panel_id))
         );
       }
     };
     getPanelOptions();
-  }, [currentUser, backendUrl, panelId]);
+  }, [currentUser, backendUrl, panel_id]);
 
   if (!currentUser || adminData === null) {
     return <Loader />;
@@ -151,14 +151,14 @@ function Account() {
         collection: "users",
         uid: currentUser.uid,
         data: { password: hashedPassword },
-        key: currentUser.apiKey,
+        key: currentUser.api_key,
       });
       await axios.post(`${backendUrl}/crud/update/doc`, {
         collection: "admins",
         uid: currentUser.uid,
-        panelId: panelId,
+        panel_id: panel_id,
         data: { password: hashedPassword },
-        key: currentUser.apiKey,
+        key: currentUser.api_key,
       });
       setBtnSavingPassword("Save Changes");
       setSavingPassword(false);
@@ -184,14 +184,14 @@ function Account() {
         collection: "users",
         uid: currentUser.uid,
         data: { name: name },
-        key: currentUser.apiKey,
+        key: currentUser.api_key,
       });
       await axios.post(`${backendUrl}/crud/update/doc`, {
         collection: "admins",
         uid: currentUser.uid,
-        panelId: panelId,
+        panel_id: panel_id,
         data: { name: name },
-        key: currentUser.apiKey,
+        key: currentUser.api_key,
       });
       setBtnSavingName("Save Changes");
       setSavingName(false);

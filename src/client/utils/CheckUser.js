@@ -6,7 +6,7 @@ import { deleteData, getData } from "../../utils/indexedDB";
 
 function CheckUser() {
   const { backendUrl, currentUser } = useContext(AppContext);
-  const { panelId } = useParams();
+  const { panel_id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,15 +17,15 @@ function CheckUser() {
             `${backendUrl}/crud/get/docs`,
             {
               collection: "registeredPanels",
-              key: currentUser.apiKey,
+              key: currentUser.api_key,
             }
           );
           const panelExist = registeredPanelsDocs.data.some(
-            (panel) => panel.panelId === parseInt(panelId)
+            (panel) => panel.panel_id === parseInt(panel_id)
           );
           const response = await axios.post(`${backendUrl}/panel/checkuser`, {
             uid: currentUser.uid,
-            panelId: panelId,
+            panel_id: panel_id,
           });
           if (!response.data.success) {
             navigate("/");
@@ -34,7 +34,7 @@ function CheckUser() {
           if (!panelExist) {
             navigate("/onboarding", {
               state: {
-                id: panelId,
+                id: panel_id,
               },
             });
           }
@@ -44,7 +44,7 @@ function CheckUser() {
       }
     };
     checkPanel();
-  }, [panelId, navigate, backendUrl, currentUser]);
+  }, [panel_id, navigate, backendUrl, currentUser]);
 
   useEffect(() => {
     const onAuth = async () => {

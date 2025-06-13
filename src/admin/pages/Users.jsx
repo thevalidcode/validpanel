@@ -20,7 +20,7 @@ function Users() {
         try {
           const response = await axios.post(`${backendUrl}/crud/get/docs`, {
             collection: "users",
-            key: currentAdmin.apiKey,
+            key: currentAdmin.api_key,
           });
           const userDocs = response.data.sort((a, b) => b.id - a.id);
           setUserDocs(userDocs);
@@ -52,7 +52,7 @@ function Users() {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{formatDate(user.timestamp)}</td>
-                <td>{user.panelIds.join(", ")}</td>
+                <td>{user.panel_ids.join(", ")}</td>
               </tr>
             ))}
           </tbody>

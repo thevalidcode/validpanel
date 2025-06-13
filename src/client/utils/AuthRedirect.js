@@ -17,8 +17,8 @@ function AuthRedirect() {
             const response = await axios.post(`${backendUrl}/panel/getId`, {
               uid: currentUser.uid,
             });
-            const panelId = response.data.id;
-            navigate(`/control-panel/${panelId}/dashboard`);
+            const panel_id = response.data.id;
+            navigate(`/control-panel/${panel_id}/dashboard`);
           } catch (error) {
             if (error.response.data.error === "Not Found") {
               await deleteData("user_auth");

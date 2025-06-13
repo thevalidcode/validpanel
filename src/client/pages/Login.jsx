@@ -86,9 +86,9 @@ function Login() {
       const userData = userResponse.data;
       const response = await axios.post(`${backendUrl}/panel/getId`, {
         uid: userData.uid,
-        key: userData.apiKey,
+        key: userData.api_key,
       });
-      const panelId = response.data.id;
+      const panel_id = response.data.id;
       setEmail("");
       setPassword("");
       await addData({
@@ -101,7 +101,7 @@ function Login() {
       setLoadingBtn(false);
       setCurrentUser(userData);
       Notify("success", "Logged in successfully");
-      navigate(`/control-panel/${panelId}/dashboard`);
+      navigate(`/control-panel/${panel_id}/dashboard`);
     } catch (error) {
       Notify("error", error.response.data.error);
       setLoadingBtn(false);

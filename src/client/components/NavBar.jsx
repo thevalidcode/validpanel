@@ -35,7 +35,7 @@ function NavBar() {
     setIsOpen(false);
   };
 
-  const { panelId } = useParams();
+  const { panel_id } = useParams();
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -103,12 +103,12 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    if (panelId) {
-      setMainPanelId(panelId);
+    if (panel_id) {
+      setMainPanelId(panel_id);
     } else {
       setMainPanelId(gottenPanelId);
     }
-  }, [panelId, gottenPanelId]);
+  }, [panel_id, gottenPanelId]);
 
   const goHome = () => {
     navigate(
