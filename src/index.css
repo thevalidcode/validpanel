@@ -1,11 +1,99 @@
-.flex-center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.flex-column-center{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.flex-column-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.faq{
+  font-family: 'Poppins', sans-serif;
+  /* background: linear-gradient(to right, #f5f3ff, #ffffff); */
+  background: linear-gradient(to left, #e3d2f3, #ffffff);
+}
+
+/* Gradient background with glow */
+.pricing-bg {
+  background: radial-gradient(
+    circle at center,
+    rgba(128, 0, 255, 0.1),
+    transparent 70%
+  );
+  background-color: #f8f9fa;
+  padding: 1rem;
+}
+
+/* Card container */
+.pricing-card {
+  background-color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 0 25px rgba(128, 0, 255, 0.25);
+}
+
+/* Button styling */
+.pricing-card a {
+  background-color: #6f2cff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.pricing-card a:hover {
+  background-color: #5a23cc;
+}
+
+.support-container {
+  padding: 2rem 0;
+}
+
+.support-card {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.support-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.support-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.support-card .card-text {
+  color: #666;
+  line-height: 1.6;
+}
+
+.misc-card-container {
+  padding: 1rem;
+}
+
+.misc-card {
+  border-radius: 8px;
+  border: none;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  padding: 1.5rem;
+}
+
+.misc-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.misc-card .card-text {
+  color: #666;
+  line-height: 1.6;
+  white-space: pre-line;
 }

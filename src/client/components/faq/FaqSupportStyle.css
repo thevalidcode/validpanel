@@ -1,0 +1,13 @@
+.text-purple {
+  color: #7e22ce;
+}
+
+.faq-btn-purple {
+  background-color: #7e22ce;
+  border-color: #7e22ce;
+}
+
+.faq-btn-purple:hover {
+  background-color: #5b16a1;
+  border-color: #5b16a1;
+}
