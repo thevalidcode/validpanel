@@ -1,5 +1,46 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: poppins;
+  src: url('/fonts/poppins.ttf');
+}
+
+@font-face {
+  font-family: inter;
+  src: url('/fonts/inter.ttf');
+}
+
+@font-face {
+  font-family: playfair;
+  src: url('/fonts/playfair.ttf');
+}
+
+.poppins{
+  font-family: poppins;
+}
+
+.inter{
+  font-family: inter;
+}
+
+.playfair{
+  font-family: playfair;
+}
+
+body{
+  box-sizing: border-box;
+  font-family: poppins, sans-serif;
+  max-width: 1600px;
+}
+
+:root {
+   --primary: #6A0DAD;
+}
+
+.btn-custom:hover{
+  box-shadow: 0px 0px 13.33px 0px #7D1EFF80;
+}
+
 @layer utilities {
   @keyframes slideIn {
     from {

@@ -16,16 +16,16 @@ const Navbar: FC = () => {
 
   return (
     <>
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="flex justify-between items-center py-4 px-6 md:px-10">
+      <header className="bg-white sticky top-0 z-50">
+        <div className="flex justify-between items-center py-4 px-[16px] md:px-[150px]">
           <PageLinks
             toLink=""
             title="ValidPanel"
-            classes="text-2xl font-bold text-purple-700"
+            classes="text-[24px] font-bold text-[#6A0DAD]"
           />
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex space-x-6">
+          <nav className="hidden md:flex space-x-[34px] text-[13.82px] font-[400]">
             {navItems.map(({ label, path }, i) => (
               <PageLinks key={i} toLink={path} title={label} />
             ))}
@@ -39,7 +39,7 @@ const Navbar: FC = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(true)}
-            className="md:hidden text-3xl text-purple-700 z-50 pointer"
+            className="md:hidden text-3xl text-[var(--primary)] z-50 pointer"
             type="button"
           >
             <HiMenu />
@@ -52,7 +52,7 @@ const Navbar: FC = () => {
         <>
           {/* Overlay */}
           <div
-            className="fixed inset-0 bg-black/20 z-40 backdrop-blur-sm transition-opacity duration-300"
+            className="fixed inset-0 bg-[#00000030] z-40 backdrop-blur-[3px] transition-opacity duration-300"
             onClick={() => setIsOpen(false)}
           />
 
@@ -61,7 +61,7 @@ const Navbar: FC = () => {
             {/* Close Button */}
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-2xl text-purple-700 mb-4 pointer"
+              className="absolute top-4 right-4 text-2xl text-[var(--primary)] mb-4 pointer"
               type="button"
             >
               <HiX />

@@ -6,7 +6,7 @@ const FooterCopyright: FC = () => {
   const { siteTitle } = useAppContext();
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex justify-center mt-40">
       <div className="loclfootercont">
         {/* <Link to="mailto:contact@validpanel.com">Contact Us</Link> */}
         <span>

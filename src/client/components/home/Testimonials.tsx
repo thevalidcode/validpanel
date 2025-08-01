@@ -1,6 +1,7 @@
 import { type FC } from "react";
-import { FaQuoteLeft, FaStar } from "react-icons/fa";
+import { BiSolidQuoteAltLeft } from "react-icons/bi";
 import type { TestimonialItem } from "../../../types/Home.types";
+import { FaStar } from "react-icons/fa";
 
 const Testimonials: FC = () => {
   const testimonials: TestimonialItem[] = [
@@ -25,36 +26,43 @@ const Testimonials: FC = () => {
   ];
 
   return (
-    <section className="bg-gray-50 px-6 md:px-10 py-16">
-      <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-        Loved by <span className="text-purple-600">Thousands of Creators</span> & Entrepreneurs
+    <section className="bg-gray-50 px-[16px] md:px-[150px] pb-40 max-md:pb-20 inter ">
+      <h2 className="text-2xl md:text-[40.21px] playfair font-bold text-center mb-5">
+        What Our Users Are Saying
       </h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+      <h5 className="text-sm md:text-[19.3px] font-[400] text-center mb-12 max-w-[630.5px] mx-auto">From first-time sellers to growing entrepreneurs, here’s what they love about ValidPanel</h5>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
         {testimonials.map((t, idx) => (
           <div
             key={idx}
-            className="bg-white shadow-md rounded-xl p-6 flex flex-col items-center text-center relative"
+            className="bg-[#1a1a1a] shadow-md rounded-xl p-6 py-15 flex flex-col items-center text-center relative"
           >
             {/* Quote Icon */}
-            <FaQuoteLeft className="text-purple-600 text-2xl absolute top-4 left-4" />
-            {/* Avatar */}
+            <div className="absolute left-[42.5%] w-[59px] h-[59px] bg-[#1A1A1A] top-[-20px] rounded-full flex justify-center items-center">
+            <BiSolidQuoteAltLeft className="text-[white] text-[37px]" />
+            </div>
+            <div className="flex items-center w-full gap-2">
+             {/* Avatar */}
             <img
               src={t.image}
               alt={t.name}
-              className="w-16 h-16 rounded-full object-cover mb-4 mt-2"
+              className="w-[49.66px] h-[49.66px] rounded-full object-cover mb-4 mt-2"
             />
-            <p className="text-gray-700 italic mb-3 mt-2">"{t.quote}"</p>
-            {/* Rating */}
-            <div className="flex text-yellow-400 mb-2">
+            <div className="flex flex-col gap-1">
+              {/* Name */}
+              <h4 className="font-[400] text-[19.1px] text-[white]">{t.name}</h4>
+                 {/* Rating */}
+            <div className="flex text-[var(--primary)] mb-2">
               {[...Array(5)].map((_, i) => (
                 <FaStar
                   key={i}
-                  className={i < t.rating ? "text-yellow-400" : "text-gray-300"}
+                  className={i < t.rating ? "text-[var(--primary)]" : "text-gray-700"}
                 />
               ))}
             </div>
-            {/* Name */}
-            <h4 className="font-semibold text-purple-700">{t.name}</h4>
+            </div>
+            </div>
+            <p className="text-[#FFFFFF] mb-3 mt-2 text-[12.76px]">"{t.quote}"</p>
           </div>
         ))}
       </div>

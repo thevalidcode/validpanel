@@ -3,8 +3,8 @@ import FooterCopyright from "./FooterCopyright";
 import FooterNewsletter from "./FooterNewsletter";
 
 const Footer: FC = () => (
-  <footer className="bg-purple-900 text-white py-12">
-    <div className="container mx-auto mt-12 px-12 grid md:grid-cols-3 gap-12">
+  <footer className="bg-[var(--primary)] text-white py-12 min-h-[515px]">
+    <div className="container mt-12 px-[16px] md:px-[150px] grid md:grid-cols-3 gap-12">
       <div>
         <h4 className="text-lg font-bold mb-2">ValidPanel</h4>
         <p className="text-sm">

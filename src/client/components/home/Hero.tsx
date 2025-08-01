@@ -1,36 +1,35 @@
 import { type FC } from "react";
-import { FaArrowRight } from "react-icons/fa";
-import MockUpPhone from "../../../assets/images/mockup-phones.webp";
+import MockUpPhone from "../../../assets/images/mockup-phones.svg";
 
 const Hero: FC= () => (
-  <section className="bg-white px-6 md:px-10 py-16 sm:block md:flex justify-center mx-auto">
-    <div>
-      <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
+  <section className="bg-white px-[16px] md:px-[150px] py-20 md:py-5 sm:block md:flex md:items-center">
+    <div className="flex-[1] flex flex-col gap-6">
+      <h1 className="text-[36px] md:text-[48px] font-bold leading-tight">
         Start Selling
         {" "}
         <br className="block md:hidden" />
-        <span className="text-purple-600">Anything</span>
+        <span className="text-[var(--primary)]">Anything</span>
         {" "}
         in
         <br className="block" />
         Minutes
       </h1>
-      <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+      <p className="text-gray-600 max-w-2xl text-[16px] md:text-[24px] mx-auto">
         Create your own store for airtime, data, eBooks or social media services — no tech skills needed.
       </p>
       <button
-        className="bg-purple-700 text-white font-semibold px-6 py-3 rounded-full flex items-center gap-2"
+        className="bg-[var(--primary)] btn-custom text-white font-[500] w-[228px] h-[49px] md:w-[283px] md:h-[61px] cursor-pointer rounded-full text-[15px] md:text-[20.82px] flex items-center justify-center gap-2"
         type="button"
       >
-        Get Started Free <FaArrowRight />
+        Get Started Free
       </button>
     </div>
     {/* Image mockup below */}
-    <div className="mt-10 flex justify-center">
+    <div className="mt-10 flex justify-center flex-[1] md:h-[665px]">
       <img
         src={MockUpPhone}
         alt="Phone App Mockup"
-        className="w-[300px] md:w-[400px]"
+        className="w-[361px] md:w-[669px] h-auto"
       />
     </div>
   </section>

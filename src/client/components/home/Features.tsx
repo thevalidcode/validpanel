@@ -33,10 +33,10 @@ const Features: FC = () => {
   ];
 
   return (
-    <section className="px-6 md:px-10 py-16 bg-gray-50">
-      <div className="grid md:grid-cols-12 md:grid-rows-2 gap-6 max-w-6xl mx-auto">
+    <section className="px-[16px] md:px-[150px] md:pb-40 pb-20 min-h-[70vh] flex items-center bg-gray-50">
+      <div className="grid md:grid-cols-12 md:grid-rows-2 gap-6">
         {/* Left Feature - Purple Card */}
-        <div className="bg-purple-700 text-white rounded-xl p-6 md:col-span-6 flex flex-col justify-between">
+        <div className="bg-[var(--primary)] text-white rounded-xl p-6 md:col-span-6 flex flex-col justify-between md:pb-15">
           <div>
             <h3 className="text-xl font-bold mb-2">
               Everything You Need to Launch and Run Your Online Store
@@ -46,7 +46,7 @@ const Features: FC = () => {
             </p>
           </div>
           <button
-            className="mt-6 bg-white text-purple-700 px-4 py-2 rounded-full font-semibold text-sm self-start"
+            className="mt-6 bg-white cursor-pointer btn-custom text-[var(--primary)] px-4 py-2 rounded-full font-semibold text-sm self-start"
             type="button"
           >
             Create Your Free Store

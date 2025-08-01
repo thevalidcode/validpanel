@@ -33,7 +33,7 @@ function ComparisonTable() {
         </thead>
         <tbody>
           {data.map((row, index) => (
-            <tr key={index} className="border-t border-gray-200">
+            <tr key={index} className="">
               <td className="py-2">{row.category}</td>
               <td className="py-2">
                 {row.free === "✔" ? <FaCheckCircle className="text-purple-600 text-xl" /> : row.free}
