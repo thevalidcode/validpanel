@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context/useAppContext";
 
 const FooterCopyright: FC = () => {
   const currentYear = new Date().getFullYear();

@@ -1,17 +1,8 @@
-import { createContext, useContext } from "react";
+import { createContext} from "react";
 import type { AppContextType, AppProviderProps } from "../types/AppContext.types";
 
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
-
-// Custom hook to access the context
-export const useAppContext = (): AppContextType => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("useAppContext must be used within an AppProvider");
-  }
-  return context;
-};
 
 const AppProvider = ({ children }: AppProviderProps) => {
   const env = process.env.NODE_ENV;

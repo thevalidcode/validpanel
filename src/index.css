@@ -99,3 +99,9 @@
   line-height: 1.6;
   white-space: pre-line;
 }
+
+.center--el {
+  display: flex;
+  justify-content: center;
+  background-color: red;
+}
