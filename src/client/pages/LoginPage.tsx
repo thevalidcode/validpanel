@@ -1,14 +1,29 @@
-import Button from "../components/general/Button"
-import MainTitle from "../components/general/MainTitle"
+import type { FormEvent } from "react";
+import AuthWrapper from "../components/Login/AuthWrapper"
+import TextInput from "../components/general/TextInput";
+import Button from "../components/general/Button";
 
 const LoginPage = () => {
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+  }
+
+
   return (
-    <main className="w-full">
-      <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center ">
-        <MainTitle pryTitle="Create an account" />
-        <Button name="SIGN IN VIA GOOGLE" />
-      </section>
-    </main>
+    <AuthWrapper>
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <TextInput type="email" placeholder="E-mail address*" />
+          <TextInput type="password" placeholder="Password*" />
+          <Button
+            name="SIGN IN"
+            styles="text-white text-xs bg-linear-to-r from-sec to-primary "
+            type="submit"
+          />
+        </div>
+      </form>
+    </AuthWrapper>
   )
 }
 
