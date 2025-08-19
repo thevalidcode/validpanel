@@ -9,7 +9,6 @@ const LoginPage = () => {
     e.preventDefault();
   }
 
-
   return (
     <AuthWrapper>
       <form onSubmit={handleSubmit} className="w-full">
