@@ -27,7 +27,7 @@ const Navbar: FC = () => {
           {/* Desktop nav */}
           <nav className="hidden md:flex space-x-[34px] text-[13.82px] font-[400]">
             {navItems.map(({ label, path }, i) => (
-              <PageLinks key={i} toLink={path} title={label} />
+              <PageLinks key={'NavLink' + i} toLink={path} title={label} />
             ))}
           </nav>
 

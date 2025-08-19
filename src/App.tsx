@@ -7,6 +7,7 @@ import FAQPage from "./client/pages/FAQPage";
 import HomePage from "./client/pages/HomePage";
 import Navbar from "./client/components/nav/NavBar";
 import Footer from "./client/components/footer/Footer";
+import LoginPage from "./client/pages/LoginPage";
 
 const App: FC = () => (
   <AppProvider>
@@ -17,6 +18,7 @@ const App: FC = () => (
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       <Footer />
     </Router>
