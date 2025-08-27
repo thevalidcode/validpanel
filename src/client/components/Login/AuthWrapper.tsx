@@ -16,16 +16,19 @@ const authBody = [
 ]
 
 interface Props{
-  children: ReactNode
+  children: ReactNode,
+  pageTitle: string
 }
 
-const AuthWrapper: FC<Props> = ({children}) => {
+const AuthWrapper: FC<Props> = ({children, pageTitle}) => {
 
   return (
     <main className="w-full radial_background_primary text-black flex flex-col lg:flex-row">
       <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center sm:px-10 lg:px-16 xl:px-[108px] ">
-        <MainTitle pryTitle="Welcome back" />
-        <Button name="SIGN IN VIA GOOGLE" isGoogle />
+        <MainTitle pryTitle={pageTitle} />
+        <Button isGoogle>
+          SIGN IN VIA GOOGLE
+        </Button>
         <Horizontals/>
         {children}
         <div className="w-full">

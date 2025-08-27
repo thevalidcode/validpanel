@@ -11,8 +11,3 @@ export interface PageLinksProps {
   classes?: string;
   click?: () => void;
 }
-
-// Props for the SignLinks component
-export interface SignLinksProps {
-  onClick?: () => void; // For closing mobile menu
-}
