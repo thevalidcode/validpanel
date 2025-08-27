@@ -8,7 +8,7 @@ const faqData: FaqData = faq;
 
 export default function FAQPage() {
   return (
-    <section className="container mx-auto my-5 faq">
+    <section className="container mx-auto p-5 faq">
       <FaqHero />
       <FaqCategory title="General Questions" questions={faqData.faqs} />
       <FaqSupport />

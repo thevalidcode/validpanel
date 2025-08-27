@@ -9,6 +9,7 @@ import Navbar from "./client/components/nav/NavBar";
 import Footer from "./client/components/footer/Footer";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
+import StoresPage from "./client/pages/StoresPage";
 
 const App: FC = () => (
   <AppProvider>
@@ -21,6 +22,7 @@ const App: FC = () => (
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/store" element={<StoresPage />} />
       </Routes>
       <Footer />
     </Router>

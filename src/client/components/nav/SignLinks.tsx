@@ -1,8 +1,11 @@
 import { type FC } from "react";
 import PageLinks from "./PageLinks";
-import type { SignLinksProps } from "../../../types/Nav.types";
 
-const SignLinks: FC<SignLinksProps> = ({ onClick }) => (
+interface Props {
+  onClick: () => void; // For closing mobile menu
+}
+
+const SignLinks: FC<Props> = ({ onClick }) => (
   <div className="flex max-md:flex-col max-md:space-y-4  md:space-x-4 md:text-[10px]">
     <PageLinks
       toLink="login"
