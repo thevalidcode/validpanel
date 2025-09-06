@@ -1,24 +1,25 @@
 import { createContext} from "react";
 import type { AppContextType, AppProviderProps } from "../types/AppContext.types";
+import { getStorageValue } from "../hooks/useLocalStorage";
+import {type UserType } from "../client/components/Login/auth.type";
 
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  const env = process.env.NODE_ENV;
 
-  const backendUrl =
-    env === "production"
-      ? "https://validpanel.com:3002"
-      : "http://localhost:3002";
+  const api = "/api";
 
   const siteTitle = "Valid Panel";
+
+  const user = getStorageValue<UserType | undefined | null>('user', 'session');
 
   return (
     <AppContext.Provider
       value={{
         siteTitle,
-        backendUrl,
+        api,
+        user
       }}
     >
       {children}

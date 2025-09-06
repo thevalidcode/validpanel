@@ -4,9 +4,11 @@ import PageLinks from "./PageLinks";
 import SignLinks from "./SignLinks";
 import type { NavItem } from "../../../types/Nav.types";
 import Overlay from "../general/Overlay";
+import { useAppContext } from "../../../context/useAppContext";
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { user } = useAppContext();
 
   const navItems: NavItem[] = [
     { label: "Home", path: "" },
@@ -38,7 +40,11 @@ const Navbar: FC = () => {
 
           {/* Auth Buttons (Desktop) */}
           <div className="hidden md:flex space-x-2">
-            <SignLinks onClick={handleClose} />
+            {
+              user && Object.hasOwn(user, 'user') ? ('') : (
+                <SignLinks onClick={handleClose} />
+              )
+            }
           </div>
 
           {/* Mobile menu button */}

@@ -72,7 +72,7 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children }) => {
 
 export default function HomePage() {
   return (
-    <>
+    <div>
       {/* Hero doesn't need in-view animation as it's the first element */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -98,6 +98,6 @@ export default function HomePage() {
       <AnimatedSection>
         <LaunchPrompt />
       </AnimatedSection>
-    </>
+    </div>
   );
 }
