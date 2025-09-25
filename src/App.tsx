@@ -10,6 +10,7 @@ import Footer from "./client/components/footer/Footer";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 import StoresPage from "./client/pages/StoresPage";
+import CreateStorePage from "./client/pages/CreateStorePage";
 
 const App: FC = () => (
   <AppProvider>
@@ -23,6 +24,7 @@ const App: FC = () => (
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/store" element={<StoresPage />} />
+        <Route path="/create-store" element={<CreateStorePage />} />
       </Routes>
       <Footer />
     </Router>

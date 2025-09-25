@@ -1,7 +1,10 @@
+import type { UserType } from "../client/components/Login/auth.type";
+
 // Type for the AppContext value
-export interface AppContextType {
+export type AppContextType = {
   siteTitle: string;
-  backendUrl: string;
+  api: string;
+  user?: UserType | undefined | null
 }
 
 // Props for the AppProvider component

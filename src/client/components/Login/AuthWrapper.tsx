@@ -1,5 +1,5 @@
-import { type FC, type ReactNode } from "react"
-import { Link } from "react-router-dom"
+import { useEffect, type FC, type ReactNode } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import productImage from '../../../assets/images/product.png';
 import storeImage from '../../../assets/images/chat.png';
 import salesImage from '../../../assets/images/sales.png';
@@ -7,6 +7,7 @@ import pinImage from '../../../assets/images/pin.png';
 import MainTitle from "../general/MainTitle";
 import Button from "../general/Button";
 import Horizontals from "../general/Horizontals";
+import { useAppContext } from "../../../context/useAppContext";
 
 const authBody = [
   { title: 'Product & Service Discovery', image: productImage, description: 'Easily browse and discover trending digital products and services to add to your store.' },
@@ -20,13 +21,22 @@ interface Props{
   pageTitle: string
 }
 
-const AuthWrapper: FC<Props> = ({children, pageTitle}) => {
+const AuthWrapper: FC<Props> = ({ children, pageTitle }) => {
+  
+  const navigate = useNavigate()
+  const { user } = useAppContext();
+  
+  useEffect(() => {
+    if (user) {
+      navigate('/store')
+    }
+  }, [user, navigate])
 
   return (
     <main className="w-full radial_background_primary text-black flex flex-col lg:flex-row">
       <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center sm:px-10 lg:px-16 xl:px-[108px] ">
         <MainTitle pryTitle={pageTitle} />
-        <Button isGoogle>
+        <Button isgoogle='true' styles="w-[353px] ">
           SIGN IN VIA GOOGLE
         </Button>
         <Horizontals/>
