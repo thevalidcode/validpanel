@@ -8,8 +8,6 @@ import PricingPage from "./client/pages/PricingPage";
 import ContactUs from "./client/pages/ContactUs";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
-import StoresPage from "./client/pages/StoresPage";
-import CreateStorePage from "./client/pages/CreateStorePage";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/StoreOne";
@@ -20,7 +18,6 @@ import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
 import Store from "./client/pages/User";
-// import DashLayout from "./Layout/DashLayout";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
 
@@ -36,20 +33,18 @@ const App = () => {
             <Route path="contact-us" element={<ContactUs />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
-            <Route path="store" element={<StoresPage />} />
-            <Route path="create-store" element={<CreateStorePage />} />
           </Route>
 
           {/* Routes without layout */}
-          <Route path="/step1" element={<Step1 />} />
-          <Route path="/step2" element={<Step2 />} />
-          <Route path="/step3" element={<Step3 />} />
-          <Route path="/step4" element={<Step4 />} />
-          <Route path="/step5" element={<Step5 />} />
-          <Route path="/step6" element={<Step6 />} />
-          <Route path="/step7" element={<Step7 />} />
-          <Route path="/user" element={<Store />} />
-          <Route path="/dashboard" element={<StoreLayout />} />
+          <Route path="/onboarding/step1" element={<Step1 />} />
+          <Route path="/onboarding/step2" element={<Step2 />} />
+          <Route path="/onboarding/step3" element={<Step3 />} />
+          <Route path="/onboarding/step4" element={<Step4 />} />
+          <Route path="/onboarding/step5" element={<Step5 />} />
+          <Route path="/onboarding/step6" element={<Step6 />} />
+          <Route path="/onboarding/step7" element={<Step7 />} />
+          <Route path="/create-store" element={<Store />} />
+          <Route path="/store" element={<StoreLayout />} />
         </Routes>
       </Router>
     </AppProvider>
