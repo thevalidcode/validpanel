@@ -19,7 +19,7 @@ const Step2: React.FC = () => {
   const handleContinue = (): void => {
     if (selected) {
       // Validation can be added here
-      navigate("/step3");
+      navigate("/onboarding/step3");
     }
   };
 
