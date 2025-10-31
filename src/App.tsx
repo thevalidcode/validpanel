@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 
@@ -17,10 +18,16 @@ import Step4 from "./client/pages/Step4";
 import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
-import Store from "./client/pages/User";
+import CreateStore from "./client/pages/User";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
-
+const UsersPage = React.lazy(
+  () => import("./client/pages/usersManagement/UsersPage")
+);
+const AnalyticsPage = React.lazy(
+  () => import("./client/pages/AnalyticsPage/AnalyticsPage")
+);
+const OrdersPage = React.lazy(() => import("./client/pages/Orders/OrdersPage"));
 const App = () => {
   return (
     <AppProvider>
@@ -43,8 +50,11 @@ const App = () => {
           <Route path="/onboarding/step5" element={<Step5 />} />
           <Route path="/onboarding/step6" element={<Step6 />} />
           <Route path="/onboarding/step7" element={<Step7 />} />
-          <Route path="/create-store" element={<Store />} />
-          <Route path="/store" element={<StoreLayout />} />
+          <Route path="/create-store" element={<CreateStore />} />
+          <Route path="/stores" element={<StoreLayout />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
         </Routes>
       </Router>
     </AppProvider>
