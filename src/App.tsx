@@ -23,6 +23,10 @@ import Store from "./client/pages/User";
 // import DashLayout from "./Layout/DashLayout";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
+import Adminsettings from "./client/pages/Adminsettings";
+import Dashboard from "./client/pages/Dashboard";
+import SettingsPage from "./client/pages/SettingsPage";
+import Useroverview from "./client/pages/Useroverview";
 
 const App = () => {
   return (
@@ -50,6 +54,10 @@ const App = () => {
           <Route path="/step7" element={<Step7 />} />
           <Route path="/user" element={<Store />} />
           <Route path="/dashboard" element={<StoreLayout />} />
+          <Route path="/adminsettns" element={<Adminsettings />} />
+          <Route path="/dash" element={<Dashboard />} />
+          <Route path="/usersettns" element={<SettingsPage />} />
+          <Route path="/overview" element={<Useroverview />} />
         </Routes>
       </Router>
     </AppProvider>

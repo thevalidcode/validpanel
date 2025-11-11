@@ -1,51 +1,101 @@
-import type { FC, ReactElement } from "react";
+import React from "react";
 import {
   HomeIcon,
-  UsersIcon,
+  BellIcon,
   ChartBarIcon,
-  Cog6ToothIcon,
+  UserGroupIcon,
+  BuildingStorefrontIcon,
+  UserIcon,
   ShoppingBagIcon,
+  CreditCardIcon,
+  CurrencyDollarIcon,
+  Cog6ToothIcon,
+  KeyIcon,
 } from "@heroicons/react/24/outline";
 
-// Define the structure for each menu item
-interface MenuItem {
+type MenuItem = {
   name: string;
-  icon: ReactElement;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   active?: boolean;
-}
+};
 
-// Define component type
-const Sidebar: FC = () => {
-  const menuItems: MenuItem[] = [
-    { name: "Overview", icon: <HomeIcon className="w-5 h-5" /> },
-    { name: "Users", icon: <UsersIcon className="w-5 h-5" /> },
+type MenuSection = {
+  title: string;
+  items: MenuItem[];
+};
+
+const Sidebar: React.FC = () => {
+  const menuSections: MenuSection[] = [
     {
-      name: "Stores",
-      icon: <ShoppingBagIcon className="w-5 h-5" />,
-      active: true,
+      title: "Dashboard",
+      items: [
+        { name: "Overview", icon: HomeIcon },
+        { name: "Notifications", icon: BellIcon },
+        { name: "Analytics", icon: ChartBarIcon },
+      ],
     },
-    { name: "Analytics", icon: <ChartBarIcon className="w-5 h-5" /> },
-    { name: "Settings", icon: <Cog6ToothIcon className="w-5 h-5" /> },
+    {
+      title: "User & Store Management",
+      items: [
+        { name: "Users", icon: UserGroupIcon },
+        { name: "Stores", icon: BuildingStorefrontIcon },
+        { name: "Admin Management", icon: UserIcon },
+      ],
+    },
+    {
+      title: "Orders & Payments",
+      items: [
+        { name: "Orders Management", icon: ShoppingBagIcon },
+        { name: "Payments", icon: CreditCardIcon },
+        { name: "Payment Gateways", icon: CurrencyDollarIcon },
+      ],
+    },
+    {
+      title: "System Settings",
+      items: [
+        { name: "API Providers", icon: Cog6ToothIcon },
+        { name: "Permissions", icon: KeyIcon },
+        { name: "Settings", icon: Cog6ToothIcon, active: true },
+      ],
+    },
   ];
 
   return (
-    <aside className="w-60 bg-white border-r border-gray-300 min-h-screen p-4">
-      <h1 className="text-2xl font-bold text-purple-700 mb-8">ValidPanel</h1>
-      <ul className="space-y-2">
-        {menuItems.map((item) => (
-          <li
-            key={item.name}
-            className={`flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition ${
-              item.active
-                ? "bg-purple-50 text-purple-700 font-medium"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            {item.icon}
-            {item.name}
-          </li>
+    <aside className="md:flex flex-col w-64 h-screen bg-white border-r p-5">
+      {/* Logo */}
+      <div className="flex items-center">
+        <img src="Valid2.svg" alt="ValidPanel Logo" className="mt-0" />
+      </div>
+
+      {/* Menu Sections */}
+      <nav className="flex-1 space-y-6">
+        {menuSections.map((section) => (
+          <div key={section.title}>
+            <h2 className="text-xs font-semibold uppercase mb-2">
+              {section.title}
+            </h2>
+            <div className="space-y-1">
+              {section.items.map((item) => (
+                <button
+                  key={item.name}
+                  className={`flex items-center w-full gap-3 py-2 rounded-lg text-sm font-semibold text-black transition ${
+                    item.active
+                      ? "bg-purple-50 text-purple-700 font-medium"
+                      : "text-gray-700 hover:bg-purple-50 hover:text-purple-700"
+                  }`}
+                >
+                  <item.icon
+                    className={`h-5 w-5 ${
+                      item.active ? "text-purple-700" : "text-gray-500"
+                    }`}
+                  />
+                  <span>{item.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
-      </ul>
+      </nav>
     </aside>
   );
 };
