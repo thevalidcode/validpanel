@@ -48,7 +48,11 @@ const App = () => {
           <Route path="/step6" element={<Step6 />} />
           <Route path="/step7" element={<Step7 />} />
           <Route path="/user" element={<Store />} />
-          <Route path="/dashboard" element={<StoreLayout />} />
+          <Route path="/layout" element={<StoreLayout />} />
+          <Route path="/admin" element={<Adminsettings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/overview" element={<Useroverview />} />
         </Routes>
       </Router>
     </AppProvider>
