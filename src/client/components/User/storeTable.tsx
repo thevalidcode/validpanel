@@ -279,7 +279,7 @@ const StoreTable: React.FC = () => {
   );
 };
 
-// ✅ ActionButtons subcomponent with typed props
+// ActionButtons subcomponent with typed props
 type ActionButtonsProps = {
   status: "Active" | "Paused";
 };

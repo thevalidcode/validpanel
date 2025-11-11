@@ -6,7 +6,7 @@ import Toggle from "../components/User/Toggle";
 // import StoreTable from "../storeTable";
 // import Sidebar from "../Sidebar";
 
-// ✅ Define prop types for StatCard
+//  Define prop types for StatCard
 interface StatCardProps {
   title: string;
   value: string;
@@ -14,7 +14,7 @@ interface StatCardProps {
   icon: string;
 }
 
-// ✅ Dashboard Component
+//  Dashboard Component
 export default function Dashboard(): JSX.Element {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
@@ -79,7 +79,7 @@ export default function Dashboard(): JSX.Element {
   );
 }
 
-// ✅ StatCard Component
+//  StatCard Component
 function StatCard({ title, value, color, icon }: StatCardProps): JSX.Element {
   return (
     <div

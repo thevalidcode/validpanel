@@ -27,7 +27,7 @@ ChartJS.register(
   Filler
 );
 
-// ---------- Type Definitions ----------
+//  Type Definitions
 interface OverviewProps {
   onMenuClick: () => void;
 }
@@ -56,7 +56,7 @@ interface OrderItemProps {
   price: string;
 }
 
-// ---------- Main Component ----------
+//  Main Component
 const Overview: React.FC<OverviewProps> = ({ onMenuClick }) => {
   const chartData = {
     labels: [
@@ -252,7 +252,7 @@ const Overview: React.FC<OverviewProps> = ({ onMenuClick }) => {
 
 export default Overview;
 
-// ---------- Reusable Components ----------
+// Reusable Components
 
 const StatCard: React.FC<StatCardProps> = ({
   title,

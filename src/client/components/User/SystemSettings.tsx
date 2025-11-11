@@ -1,4 +1,3 @@
-// src/components/SystemSettings.tsx
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
 
