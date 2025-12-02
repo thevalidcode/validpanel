@@ -9,7 +9,7 @@ const StepOne: React.FC = () => {
 
   const handleNext = (): void => {
     if (selected) {
-      navigate("/step2");
+      navigate("/onboarding/step2");
     }
   };
 

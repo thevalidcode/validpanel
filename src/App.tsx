@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 
@@ -17,13 +18,21 @@ import Step4 from "./client/pages/Step4";
 import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
-import Store from "./client/pages/User";
+import CreateStore from "./client/pages/User";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
 import Adminsettings from "./client/pages/Adminsettings";
 import Dashboard from "./client/pages/Dashboard";
 import SettingsPage from "./client/pages/SettingsPage";
 import Useroverview from "./client/pages/Useroverview";
+const UsersPage = React.lazy(
+  () => import("./client/pages/usersManagement/UsersPage")
+);
+const AnalyticsPage = React.lazy(
+  () => import("./client/pages/AnalyticsPage/AnalyticsPage")
+);
+const OrdersPage = React.lazy(() => import("./client/pages/Orders/OrdersPage"));
+
 
 const App = () => {
   return (
@@ -40,13 +49,18 @@ const App = () => {
           </Route>
 
           {/* Routes without layout for users */}
-          <Route path="/step1" element={<Step1 />} />
-          <Route path="/step2" element={<Step2 />} />
-          <Route path="/step3" element={<Step3 />} />
-          <Route path="/step4" element={<Step4 />} />
-          <Route path="/step5" element={<Step5 />} />
-          <Route path="/step6" element={<Step6 />} />
-          <Route path="/step7" element={<Step7 />} />
+          <Route path="/onboarding/step1" element={<Step1 />} />
+          <Route path="/onboarding/step2" element={<Step2 />} />
+          <Route path="/onboarding/step3" element={<Step3 />} />
+          <Route path="/onboarding/step4" element={<Step4 />} />
+          <Route path="/onboarding/step5" element={<Step5 />} />
+          <Route path="/onboarding/step6" element={<Step6 />} />
+          <Route path="/onboarding/step7" element={<Step7 />} />
+          <Route path="/create-store" element={<CreateStore />} />
+          <Route path="/stores" element={<StoreLayout />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/orders" element={<OrdersPage />}
           <Route path="/create-store" element={<Store />} />
           <Route path="/stores" element={<StoreLayout />} />
           <Route path="/settings" element={<SettingsPage />} />
