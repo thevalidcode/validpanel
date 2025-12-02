@@ -4,7 +4,19 @@ import {
   UsersIcon,
   // ChartBarIcon,
   Cog6ToothIcon,
+import React from "react";
+import {
+  HomeIcon,
+  BellIcon,
+  ChartBarIcon,
+  UserGroupIcon,
+  BuildingStorefrontIcon,
+  UserIcon,
   ShoppingBagIcon,
+  CreditCardIcon,
+  CurrencyDollarIcon,
+  Cog6ToothIcon,
+  KeyIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import { BellIcon, ChartSpline, Key, Settings } from "lucide-react";

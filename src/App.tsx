@@ -21,6 +21,10 @@ import Step7 from "./client/pages/Step7";
 import CreateStore from "./client/pages/User";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
+import Adminsettings from "./client/pages/Adminsettings";
+import Dashboard from "./client/pages/Dashboard";
+import SettingsPage from "./client/pages/SettingsPage";
+import Useroverview from "./client/pages/Useroverview";
 const UsersPage = React.lazy(
   () => import("./client/pages/usersManagement/UsersPage")
 );
@@ -28,6 +32,8 @@ const AnalyticsPage = React.lazy(
   () => import("./client/pages/AnalyticsPage/AnalyticsPage")
 );
 const OrdersPage = React.lazy(() => import("./client/pages/Orders/OrdersPage"));
+
+
 const App = () => {
   return (
     <AppProvider>
@@ -42,7 +48,7 @@ const App = () => {
             <Route path="register" element={<RegisterPage />} />
           </Route>
 
-          {/* Routes without layout */}
+          {/* Routes without layout for users */}
           <Route path="/onboarding/step1" element={<Step1 />} />
           <Route path="/onboarding/step2" element={<Step2 />} />
           <Route path="/onboarding/step3" element={<Step3 />} />
@@ -54,7 +60,15 @@ const App = () => {
           <Route path="/stores" element={<StoreLayout />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders" element={<OrdersPage />}
+          <Route path="/create-store" element={<Store />} />
+          <Route path="/stores" element={<StoreLayout />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/overview" element={<Useroverview />} />
+
+          {/* Routes without layout for admins */}
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/settings" element={<Adminsettings />} />
         </Routes>
       </Router>
     </AppProvider>

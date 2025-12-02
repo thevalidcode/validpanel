@@ -1,8 +1,8 @@
 import { type FC, useState } from "react";
-import Sidebar from "./Sidebar";
 import Header from "./Header";
 import MyStores from "./MyStores";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import StoreSidebar from "./Storesidebar";
 
 const StoreLayout: FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,7 +34,7 @@ const StoreLayout: FC = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <Sidebar />
+        <StoreSidebar />
       </aside>
 
       {/* Overlay (for mobile sidebar) */}
