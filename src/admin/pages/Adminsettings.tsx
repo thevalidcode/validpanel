@@ -1,7 +1,7 @@
 // src/pages/SettingsPage.tsx
 import React, { useState } from "react";
-import Sidebar from "../components/User/Sidebar";
-import AdminSettings from "../components/User/SystemSettings";
+import Sidebar from "../../components/Sidebar";
+import AdminSettings from "../../client/components/User/SystemSettings";
 
 // import Header from "../Header";
 
@@ -16,7 +16,7 @@ const AdminScreen: React.FC = () => {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:relative md:translate-x-0 md:shadow-none`}
       >
-        <Sidebar />
+        <Sidebar role="admin" />
       </div>
 
       {/* Overlay for mobile */}

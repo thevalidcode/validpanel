@@ -1,4 +1,4 @@
-import DashboardLayout from "../../components/general/DashboardLayout";
+import DashboardLayout from "../../../components/DashboardLayout";
 import OrdersDesktopView from "./OrdersDesktopView";
 import OrdersMobileView, { type NameType } from "./OrdersMobileView";
 import type { Order } from "./OrderCard";

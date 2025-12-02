@@ -21,7 +21,7 @@ const Step4: React.FC = () => {
   ];
 
   const handleContinue = (): void => {
-    navigate("/step5");
+    navigate("/onboarding/step5");
   };
 
   const handleBack = (): void => {

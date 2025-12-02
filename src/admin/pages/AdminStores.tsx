@@ -1,8 +1,8 @@
 import React, { useState, type JSX } from "react";
 // import Header from "../Header";
-import Sidebar from "../components/User/Sidebar";
-import StoreTable from "../components/User/storeTable";
-import Toggle from "../components/User/Toggle";
+import Sidebar from "../../components/Sidebar";
+import StoreTable from "../../client/components/User/storeTable";
+import Toggle from "../../client/components/User/Toggle";
 // import StoreTable from "../storeTable";
 // import Sidebar from "../Sidebar";
 
@@ -14,8 +14,8 @@ interface StatCardProps {
   icon: string;
 }
 
-//  Dashboard Component
-export default function Dashboard(): JSX.Element {
+//  AdminStores Component
+export default function AdminStores(): JSX.Element {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   return (
@@ -26,7 +26,7 @@ export default function Dashboard(): JSX.Element {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:relative md:translate-x-0 md:shadow-none`}
       >
-        <Sidebar />
+        <Sidebar role="admin" />
       </div>
 
       {/* Overlay for Mobile */}

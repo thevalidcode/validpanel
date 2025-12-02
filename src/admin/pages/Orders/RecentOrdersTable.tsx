@@ -121,10 +121,10 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ orders }) => {
                 <td className="px-6 py-4">{order.date}</td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    <button className="text-purple-600 hover:text-purple-800">
+                    <button title="open" className="text-purple-600 hover:text-purple-800">
                       <Eye size={18} />
                     </button>
-                    <button className="text-gray-500 hover:text-gray-700">
+                    <button title="close" className="text-gray-500 hover:text-gray-700">
                       <MoreHorizontal size={18} />
                     </button>
                   </div>

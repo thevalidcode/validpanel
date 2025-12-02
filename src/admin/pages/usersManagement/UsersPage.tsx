@@ -1,4 +1,4 @@
-import DashboardLayout from "../../components/general/DashboardLayout";
+import DashboardLayout from "../../../components/DashboardLayout";
 import { useState } from "react";
 import UsersMobileView from "./UsersMobileView";
 import UsersDesktopView from "./UsersDesktopView";
@@ -60,7 +60,7 @@ const UsersPage = () => {
     setUsers((prev) => [...prev, ...moreUsers]);
   };
   return (
-    <DashboardLayout>
+    <DashboardLayout role="admin">
       <div className="w-full space-y-5">
         <div className="md:hidden w-full space-y-5">
           <h1 className="text-center font-medium text-xl">User Management</h1>

@@ -1,317 +1,244 @@
-import {
-  useState,
-  type ChangeEvent,
-  type DragEvent,
-  type MouseEvent,
-} from "react";
-import { FaShoppingBag } from "react-icons/fa";
-import { FaShareAlt } from "react-icons/fa";
-import TextInput from "../components/general/TextInput";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { FaCreditCard } from "react-icons/fa";
-import { RiPaypalFill } from "react-icons/ri";
-import Button from "../components/general/Button";
-import { FaStore } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa";
-import type { IconType } from "react-icons/lib";
+import { Bell } from "lucide-react";
+import React, { useState, type ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface BaseOption {
-  selected: boolean;
-  logo: string | IconType;
-}
+const CreateStoreForm: React.FC = () => {
+  const [storeType, setStoreType] = useState<"shop" | "social">("shop");
+  const [brandColor, setBrandColor] = useState<string>("#6D28D9");
+  const [payment, setPayment] = useState<
+    "stripe" | "paypal" | "flutterwave" | "paystack"
+  >("stripe");
+  const [storeName, setStoreName] = useState<string>("");
+  const [subdomain, setSubdomain] = useState<string>("");
 
-interface StoreType extends BaseOption {
-  type: string;
-  desc: string;
-}
+  const brandColors: string[] = [
+    "#4C1D95",
+    "#5B21B6",
+    "#6D28D9",
+    "#7C3AED",
+    "#8B5CF6",
+    "#A78BFA",
+    "#C4B5FD",
+    "#EDE9FE",
+    "#f97316",
+  ];
 
-interface PaymentType extends BaseOption {
-  name: string;
-}
-
-const storeType = [
-  {
-    type: "Shop",
-    logo: FaShoppingBag,
-    desc: "Traditional e-commerce store",
-    selected: true,
-  },
-  {
-    type: "Social Media Store",
-    logo: FaShareAlt,
-    desc: "Social commerce platform",
-    selected: false,
-  },
-];
-
-const brandColor = [
-  { color: "#6A0DAD" },
-  { color: "#7D1EFF" },
-  { color: "#9333EA" },
-  { color: "#A855F7" },
-  { color: "#C084FC" },
-  { color: "#DDD6FE" },
-];
-
-const paymentMethod = [
-  { name: "Stripe", logo: FaCreditCard, selected: true },
-  { name: "PayPal", logo: RiPaypalFill, selected: false },
-  { name: "Flutterwave", logo: "", selected: false },
-  { name: "Paystack", logo: "", selected: false },
-];
-
-const products = [
-  { name: "Product1", price: "$29.8" },
-  { name: "Product2", price: "$27.9" },
-  // {name: 'Product3', price: '$87.9'},
-];
-
-const CreateStorePage = () => {
-  const markSelected = (vals: (StoreType | PaymentType)[], idx: number) => {
-    const clonedStore = vals.slice(0);
-    const newArray = clonedStore.map((str, i) => {
-      if (i === idx) {
-        str.selected = true;
-      } else {
-        str.selected = false;
-      }
-      return str;
-    });
-    return newArray;
+  const navigate = useNavigate();
+  const handleNext = (): void => {
+    navigate("/dashboard");
   };
 
-  const [stores, setStores] = useState<StoreType[]>(storeType);
-  const [payments, setPayments] = useState<PaymentType[]>(paymentMethod);
-
-  const handleSelectStore = (idx: number) => {
-    const newStores = markSelected(stores, idx);
-    setStores(newStores as StoreType[]);
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setStoreName(e.target.value);
   };
 
-  const [preview, setPreview] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [dragActive, setDragActive] = useState(false);
-
-  // Handle file selection from input
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type.startsWith("image/")) {
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-    }
-  };
-
-  // Handle drag events
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragActive(true);
-  };
-
-  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragActive(false);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setDragActive(false);
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile && droppedFile.type.startsWith("image/")) {
-      setFile(droppedFile);
-      setPreview(URL.createObjectURL(droppedFile));
-    }
-  };
-
-  const handleColor = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
-  const handlePaymentSelection = (
-    e: MouseEvent<HTMLButtonElement>,
-    idx: number
-  ) => {
-    e.preventDefault();
-    const newPayment = markSelected(paymentMethod, idx);
-    setPayments(newPayment as PaymentType[]);
+  const handleSubdomainChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSubdomain(e.target.value);
   };
 
   return (
-    <div className="w-full flex flex-col gap-10 lg:flex-row justify-between px-5 border-t border-vgrey-border">
-      <div className=" w-full sm:max-w-[672px] space-y-5 py-8 ">
-        <div className="flex flex-col justify-between items-center gap-7">
-          <h1 className="font-bold text-[32px] ">Create a New Store</h1>
-          <p className="text-vgrey-text">
-            Set up a new store by filling in the details below.
-          </p>
-          <div className="p-5 lg:p-8 w-full shadow-2xl rounded-2xl flex flex-col gap-5 border border-vgrey-border ">
-            <h2 className="font-semibold text-sm">Store Type</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 ">
-              {stores.map((store, i) => (
-                <button
-                  key={store.type}
-                  onClick={() => handleSelectStore(i)}
-                  className={`rounded-xl text-sm lg:text-base outline-none font-semibold border h-[144px] flex flex-col items-center justify-center px-5 gap-5 ${
-                    store.selected
-                      ? "border-primary bg-primary/5 text-primary"
-                      : "border-vgrey-border text-vgrey-text btn-custom"
-                  }  `}
-                >
-                  <store.logo
-                    className={
-                      store.selected
-                        ? "text-primary fill-primary"
-                        : "text-shadow-vgrey-text fill-vgrey-text"
-                    }
-                  />
-                  <span className={`inline-block`}> {store.type} </span>
-                  <span className="inline-block text-vgrey-text">
-                    {" "}
-                    {store.desc}{" "}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <form className="grid grid-cols-1 gap-5">
-              <div className="space-y-1 w-full">
-                <label
-                  htmlFor="storeName"
-                  className="font-semibold text-sm block"
-                >
-                  Store Name
-                </label>
-                <TextInput placeholder="Enter your store name" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-3 px-4 py-3 border-b border-gray-300 shadow-sm bg-white sticky top-0 z-10">
+        <div>
+          <img src="./Valid2.svg" alt="logo" className="w-28 sm:w-36" />
+        </div>
+        <div className="flex gap-3 items-center">
+          <Bell className="w-5 h-5 text-gray-600" />
+          <img
+            src="./Valid2.svg"
+            alt="profile"
+            className="w-7 h-7 rounded-full border"
+          />
+        </div>
+      </div>
+
+      {/* Main Container */}
+      <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-4 sm:p-6 lg:p-10">
+        <div className="flex flex-col lg:flex-row gap-8 w-full max-w-5xl">
+          {/* Left Form */}
+          <div className="bg-white p-6 sm:p-8 flex-1 rounded-xl shadow-md">
+            <h2 className="text-2xl font-bold mb-2 text-center">
+              Create a New Store
+            </h2>
+            <p className="text-gray-500 mb-6 text-center text-sm sm:text-base">
+              Set up a new store by filling in the details below.
+            </p>
+
+            <div className="mb-6  rounded-lg p-4 sm:p-6">
+              {/* Store Type */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                {(["shop", "social"] as const).map((type) => (
+                  <button
+                    key={type}
+                    className={`flex-1 border rounded-lg py-6 sm:py-8 text-center transition-all duration-200 ${
+                      storeType === type
+                        ? "border-purple-500 bg-purple-50 text-purple-700"
+                        : "border-gray-200 text-gray-700 hover:border-purple-200"
+                    }`}
+                    onClick={() => setStoreType(type)}
+                  >
+                    <img
+                      src={type === "shop" ? "Shop2.svg" : "Link.svg"}
+                      alt={type}
+                      className="mx-auto w-5 mb-2"
+                    />
+                    <span className="font-medium capitalize">{type}</span>
+                    <p className="text-xs text-gray-400">
+                      {type === "shop"
+                        ? "Traditional e-commerce store"
+                        : "Social commerce platform"}
+                    </p>
+                  </button>
+                ))}
               </div>
-              <div className="space-y-1 w-full relative">
-                <label htmlFor="domain" className="font-semibold text-sm block">
-                  Custom Subdomain
-                </label>
-                <TextInput placeholder="mystore" />
-                <span className="block absolute bottom-1.5 right-0.5 bg-vgrey-border p-4 ">
+
+              {/* Store Name */}
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Store Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your store name"
+                value={storeName}
+                onChange={handleNameChange}
+                className="w-full border  border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+
+              {/* Custom Subdomain */}
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Custom Subdomain
+              </label>
+              <div className="flex flex-col sm:flex-row mb-4">
+                <input
+                  type="text"
+                  placeholder="mystore"
+                  value={subdomain}
+                  onChange={handleSubdomainChange}
+                  className="flex-1 border border-gray-300 rounded-md sm:rounded-l-md sm:rounded-r-none p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <span className="border border-gray-300 sm:rounded-r-md sm:rounded-l-none bg-gray-100 px-3 py-2 flex items-center justify-center text-gray-500 text-sm mt-2 sm:mt-0">
                   .validpanel.com
                 </span>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="font-semibold text-sm block lg:text-base">
-                  Store Logo
-                </p>
-                {/* Dropzone */}
-                <div
-                  className={`w-full h-40 border-2 border-dashed rounded-2xl flex items-center justify-center cursor-pointer transition ${
-                    dragActive
-                      ? "border-primary bg-primary/5"
-                      : "border-gray-300"
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
-                  <label className="w-full h-full flex items-center justify-center cursor-pointer">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                    {preview ? (
-                      <img
-                        src={preview}
-                        alt="Preview"
-                        className="max-h-36 object-contain"
-                      />
-                    ) : (
-                      <span className="text-gray-500 flex flex-col gap-1 items-center">
-                        <FaCloudUploadAlt className="text-gray-500 text-4xl" />
-                        <span className="block">
-                          Click to upload or drag and drop
-                        </span>
-                        <span className="block">PNG, JPG up to 2MB</span>
-                      </span>
-                    )}
-                  </label>
-                </div>
-              </div>
-              <div className="min-h-21 w-full flex flex-col gap-2 justify-between ">
-                <p className="font-semibold text-sm block lg:text-base">
+
+              {/* Brand Color */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Brand Color
-                </p>
+                </label>
                 <div className="flex flex-wrap gap-3">
-                  {brandColor.map((col) => (
+                  {brandColors.map((color) => (
                     <button
-                      onClick={(e) => handleColor(e)}
-                      key={col.color}
-                      style={{ backgroundColor: col.color }}
-                      className={`w-12 h-12 rounded-xl`}
-                    />
+                      title="color"
+                      key={color}
+                      type="button"
+                      className={`w-8 h-8 rounded-lg border-2 transition-all duration-150 ${
+                        brandColor === color
+                          ? "border-gray-600 scale-105"
+                          : "border-transparent"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => setBrandColor(color)}
+                    ></button>
                   ))}
                 </div>
               </div>
-              <div className="min-h-21 w-full flex flex-col gap-2 justify-between ">
-                <p className="font-semibold text-sm block lg:text-base">
+
+              {/* Payment Method */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Payment Method
-                </p>
-                <div className="grid grid-cols-2 sm:flex flex-wrap gap-3">
-                  {payments.map((pay, i) => (
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {(
+                    ["stripe", "paypal", "flutterwave", "paystack"] as const
+                  ).map((method) => (
                     <button
-                      onClick={(e) => handlePaymentSelection(e, i)}
-                      key={pay.name}
-                      className={`flex gap-2 justify-center py-3 px-4 rounded-xl border items-center ${
-                        pay.selected
-                          ? "border-primary bg-primary/5"
-                          : "border-vgrey-border btn-custom"
+                      key={method}
+                      type="button"
+                      className={`border rounded-md py-2 capitalize transition ${
+                        payment === method
+                          ? "border-purple-500 bg-purple-50 text-purple-700"
+                          : "border-gray-200 text-gray-600 hover:border-purple-200"
                       }`}
+                      onClick={() => setPayment(method)}
                     >
-                      {pay.logo ? (
-                        <pay.logo className="text-vgrey-text block" />
-                      ) : (
-                        ""
-                      )}
-                      <span className="block"> {pay.name} </span>
+                      {method}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-5">
-                <Button>Cancel</Button>
-                <Button styles="bg-primary text-white hover:bg-primary/90 active:bg-primary/90">
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
+                <button
+                  type="button"
+                  className="border border-purple-500 text-purple-500 rounded-md px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="bg-purple-600 text-white rounded-md px-4 py-2 hover:bg-purple-700 w-full sm:w-auto"
+                >
                   Create Store
-                </Button>
+                </button>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="w-full mx-auto max-w-[384px] space-y-5 bg-[#F9FAFB] px-6 py-8 ">
-        <p className="font-semibold text-sm block lg:text-base">Live Preview</p>
-        <div className="min-w-[319px] w-full space-y-4 rounded-3xl border-8 border-black p-8 ">
-          <div className="flex gap-3 items-center">
-            <div className="w-10 h-10 rounded-lg bg-primary grid place-content-center">
-              <FaStore className=" text-white" />
             </div>
-            <div className="flex flex-col justify-between overflow-x-auto">
-              <p className="font-semibold">My Store</p>
-              <p className="text-vgrey-text text-sm">mystore.validpanel.com</p>
-            </div>
-            <FaShoppingCart className="text-vgrey-text block ml-auto text-lg " />
           </div>
-          <hr className="border border-vgrey-border w-full" />
-          <div className="flex w-full overflow-x-auto gap-3">
-            {products.map((prod) => (
-              <div key={prod.name} className="rounded-lg p-3 bg-[#F3F4F6]">
-                <div className="w-[97px] h-20 rounded bg-[#E5E7EB] mb-2 " />
-                <p className="text-xs font-medium"> {prod.name} </p>
-                <p className="font-semibold text-xs text-primary">
-                  {" "}
-                  {prod.price}{" "}
-                </p>
+
+          {/* Live Preview */}
+          <div className="bg-white shadow rounded-lg p-6 h-fit w-full lg:w-1/3">
+            <h3 className="font-semibold mb-3 text-center sm:text-left">
+              Live Preview
+            </h3>
+            <div className="border-2 border-black flex flex-col p-4 rounded-lg">
+              <div className="flex items-center mb-4 justify-between flex-wrap gap-2">
+                <div className="flex items-center">
+                  <div
+                    className="w-6 h-6 rounded-md mr-2 flex items-center justify-center"
+                    style={{ backgroundColor: brandColor }}
+                  >
+                    <img src="Prev_shop.svg" alt="icon" className="w-3 h-3" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800 truncate max-w-[150px]">
+                      {storeName || "My Store"}
+                    </p>
+                    <p className="text-xs text-gray-400 truncate">
+                      {subdomain || "mystore"}.validpanel.com
+                    </p>
+                  </div>
+                </div>
+                <img src="Cart.svg" alt="cart" className="w-5 h-5" />
               </div>
-            ))}
+
+              <div className="flex flex-wrap gap-3 justify-center mb-4">
+                {[1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="border p-3 rounded-lg bg-[#F3F4F6] w-[48%] sm:w-[45%] text-center"
+                  >
+                    <img src="Preview.svg" alt="product" className="mx-auto" />
+                    <p className="text-xs text-black mt-1">Product {i}</p>
+                    <p className="text-xs text-purple-500 font-bold">$29.99</p>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                className="w-full text-white py-2 rounded-md text-sm sm:text-base transition"
+                style={{ backgroundColor: brandColor }}
+              >
+                Shop Now
+              </button>
+            </div>
           </div>
-          <Button styles="bg-primary w-full text-white">Shop Now</Button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CreateStorePage;
+export default CreateStoreForm;

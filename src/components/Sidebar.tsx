@@ -1,25 +1,12 @@
 import type { FC } from "react";
 import {
   HomeIcon,
-  UsersIcon,
-  // ChartBarIcon,
-  Cog6ToothIcon,
-import React from "react";
-import {
-  HomeIcon,
   BellIcon,
-  ChartBarIcon,
-  UserGroupIcon,
-  BuildingStorefrontIcon,
-  UserIcon,
   ShoppingBagIcon,
-  CreditCardIcon,
-  CurrencyDollarIcon,
   Cog6ToothIcon,
-  KeyIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
-import { BellIcon, ChartSpline, Key, Settings } from "lucide-react";
+import { ChartSpline, Key, Settings, UsersIcon } from "lucide-react";
 import { FaShoppingCart, FaUsers } from "react-icons/fa";
 import { MdApi, MdPayment } from "react-icons/md";
 
@@ -33,17 +20,17 @@ import { MdApi, MdPayment } from "react-icons/md";
 const dashboard = [
   {
     name: "Overview",
-    route: "/overview",
+    route: "/admin/overview",
     icon: <HomeIcon className="w-5 h-5" />,
   },
   {
     name: "Notifications",
-    route: "/notifications",
+    route: "/admin/notifications",
     icon: <BellIcon className="w-5 h-5" />,
   },
   {
     name: "Analytics",
-    route: "/analytics",
+    route: "/admin/analytics",
     icon: <ChartSpline className="w-5 h-5" />,
   },
 ];
@@ -72,49 +59,53 @@ const users = [
 ];
 
 const usersAndStores = [
-  { name: "Users", route: "/users", icon: <UsersIcon className="w-5 h-5" /> },
+  {
+    name: "Users",
+    route: "/admin/users",
+    icon: <UsersIcon className="w-5 h-5" />,
+  },
   {
     name: "Stores",
-    route: "/stores",
+    route: "/admin/stores",
     icon: <ShoppingBagIcon className="w-5 h-5" />,
   },
   {
     name: "Admin Management",
-    route: "/admin-management",
+    route: "/admin/admin-management",
     icon: <FaUsers className="w-5 h-5" />,
   },
 ];
 const ordersAndPayments = [
   {
     name: "Orders Management",
-    route: "/orders",
+    route: "/admin/orders",
     icon: <ShoppingBagIcon className="w-5 h-5" />,
   },
   {
     name: "Payments & Transactions",
-    route: "/payments",
+    route: "/admin/payments",
     icon: <FaShoppingCart className="w-5 h-5" />,
   },
   {
     name: "Payment Gateways",
-    route: "/payment-gateways",
+    route: "/admin/payment-gateways",
     icon: <MdPayment className="w-5 h-5" />,
   },
 ];
 const systemSettings = [
   {
     name: "API Providers",
-    route: "/api-providers",
+    route: "/admin/api-providers",
     icon: <MdApi className="w-5 h-5" />,
   },
   {
     name: "Permissions",
-    route: "/permissions",
+    route: "/admin/permissions",
     icon: <Key className="w-5 h-5" />,
   },
   {
     name: "Settings",
-    route: "/settings",
+    route: "/admin/settings",
     icon: <Settings className="w-5 h-5" />,
   },
 ];

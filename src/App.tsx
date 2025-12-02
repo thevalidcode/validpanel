@@ -18,21 +18,22 @@ import Step4 from "./client/pages/Step4";
 import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
-import CreateStore from "./client/pages/User";
+import CreateStore from "./client/pages/CreateStorePage";
 import Dashlayout from "./Layout/DashLayout";
 import StoreLayout from "./client/components/User/StoreLayout";
-import Adminsettings from "./client/pages/Adminsettings";
-import Dashboard from "./client/pages/Dashboard";
+import Adminsettings from "./admin/pages/Adminsettings";
+import AdminStores from "./admin/pages/AdminStores";
 import SettingsPage from "./client/pages/SettingsPage";
 import Useroverview from "./client/pages/Useroverview";
 const UsersPage = React.lazy(
-  () => import("./client/pages/usersManagement/UsersPage")
+  () => import("./admin/pages/usersManagement/UsersPage")
 );
 const AnalyticsPage = React.lazy(
-  () => import("./client/pages/AnalyticsPage/AnalyticsPage")
+  () => import("./admin/pages/AnalyticsPage/AnalyticsPage")
 );
-const OrdersPage = React.lazy(() => import("./client/pages/Orders/OrdersPage"));
-
+const AdminOrdersPage = React.lazy(
+  () => import("./admin/pages/Orders/OrdersPage")
+);
 
 const App = () => {
   return (
@@ -58,17 +59,15 @@ const App = () => {
           <Route path="/onboarding/step7" element={<Step7 />} />
           <Route path="/create-store" element={<CreateStore />} />
           <Route path="/stores" element={<StoreLayout />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
-          <Route path="/orders" element={<OrdersPage />}
-          <Route path="/create-store" element={<Store />} />
-          <Route path="/stores" element={<StoreLayout />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/overview" element={<Useroverview />} />
 
           {/* Routes without layout for admins */}
-          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/stores" element={<AdminStores />} />
           <Route path="/admin/settings" element={<Adminsettings />} />
+          <Route path="/admin/orders" element={<AdminOrdersPage />} />
+          <Route path="/admin/analytics" element={<AnalyticsPage />} />
+          <Route path="/admin/users" element={<UsersPage />} />
         </Routes>
       </Router>
     </AppProvider>

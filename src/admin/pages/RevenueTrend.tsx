@@ -25,6 +25,7 @@ const RevenueTrend: FC<RevenueTrendProps> = ({ dataSets, range, setRange }) => {
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold text-gray-800">Revenue Trend</h2>
         <select
+        title="days"
           value={range}
           onChange={(e) => setRange(e.target.value as TimeRange)}
           className="border border-gray-300 rounded-md text-sm px-2 py-1 focus:ring-2 focus:ring-purple-500"

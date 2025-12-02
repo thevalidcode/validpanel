@@ -7,11 +7,11 @@ const Step7: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBack = (): void => {
-    navigate("/step6");
+    navigate("/onboarding/step6");
   };
 
   const handleContinue = (): void => {
-    navigate("/User");
+    navigate("/stores");
   };
 
   return (

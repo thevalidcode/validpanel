@@ -11,7 +11,7 @@ const Step3: React.FC = () => {
 
   const handleContinue = (): void => {
     // You can validate here before navigating
-    navigate("/step4");
+    navigate("/onboarding/step4");
   };
 
   const handleToggleDomain = (): void => {

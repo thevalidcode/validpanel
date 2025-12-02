@@ -42,6 +42,7 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
       <h1 className="text-center font-medium text-xl">Orders</h1>
       <div className="w-full gap-5 flex items-center justify-between">
         <select
+          title="ststua"
           value={order}
           onChange={(e) => setOrder(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 w-full "

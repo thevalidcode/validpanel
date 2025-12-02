@@ -14,11 +14,11 @@ const Step6: React.FC = () => {
   const navigate = useNavigate();
 
   const handlePayNow = (): void => {
-    navigate("/step7");
+    navigate("/onboarding/step7");
   };
 
   const handleBack = (): void => {
-    navigate("/step5");
+    navigate("/onboarding/step5");
   };
 
   const paymentOptions: PaymentOption[] = [

@@ -40,6 +40,7 @@ const UsersMobileView: FC<UsersMobileViewProps> = ({
 
       {/* Filter Dropdown */}
       <select
+        title="status"
         value={filter}
         onChange={(e) => onSetFilter(e.target.value)}
         className="w-full border border-gray-300 rounded-lg py-2 px-6 focus:outline-none focus:ring-2 focus:ring-purple-500"

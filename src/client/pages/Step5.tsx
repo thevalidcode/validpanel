@@ -17,14 +17,14 @@ const Step5: React.FC = () => {
 
   const handleContinue = (): void => {
     if (selected) {
-      navigate("/step6"); // go to step 6 after selecting a payment method
+      navigate("/onboarding/step6"); // go to step 6 after selecting a payment method
     } else {
       alert("Please select a payment method first.");
     }
   };
 
   const handleBack = (): void => {
-    navigate("/pricing"); // go back to previous step
+    navigate("/onboarding/step4"); // go back to previous step
   };
 
   const paymentMethods: PaymentMethod[] = [
@@ -130,6 +130,7 @@ const Step5: React.FC = () => {
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-3">
               <input
+                title="method"
                 type="radio"
                 checked={selected === method.id}
                 onChange={() => setSelected(method.id)}

@@ -1,4 +1,4 @@
-import DashboardLayout from "../../components/general/DashboardLayout";
+import DashboardLayout from "../../../components/DashboardLayout";
 import AnalyticsDesktopView from "./AnalyticsDesktopView";
 import AnalyticsMobileView from "./AnalyticsMobileView";
 import { DollarSign, Users, BarChart3 } from "lucide-react";
