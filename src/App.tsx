@@ -39,7 +39,7 @@ const App = () => {
             <Route path="register" element={<RegisterPage />} />
           </Route>
 
-          {/* Routes without layout */}
+          {/* Routes without layout for users */}
           <Route path="/step1" element={<Step1 />} />
           <Route path="/step2" element={<Step2 />} />
           <Route path="/step3" element={<Step3 />} />
@@ -47,12 +47,14 @@ const App = () => {
           <Route path="/step5" element={<Step5 />} />
           <Route path="/step6" element={<Step6 />} />
           <Route path="/step7" element={<Step7 />} />
-          <Route path="/user" element={<Store />} />
-          <Route path="/layout" element={<StoreLayout />} />
-          <Route path="/admin" element={<Adminsettings />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-store" element={<Store />} />
+          <Route path="/stores" element={<StoreLayout />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/overview" element={<Useroverview />} />
+
+          {/* Routes without layout for admins */}
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/settings" element={<Adminsettings />} />
         </Routes>
       </Router>
     </AppProvider>
