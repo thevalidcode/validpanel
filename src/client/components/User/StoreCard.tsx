@@ -24,7 +24,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
   //   const { name, type, date, status, logo } = store;
 
   return (
-    <div className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition border-l-4 border-l-[#7D1EFE] ">
+    <div className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition border-l-4 border-l-primary ">
       <div className="flex justify-between items-start">
         {/* Store info */}
         <div className="flex items-center gap-3">
@@ -47,7 +47,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             <span
               className={`text-xs font-medium px-2 py-1 rounded-full ${
                 store.type === "Shop"
-                  ? "bg-[#7D1EFE] text-white"
+                  ? "bg-primary text-white"
                   : "bg-blue-600 text-white"
               }`}
             >

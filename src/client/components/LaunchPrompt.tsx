@@ -2,7 +2,7 @@ import { GoArrowUpRight } from "react-icons/go";
 
 export default function LaunchPrompt() {
   return (
-    <div className="flex md:px-[150px] pb-10 md:pb-20">
+    <div className="flex md:px-[150px] pb-10 md:pb-20 pt-10">
       <div className="bg-black text-white text-center py-12 w-full md:rounded-[16px] poppins min-h-[424px] flex flex-col gap-5 justify-center items-center">
         <h2 className="text-2xl md:text-[43.21px] font-extrabold md:max-w-[800px]">
           Ready to launch your online business?

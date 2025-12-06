@@ -1,4 +1,4 @@
-import { memo } from "react"
+import { memo } from "react";
 
 const Horizontals = () => {
   return (
@@ -7,7 +7,7 @@ const Horizontals = () => {
       <h2 className="text-[17px] font-extrabold">OR</h2>
       <hr className="h-[1px] flex-1 border-none bg-black/30" />
     </div>
-  )
-}
+  );
+};
 
-export default memo(Horizontals)
+export default memo(Horizontals);

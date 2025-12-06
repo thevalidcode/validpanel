@@ -4,6 +4,8 @@ export interface FaqCategoryProps {
 }
 
 export interface FaqQuestionAnswerProps {
+  isOpen: boolean;
+  onClick: () => void;
   question: {
     q: string;
     a: string;
@@ -11,5 +13,5 @@ export interface FaqQuestionAnswerProps {
 }
 
 export interface FaqData {
-  faqs: FaqQuestionAnswerProps["question"][];
+  faqs: FaqCategoryProps[];
 }

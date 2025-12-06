@@ -1,26 +1,100 @@
-import { type FC } from "react";
+import type { FC } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { StepCardProps } from "../../../types/Home.types";
 
-const StepCard: FC<StepCardProps> = ({ step, cont, numb, index }) => (
-  <div
-    className={`rounded-xl px-4 py-6 md:px-0 text-white text-sm font-semibold md:min-h-[400px] ${
-      index === 1 ? "bg-[var(--primary)] md:w-[360px] md:pt-6 md:px-10 max-md:min-h-[279px]" : "bg-black md:pt-20 max-md:min-h-[78px]"
-    } flex justify-center items-center md:items-start md:w-[120px]`}
-  >
-    <div
-      className={`${
-        index === 1 ? "grid justify-items-start" : `flex w-full h-full items-center justify-center ${cont ?? ""}`
-      } gap-2`}
+const StepCard: FC<StepCardProps> = ({
+  step,
+  index,
+  cont,
+  numb,
+  isActive,
+  onClick,
+}) => {
+  const activeStyle =
+    "bg-[var(--primary)] md:w-[360px] md:pt-6 md:px-10 max-md:min-h-[279px]";
+  const inactiveStyle =
+    "bg-black md:pt-20 max-md:min-h-[78px]";
+
+  return (
+    <motion.div
+      onClick={onClick}
+      whileHover={{ scale: 1.04 }}
+      animate={{
+        scale: isActive ? 1.05 : 1,
+        boxShadow: isActive
+          ? "0 10px 25px rgba(0,0,0,0.25)"
+          : "0 0px 0px rgba(0,0,0,0)"
+      }}
+      transition={{ type: "spring", stiffness: 220, damping: 18 }}
+      className={`
+        rounded-xl px-4 py-6 md:px-0 text-white text-sm font-semibold 
+        md:min-h-[400px]
+        ${isActive ? activeStyle : inactiveStyle}
+        flex justify-center items-center md:items-start md:w-[120px]
+        cursor-pointer select-none
+      `}
     >
-      <div
-        className={`text-lg md:text-xl font-bolder md:mb-2 ${index === 1 ? "md:text-[66.86px]" : `${numb ?? ""} md:text-[24.25px]`}`}
+      <motion.div
+        layout
+        className={`
+          w-full flex 
+          ${
+            isActive
+              ? "flex-col gap-3"
+              : `items-center justify-center ${cont ?? ""}`
+          }
+        `}
       >
-        {`0${index + 1}.`}
-      </div>
-      <div className={`${index!==1 ? 'md:h-full md:text-[24.25px] md:w-full whitespace-nowrap':'md:text-[29.63px] md:text-left'} capitalize font-bold`}>{step.title}</div>
-      <p className={index=== 1 ? `text-sm leading-snug text-left text-[#FFFFFFB2] md:text-[20px]`: `hidden`}>{step.desc}</p>
-    </div>
-  </div>
-);
+        {/* Step Number */}
+        <motion.div
+          layout
+          animate={{ rotate: isActive ? 0 : 90 }}
+          transition={{ duration: 0.4 }}
+          className={`
+            font-bold
+            ${
+              isActive
+                ? "text-[40px] md:text-[66px]"
+                : `${numb ?? ""} text-[20px] md:text-[24px]`
+            }
+          `}
+        >
+          {`0${index + 1}.`}
+        </motion.div>
+
+        {/* Title */}
+        <motion.div
+          layout
+          className={`
+            capitalize font-bold
+            ${
+              isActive
+                ? "text-[20px] md:text-[30px] text-left"
+                : "text-[18px] md:text-[22px] whitespace-nowrap text-center w-full"
+            }
+          `}
+        >
+          {step.title}
+        </motion.div>
+
+        {/* Description (Only Active) */}
+        <AnimatePresence>
+          {isActive && (
+            <motion.p
+              layout
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35 }}
+              className="text-sm md:text-[20px] text-[#ffffffb2] text-left leading-snug pr-2"
+            >
+              {step.desc}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 export default StepCard;

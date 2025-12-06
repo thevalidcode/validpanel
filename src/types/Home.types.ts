@@ -21,9 +21,11 @@ export interface StepCardProps {
     title: string;
     desc: ReactNode;
   };
-  cont?: string;
-  numb?: string;
-  index: number;
+  cont?: string; // optional container class override
+  numb?: string; // optional number styling
+  index: number; // step index (0 to 4)
+  isActive: boolean; // whether this card is currently active
+  onClick: () => void; // handler to activate this step when clicked
 }
 
 // Type for the steps array items (aligned with StepCardProps)

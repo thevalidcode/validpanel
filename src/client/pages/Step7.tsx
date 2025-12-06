@@ -121,7 +121,7 @@ const Step7: React.FC = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-[#7D1EFE] hover:bg-purple-700 text-white font-semibold px-6 py-4 rounded-lg shadow-md transition"
+              className="bg-primary hover:bg-purple-700 text-white font-semibold px-6 py-4 rounded-lg shadow-md transition"
               onClick={handleContinue}
             >
               <div className="flex items-center gap-2 animate-pulse hover:animate-none">

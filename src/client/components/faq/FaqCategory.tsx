@@ -1,19 +1,51 @@
-import { type FC } from "react";
-import FaqQuestionAnswercomp from "./FaqQuestionAnswercomp";
-import type { FaqCategoryProps } from "../../../types/Faq.types";
+import { useState } from "react";
+import FaqQuestionAnswer from "./FaqQuestionAnswer";
+import type { FaqQuestionAnswerProps } from "../../../types/Faq.types";
+import { motion } from "framer-motion";
 
-const FaqCategory: FC<FaqCategoryProps> = ({ title, questions }) => (
-  <div className="my-5">
-    <h2 className="text-xl font-bold mb-4">
-      {title.replace(/\s(\w+)$/, " ")}
-      <span className="text-purple-600">{title.split(" ").slice(-1)}</span>
-    </h2>
-    <div className="w-full flex flex-col justify-center">
-      {questions.map((question, index) => (
-        <FaqQuestionAnswercomp key={index} question={question} />
-      ))}
-    </div>
-  </div>
-);
+const FaqCategory = ({
+  title,
+  questions,
+  index,
+}: {
+  title: string;
+  questions: FaqQuestionAnswerProps["question"][];
+  index: number;
+}) => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="mb-8"
+    >
+      <h2 className="text-xl font-bold mb-4 text-gray-800">
+        {title.split(" ")[0]}{" "}
+        <span>
+          {title
+            .split(" ")
+            .slice(1) // skip the first word
+            .map((word, i) => (
+              <span key={i} className="text-purple-600">
+                {word}{" "}
+              </span>
+            ))}
+        </span>
+      </h2>
+      <div className="flex flex-col">
+        {questions.map((question, idx) => (
+          <FaqQuestionAnswer
+            key={idx}
+            question={question}
+            isOpen={openIndex === idx}
+            onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+};
 
 export default FaqCategory;

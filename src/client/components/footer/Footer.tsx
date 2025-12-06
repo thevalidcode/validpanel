@@ -1,6 +1,7 @@
 import { type FC } from "react";
 import FooterCopyright from "./FooterCopyright";
 import FooterNewsletter from "./FooterNewsletter";
+import { Link } from "react-router-dom";
 
 const Footer: FC = () => (
   <footer className="bg-[var(--primary)] text-white py-12 min-h-[515px]">
@@ -8,16 +9,24 @@ const Footer: FC = () => (
       <div>
         <h4 className="text-lg font-bold mb-2">ValidPanel</h4>
         <p className="text-sm">
-          Faster payments, expense reports done right. Budgeting made easy.
+          Sell Smarter. Scale Faster. Manage Everything in One Panel.
         </p>
       </div>
       <div>
         <h5 className="font-semibold mb-2">Pages</h5>
         <ul className="space-y-1 text-sm">
-          <li>Homepage</li>
-          <li>Pricing</li>
-          <li>FAQ</li>
-          <li>Contact</li>
+          <li>
+            <Link to="/">Homepage</Link>{" "}
+          </li>
+          <li>
+            <Link to="/pricing">Pricing </Link>
+          </li>
+          <li>
+            <Link to="/faqs">FAQ</Link>
+          </li>
+          <li>
+            <Link to="/contact-us">Contact</Link>
+          </li>
         </ul>
       </div>
       <FooterNewsletter />

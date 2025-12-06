@@ -29,7 +29,7 @@ const StoreLayout: FC = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:static top-0 left-0 h-full bg-white border-r w-60 z-40 transform transition-transform duration-300 ease-in-out
+        className={`fixed md:static top-0 left-0 h-full bg-white border-r border-gray-100 w-60 z-40 transform transition-transform duration-300 ease-in-out
         ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
@@ -52,7 +52,7 @@ const StoreLayout: FC = () => {
           <div className="flex justify-end mb-6">
             <button
               onClick={handleCreateStore}
-              className="bg-[#7D1EFE] text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center gap-2 text-sm sm:text-base"
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center gap-2 text-sm sm:text-base"
             >
               + Create New Store
             </button>

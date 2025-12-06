@@ -1,11 +1,26 @@
-import type { UserType } from "../client/components/Login/auth.type";
+import type { User, Admin } from "@/types";
+import type { CurrencyCode } from "@/lib/currencyConverter";
+import type { AxiosInstance } from "axios";
+
+export interface CurrencyRates {
+  [key: string]: number;
+}
 
 // Type for the AppContext value
 export type AppContextType = {
-  siteTitle: string;
-  api: string;
-  user?: UserType | undefined | null
-}
+  userInfo: User | null;
+  adminInfo: Admin | null;
+  rates: CurrencyRates | {};
+  userCurrency: CurrencyCode;
+  isAuthLoading: boolean;
+  isRatesLoading: boolean;
+
+  setUserCurrency: (currency: string) => void;
+  handleSetUserInfo: (user: User | null) => void;
+  handleSetAdminInfo: (admin: Admin | null) => void;
+
+  api: AxiosInstance;
+};
 
 // Props for the AppProvider component
 export interface AppProviderProps {

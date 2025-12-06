@@ -13,7 +13,7 @@ const AnalyticsCard: FC<AnalyticsCardProps> = ({
   value,
   percentage,
 }) => (
-  <div className="bg-gradient-to-r from-[#7D1EFE] to-[#6A0DAD] text-white p-5 rounded-xl shadow-lg flex flex-col gap-4">
+  <div className="bg-gradient-to-r from-primary to-[#6A0DAD] text-white p-5 rounded-xl shadow-lg flex flex-col gap-4">
     <div className="flex justify-between items-start">
       <div className="bg-white/10 p-2 rounded-lg">{icon}</div>
       <div className="bg-white/20 text-xs font-semibold px-2.5 py-1 rounded-full">

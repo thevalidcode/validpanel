@@ -1,7 +1,14 @@
 import { type FC } from "react";
-import { FaStore, FaMoneyBillWave, FaMobileAlt, FaCogs, FaBolt } from "react-icons/fa";
+import {
+  FaStore,
+  FaMoneyBillWave,
+  FaMobileAlt,
+  FaCogs,
+  FaBolt,
+} from "react-icons/fa";
 import FeatureCard from "./FeatureCard";
 import type { FeatureItem } from "../../../types/Home.types";
+import { Link } from "react-router-dom";
 
 const Features: FC = () => {
   const features: FeatureItem[] = [
@@ -33,7 +40,7 @@ const Features: FC = () => {
   ];
 
   return (
-    <section className="px-[16px] md:px-[150px] md:pb-40 pb-20 min-h-[70vh] flex items-center bg-gray-50">
+    <section className="px-[16px] md:px-[150px] md:pb-40 pb-20 min-h-[70vh] flex items-center bg-gray-50 pt-10">
       <div className="grid md:grid-cols-12 md:grid-rows-2 gap-6">
         {/* Left Feature - Purple Card */}
         <div className="bg-[var(--primary)] text-white rounded-xl p-6 md:col-span-6 flex flex-col justify-between md:pb-15">
@@ -42,15 +49,16 @@ const Features: FC = () => {
               Everything You Need to Launch and Run Your Online Store
             </h3>
             <p className="text-sm text-purple-100">
-              Launch in minutes, manage products, and get paid — all in one simple platform.
+              Launch in minutes, manage products, and get paid — all in one
+              simple platform.
             </p>
           </div>
-          <button
+          <Link
             className="mt-6 bg-white cursor-pointer btn-custom text-[var(--primary)] px-4 py-2 rounded-full font-semibold text-sm self-start"
-            type="button"
+            to="/register"
           >
             Create Your Free Store
-          </button>
+          </Link>
         </div>
         <FeatureCard
           icon={features[0].icon}
