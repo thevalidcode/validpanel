@@ -48,7 +48,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
               className={`text-xs font-medium px-2 py-1 rounded-full ${
                 store.type === "Shop"
                   ? "bg-primary text-white"
-                  : "bg-blue-600 text-white"
+                  : "bg-purple-600 text-white"
               }`}
             >
               {store.type}
@@ -75,23 +75,43 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-2">
-        <button className="flex items-center gap-1 bg-[#F3F4F6] text-gray-800 text-sm px-3 py-1 rounded-md">
+        <button
+          type="button"
+          title="view"
+          className="flex items-center gap-1 bg-[#F3F4F6] text-gray-800 text-sm px-3 py-1 rounded-md"
+        >
           <EyeIcon className="w-4 h-4" /> View
         </button>
 
-        <button className="flex items-center gap-1 bg-[#F3F4F6] text-gray-800 text-sm px-3 py-1 rounded-md">
+        <button
+          type="button"
+          title="view -admin"
+          className="flex items-center gap-1 bg-[#F3F4F6] text-gray-800 text-sm px-3 py-1 rounded-md"
+        >
           <EyeIcon className="w-4 h-4" /> Admin View
         </button>
 
-        <button className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md">
+        <button
+          type="button"
+          title="pause"
+          className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md"
+        >
           <PencilSquareIcon className="w-4 h-4" /> Edit
         </button>
 
-        <button className="flex items-center gap-1 bg-green-100 text-green-600 text-sm px-3 py-1 rounded-md">
+        <button
+          type="button"
+          title="resume"
+          className="flex items-center gap-1 bg-green-100 text-green-600 text-sm px-3 py-1 rounded-md"
+        >
           <PlayIcon className="w-4 h-4" />
         </button>
 
-        <button className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-md">
+        <button
+          type="button"
+          title="delete"
+          className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-md"
+        >
           <TrashIcon className="w-4 h-4" />
         </button>
       </div>

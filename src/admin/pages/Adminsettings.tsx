@@ -1,7 +1,7 @@
 // src/pages/SettingsPage.tsx
 import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import AdminSettings from "../../client/components/User/SystemSettings";
+import AdminSettings from "../components/settings/SystemSettings";
 
 // import Header from "../Header";
 

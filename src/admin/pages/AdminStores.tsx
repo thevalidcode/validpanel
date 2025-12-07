@@ -1,8 +1,8 @@
 import React, { useState, type JSX } from "react";
 // import Header from "../Header";
 import Sidebar from "../../components/Sidebar";
-import StoreTable from "../../client/components/User/storeTable";
-import Toggle from "../../client/components/User/Toggle";
+import StoreTable from "../components/stores/storeTable";
+import Toggle from "../components/stores/Toggle";
 // import StoreTable from "../storeTable";
 // import Sidebar from "../Sidebar";
 

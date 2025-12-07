@@ -11,12 +11,12 @@ import { toast } from "sonner";
 interface NewUser {
   email: string;
   password: string;
-  username: string;
+  fullName: string;
   ref?: number;
 }
 
 export function useCreateUser() {
-  const { api } = useAppContext();
+  const { api, handleSetUserInfo } = useAppContext();
   return useMutation({
     mutationKey: ["createUser"],
     mutationFn: async (newUser: NewUser) => {
@@ -24,12 +24,12 @@ export function useCreateUser() {
       const payload: {
         email: string;
         password: string;
-        username: string;
+        fullName: string;
         ref?: number;
       } = {
         email: newUser.email,
         password: newUser.password,
-        username: newUser.username,
+        fullName: newUser.fullName,
       };
 
       // Only add ref if it's a valid number
@@ -49,8 +49,11 @@ export function useCreateUser() {
       return res.data;
     },
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("User created successfully");
+      handleSetUserInfo({
+        ...data.user,
+      });
     },
     onError: (error: unknown) => {
       // Enhanced error extraction to handle various backend formats
@@ -78,7 +81,6 @@ export function useCreateUser() {
 interface LoginProps {
   email: string;
   password: string;
-  storeId: number;
 }
 export function useUserLogin() {
   const { api, handleSetUserInfo } = useAppContext();
@@ -98,11 +100,9 @@ export function useUserLogin() {
       }
       return res.data;
     },
-    onSuccess: async () => {
-      const res = await api.get("/current-user");
-      // Set user info in context, which also persists it to IndexedDB.
+    onSuccess: async (data) => {
       handleSetUserInfo({
-        ...res.data,
+        ...data.user,
       });
       // Redirect to the appropriate dashboard. The user session is now active.
       router("/stores");

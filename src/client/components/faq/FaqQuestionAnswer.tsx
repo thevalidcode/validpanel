@@ -20,7 +20,7 @@ const FaqQuestionAnswer: FC<FaqQuestionAnswerProps> = ({
       <button
         type="button"
         onClick={onClick}
-        className="w-full p-2 flex justify-between items-center text-left cursor-pointer hover:bg-gray-50 transition-colors"
+        className="w-full p-2 flex justify-between items-center text-left cursor-pointer transition-colors"
       >
         <h3 className="font-semibold text-sm md:text-base text-gray-800 pr-4">
           {question.q}

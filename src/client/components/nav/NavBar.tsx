@@ -7,7 +7,7 @@ import { MdClose } from "react-icons/md";
 
 const Navbar: FC = () => {
   const [open, setOpen] = useState(false);
-  const { user } = useAppContext();
+  const { userInfo } = useAppContext();
 
   const navItems = [
     { label: "Home", path: "/" },
@@ -51,7 +51,7 @@ const Navbar: FC = () => {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex space-x-3">
-            {!user && (
+            {!userInfo ? (
               <>
                 <Link
                   to="/login"
@@ -65,6 +65,22 @@ const Navbar: FC = () => {
                   className="bg-primary text-white px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
                 >
                   Get Started
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/uesrs"
+                  className="border border-primary text-primary px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
+                >
+                  Users
+                </Link>
+
+                <Link
+                  to="/stores"
+                  className="bg-primary text-white px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
+                >
+                  Stores
                 </Link>
               </>
             )}
@@ -138,7 +154,7 @@ const Navbar: FC = () => {
             </nav>
 
             {/* Auth Buttons */}
-            {!user && (
+            {!userInfo ? (
               <div className="mt-19 px-5 flex flex-col gap-3">
                 <Link
                   to="/login"
@@ -154,6 +170,24 @@ const Navbar: FC = () => {
                   className="bg-primary text-white py-3 rounded-4xl text-[16px] text-center"
                 >
                   Get Started
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-19 px-5 flex flex-col gap-3">
+                <Link
+                  to="/users"
+                  onClick={() => setOpen(false)}
+                  className="border border-primary text-primary py-3 rounded-4xl text-[16px] text-center"
+                >
+                  Users
+                </Link>
+
+                <Link
+                  to="/stores"
+                  onClick={() => setOpen(false)}
+                  className="bg-primary text-white py-3 rounded-4xl text-[16px] text-center"
+                >
+                  Stores
                 </Link>
               </div>
             )}

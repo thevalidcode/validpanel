@@ -44,10 +44,10 @@ interface Props {
 
 const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
   const navigate = useNavigate();
-  const { userInfo } = useAppContext();
+  const { isAuthLoading, userInfo } = useAppContext();
 
   useEffect(() => {
-    if (userInfo) {
+    if (!isAuthLoading && userInfo) {
       navigate("/stores");
     }
   }, [userInfo, navigate]);

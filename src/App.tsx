@@ -7,7 +7,7 @@ import Loader from "./components/Loader";
 
 // Layouts
 import DashLayout from "./layout/DashLayout";
-import StoreLayout from "./client/components/User/StoreLayout";
+import StoreLayout from "./client/pages/Stores";
 
 // Pages with Navbar & Footer
 import HomePage from "./client/pages/HomePage";

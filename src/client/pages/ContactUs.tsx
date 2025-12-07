@@ -1,5 +1,5 @@
-import ContactForm from "../components/contact us/ContactFormProps";
-import ContactMiniHolder from "../components/contact us/ContactMiniHolder";
+import ContactForm from "../components/contact-us/ContactFormProps";
+import ContactMiniHolder from "../components/contact-us/ContactMiniHolder";
 
 
 export default function ContactUs() {

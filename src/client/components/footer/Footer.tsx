@@ -22,7 +22,7 @@ const Footer: FC = () => (
             <Link to="/pricing">Pricing </Link>
           </li>
           <li>
-            <Link to="/faqs">FAQ</Link>
+            <Link to="/faq">FAQ</Link>
           </li>
           <li>
             <Link to="/contact-us">Contact</Link>

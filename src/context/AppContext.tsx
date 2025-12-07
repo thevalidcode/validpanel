@@ -42,8 +42,13 @@ const AppProvider = ({ children }: AppProviderProps) => {
   useEffect(() => {
     const saveAuthInfo = async () => {
       try {
-        if (userInfo) await set("userInfo", userInfo);
-        if (adminInfo) await set("adminInfo", adminInfo);
+        const safeUser = userInfo ? JSON.parse(JSON.stringify(userInfo)) : null;
+        const safeAdmin = adminInfo
+          ? JSON.parse(JSON.stringify(adminInfo))
+          : null;
+
+        await set("userInfo", safeUser);
+        await set("adminInfo", safeAdmin);
       } catch (err) {
         console.error("Failed to save auth info:", err);
       }

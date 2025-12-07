@@ -2,15 +2,16 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import Button from "../components/general/Button";
 import TextInput from "../components/general/TextInput";
 import AuthWrapper from "../components/Login/AuthWrapper";
-import axios from "axios";
-import { useAppContext } from "../../context/useAppContext";
 import Toast from "../components/general/Toast";
 import type { Err } from "../../types/utility.types";
+import { useNavigate } from "react-router-dom";
+import { useCreateUser } from "@/hooks/use-user";
 
 const RegisterPage = () => {
-  const { api } = useAppContext();
+  const { mutateAsync: createUser } = useCreateUser();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
     firstName: "",
@@ -34,13 +35,10 @@ const RegisterPage = () => {
       password: inputs.password,
     };
     try {
-      const { data } = await axios.post(api + "/users", values, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const data = await createUser(values);
       if (data) {
         setSuccess("Successful, proceed to login");
+        navigate("/login");
       }
     } catch (error) {
       if ((error as Err)?.status === 500) {
@@ -67,7 +65,7 @@ const RegisterPage = () => {
     <AuthWrapper pageTitle="Create an account" type="register">
       {error ? <Toast type="error" message={error} /> : ""}
       {success ? <Toast type="success" message={success} /> : ""}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 w-full">
         <div className="grid grid-cols-2 gap-5">
           <TextInput
             type="text"

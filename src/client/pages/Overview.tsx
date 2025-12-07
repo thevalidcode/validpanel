@@ -2,9 +2,7 @@ import React from "react";
 import {
   ArrowUpIcon,
   ArrowDownRightIcon,
-  BellIcon,
   PlusIcon,
-  Bars3Icon,
 } from "@heroicons/react/24/outline";
 import { Line } from "react-chartjs-2";
 import {
@@ -16,6 +14,7 @@ import {
   Tooltip,
   Filler,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 
 // Register Chart.js components
 ChartJS.register(
@@ -100,36 +99,23 @@ const Overview: React.FC<OverviewProps> = ({ onMenuClick }) => {
       },
     },
   };
+  const navigate = useNavigate();
+  const handleCreateStore = (): void => {
+    navigate("/create-store");
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <button
-            className="md:hidden text-gray-700 hover:text-purple-700"
-            onClick={onMenuClick}
-          >
-            <Bars3Icon className="w-6 h-6" />
-          </button>
-
-          <div className="hidden lg:block">
-            <h1 className="text-2xl font-bold text-gray-800">Overview</h1>
-            <p className="text-gray-500 text-sm">
-              Welcome back, Sarah! Here’s what’s happening today.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="p-2 rounded-full hover:bg-gray-100">
-            <BellIcon className="w-6 h-6 text-gray-600" />
-          </button>
-          <button className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm">
-            <PlusIcon className="w-4 h-4" />
-            New Stores
-          </button>
-        </div>
+      <div className="flex justify-end items-center mb-6">
+        <button
+          type="button"
+          onClick={handleCreateStore}
+          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm"
+        >
+          <PlusIcon className="w-4 h-4" />
+          Create New Store
+        </button>
       </div>
 
       {/* Stat Cards */}
@@ -173,7 +159,10 @@ const Overview: React.FC<OverviewProps> = ({ onMenuClick }) => {
         <div className="col-span-2 bg-white border border-gray-200 rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <h2 className="font-medium text-gray-700">Revenue Trend</h2>
-            <select className="border border-gray-200 rounded-md px-2 py-1 text-sm">
+            <select
+              title="time"
+              className="border border-gray-200 rounded-md px-2 py-1 text-sm"
+            >
               <option>Last 30 days</option>
               <option>Last 6 months</option>
               <option>Last year</option>

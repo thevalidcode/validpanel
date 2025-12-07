@@ -4,11 +4,10 @@ import TextInput from "../components/general/TextInput";
 import Button from "../components/general/Button";
 import type { Err } from "../../types/utility.types";
 import Toast from "../components/general/Toast";
-import { useNavigate } from "react-router-dom";
+import { useUserLogin } from "@/hooks/use-user";
 
 const LoginPage = () => {
-  // const { api } = useAppContext();
-  const navigate = useNavigate();
+  const { mutateAsync: loginUser } = useUserLogin();
 
   const [error, setError] = useState("");
 
@@ -33,11 +32,7 @@ const LoginPage = () => {
       password: inputs.password,
     };
     try {
-      const data = {};
-      if (data) {
-        navigate(0);
-        navigate("/store");
-      }
+      await loginUser(values);
     } catch (error) {
       if ((error as Err)?.status === 500) {
         setError((error as Err)?.message);

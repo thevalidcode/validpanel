@@ -1,9 +1,11 @@
-import { Bell } from "lucide-react";
 import React, { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 
 const CreateStoreForm: React.FC = () => {
-  const [storeType, setStoreType] = useState<"shop" | "social">("shop");
+  const [storeType, setStoreType] = useState<"shop" | "social-media-store">(
+    "shop"
+  );
   const [brandColor, setBrandColor] = useState<string>("#6D28D9");
   const [payment, setPayment] = useState<
     "stripe" | "paypal" | "flutterwave" | "paystack"
@@ -24,7 +26,8 @@ const CreateStoreForm: React.FC = () => {
   ];
 
   const navigate = useNavigate();
-  const handleNext = (): void => {
+
+  const handleCreate = (): void => {
     navigate("/dashboard");
   };
 
@@ -37,22 +40,10 @@ const CreateStoreForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-3 px-4 py-3 border-b border-gray-300 shadow-sm bg-white sticky top-0 z-10">
-        <div>
-          <img src="./Valid2.svg" alt="logo" className="w-28 sm:w-36" />
-        </div>
-        <div className="flex gap-3 items-center">
-          <Bell className="w-5 h-5 text-gray-600" />
-          <img
-            src="./Valid2.svg"
-            alt="profile"
-            className="w-7 h-7 rounded-full border"
-          />
-        </div>
-      </div>
-
+    <Layout
+      title="Create Store"
+      description="Create a shop or a social media store"
+    >
       {/* Main Container */}
       <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-4 sm:p-6 lg:p-10">
         <div className="flex flex-col lg:flex-row gap-8 w-full max-w-5xl">
@@ -68,12 +59,12 @@ const CreateStoreForm: React.FC = () => {
             <div className="mb-6  rounded-lg p-4 sm:p-6">
               {/* Store Type */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                {(["shop", "social"] as const).map((type) => (
+                {(["shop", "social-media-store"] as const).map((type) => (
                   <button
                     key={type}
                     className={`flex-1 border rounded-lg py-6 sm:py-8 text-center transition-all duration-200 ${
                       storeType === type
-                        ? "border-purple-500 bg-purple-50 text-purple-700"
+                        ? "border-purple-500 bg-purple-50 text-primary"
                         : "border-gray-200 text-gray-700 hover:border-purple-200"
                     }`}
                     onClick={() => setStoreType(type)}
@@ -83,7 +74,9 @@ const CreateStoreForm: React.FC = () => {
                       alt={type}
                       className="mx-auto w-5 mb-2"
                     />
-                    <span className="font-medium capitalize">{type}</span>
+                    <span className="font-medium capitalize">
+                      {type.replaceAll("-", " ")}
+                    </span>
                     <p className="text-xs text-gray-400">
                       {type === "shop"
                         ? "Traditional e-commerce store"
@@ -159,7 +152,7 @@ const CreateStoreForm: React.FC = () => {
                       type="button"
                       className={`border rounded-md py-2 capitalize transition ${
                         payment === method
-                          ? "border-purple-500 bg-purple-50 text-purple-700"
+                          ? "border-purple-500 bg-purple-50 text-primary"
                           : "border-gray-200 text-gray-600 hover:border-purple-200"
                       }`}
                       onClick={() => setPayment(method)}
@@ -174,13 +167,14 @@ const CreateStoreForm: React.FC = () => {
               <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
                 <button
                   type="button"
+                  onClick={() => navigate(-1)}
                   className="border border-purple-500 text-purple-500 rounded-md px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={handleNext}
-                  className="bg-purple-600 text-white rounded-md px-4 py-2 hover:bg-purple-700 w-full sm:w-auto"
+                  onClick={handleCreate}
+                  className="bg-purple-600 text-white rounded-md px-4 py-2 hover:bg-primary w-full sm:w-auto"
                 >
                   Create Store
                 </button>
@@ -193,7 +187,7 @@ const CreateStoreForm: React.FC = () => {
             <h3 className="font-semibold mb-3 text-center sm:text-left">
               Live Preview
             </h3>
-            <div className="border-2 border-black flex flex-col p-4 rounded-lg">
+            <div className="border-2 border-gray-100 flex flex-col p-4 rounded-lg">
               <div className="flex items-center mb-4 justify-between flex-wrap gap-2">
                 <div className="flex items-center">
                   <div
@@ -218,7 +212,7 @@ const CreateStoreForm: React.FC = () => {
                 {[1, 2].map((i) => (
                   <div
                     key={i}
-                    className="border p-3 rounded-lg bg-[#F3F4F6] w-[48%] sm:w-[45%] text-center"
+                    className="border border-gray-200 p-3 rounded-lg bg-[#F3F4F6] w-[48%] sm:w-[45%] text-center"
                   >
                     <img src="Preview.svg" alt="product" className="mx-auto" />
                     <p className="text-xs text-black mt-1">Product {i}</p>
@@ -228,6 +222,7 @@ const CreateStoreForm: React.FC = () => {
               </div>
 
               <button
+                type="button"
                 className="w-full text-white py-2 rounded-md text-sm sm:text-base transition"
                 style={{ backgroundColor: brandColor }}
               >
@@ -237,7 +232,7 @@ const CreateStoreForm: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
