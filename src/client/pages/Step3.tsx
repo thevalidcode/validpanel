@@ -23,7 +23,7 @@ const Step3: React.FC = () => {
       {/* Logo (fixed top-left for all screens) */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2">
         <img
-          src="./Valid2.svg"
+          src="/Valid2.svg"
           alt="ValidPanel logo"
           className="lg:ml-76 sm:ml-0"
         />
@@ -124,7 +124,7 @@ const Step3: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mt-8">
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/onboarding/step2")}
             className="text-gray-600 font-medium flex items-center space-x-1 hover:text-gray-800 transition"
           >
             <span>←</span>

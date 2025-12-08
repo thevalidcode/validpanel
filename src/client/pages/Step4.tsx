@@ -25,7 +25,7 @@ const Step4: React.FC = () => {
   };
 
   const handleBack = (): void => {
-    navigate(-1);
+    navigate("/onboarding/step3");
   };
 
   const handleColorChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -37,7 +37,7 @@ const Step4: React.FC = () => {
       {/* Header */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2">
         <img
-          src="./Valid2.svg"
+          src="/Valid2.svg"
           alt="ValidPanel logo"
           className="lg:ml-42 sm:ml-0"
         />

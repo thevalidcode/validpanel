@@ -25,7 +25,7 @@ const StepOne: React.FC = () => {
         <div className="lg:flex sm:grid grid-cols-1 items-center justify-between p-8">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <img src="./Valid2.svg" alt="ValidPanel Logo" />
+            <img src="/Valid2.svg" alt="ValidPanel Logo" />
           </div>
           {/* Step Title */}
           <div className="flex flex-col items-center mx-auto text-center">

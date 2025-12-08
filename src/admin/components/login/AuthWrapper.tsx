@@ -11,28 +11,28 @@ import { useAppContext } from "../../../context/useAppContext";
 
 const authBody = [
   {
-    title: "Product & Service Discovery",
+    title: "System Overview & Monitoring",
     image: productImage,
     description:
-      "Easily browse and discover trending digital products and services to add to your store.",
+      "Gain centralized visibility across all platform activities, including user actions, resource usage, and operational performance.",
   },
   {
-    title: "Store Management Dashboard",
+    title: "Administrative Control Panel",
     image: storeImage,
     description:
-      "Monitor your sales, orders, and customer data from one powerful dashboard built for ease.",
+      "Manage users, stores, permissions, and system configurations through a structured, high-efficiency admin dashboard.",
   },
   {
-    title: "Sales Boost Toolkit",
+    title: "Operational Tools & Automation",
     image: salesImage,
     description:
-      "Access features like custom promo links, shareable store pages, and referral tracking to grow faster.",
+      "Access workflows and automation utilities designed to streamline administrative tasks, enforce policies, and optimize platform processes.",
   },
   {
-    title: "Simple, Seller-First Design",
+    title: "Secure, Admin-First Architecture",
     image: pinImage,
     description:
-      "Created for entrepreneurs of all experience levels — no coding or setup needed.",
+      "Built with strict access control, audit readiness, and seamless usability to support all administrative roles effectively.",
   },
 ];
 
@@ -44,13 +44,13 @@ interface Props {
 
 const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
   const navigate = useNavigate();
-  const { isAuthLoading, userInfo } = useAppContext();
+  const { isAuthLoading, adminInfo } = useAppContext();
 
   useEffect(() => {
-    if (!isAuthLoading && userInfo) {
-      navigate("/stores");
+    if (!isAuthLoading && adminInfo) {
+      navigate("/admin/stores");
     }
-  }, [userInfo, isAuthLoading, navigate]);
+  }, [adminInfo, isAuthLoading, navigate]);
 
   return (
     <main className="lg:h-screen items-center py-20 justify-center w-full radial_background_primary text-black flex flex-col lg:flex-row">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { FC } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppContext } from "../../../context/useAppContext";
+import { useAppContext } from "../../context/useAppContext";
 import { MdClose } from "react-icons/md";
 
 const Navbar: FC = () => {
@@ -29,7 +29,7 @@ const Navbar: FC = () => {
           {/* Brand */}
           <Link to="/" className="flex items-center h-full overflow-hidden">
             <img
-              src="Valid2.svg"
+              src="/Valid2.svg"
               alt="ValidPanel Logo"
               className="h-15 w-40 object-cover md:block hidden"
             />

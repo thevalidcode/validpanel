@@ -1,4 +1,3 @@
-import { FaDownload } from "react-icons/fa";
 import OrderFilters from "./OrderFilters";
 import OrderSummaryCard, {
   type OrderSummaryCardProps,
@@ -44,30 +43,7 @@ interface OrdersDesktopViewProps {
 }
 const OrdersDesktopView: FC<OrdersDesktopViewProps> = ({ recentOrders }) => {
   return (
-    <div className="w-full mx-auto space-y-5 hidden md:block ">
-      {/* Header */}
-      <div className=" w-full flex h-20.5 px-6 justify-between items-center border border-[#E5E7EB] bg-white ">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Orders Management
-          </h1>
-          <p className="text-sm text-gray-500">
-            Manage and track all store and shop orders
-          </p>
-        </div>
-        <div className="flex gap-4 items-center">
-          <button className="border bg-primary flex items-center justify-center gap-2 text-white hover:bg-primary/90 px-8 py-2 rounded-lg">
-            <FaDownload size={16} />
-            <span>Export Orders</span>
-          </button>
-          <img
-            src="/Sarah.png"
-            alt="Admin Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-
+    <div className="w-full mx-auto space-y-5 hidden md:block pt-5">
       <OrderFilters />
 
       <div className="px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

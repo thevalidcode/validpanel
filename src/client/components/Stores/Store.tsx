@@ -48,10 +48,18 @@ const Store = () => {
             <FaEdit className="fill-[#2563EB] " />
             <span>Edit</span>
           </button>
-          <button className="text-[10px] btn-custom md:text-sm items-center font-medium w-[27px] md:w-[40px] md:h-[41px] h-[28px] rounded-[6px] md:rounded-[8px] flex gap-[10px] bg-[#FEFCE8] justify-center ">
+          <button
+            type="button"
+            title="pause"
+            className="text-[10px] btn-custom md:text-sm items-center font-medium w-[27px] md:w-[40px] md:h-[41px] h-[28px] rounded-[6px] md:rounded-[8px] flex gap-[10px] bg-[#FEFCE8] justify-center "
+          >
             <IoIosPause className="fill-[#CA8A04] " />
           </button>
-          <button className="text-[10px] btn-custom md:text-sm items-center font-medium w-[27px] md:w-[40px] md:h-[41px] h-[28px] rounded-[6px] md:rounded-[8px] flex gap-[10px] bg-[#FEF2F2] justify-center ">
+          <button
+            type="button"
+            title="delete"
+            className="text-[10px] btn-custom md:text-sm items-center font-medium w-[27px] md:w-[40px] md:h-[41px] h-[28px] rounded-[6px] md:rounded-[8px] flex gap-[10px] bg-[#FEF2F2] justify-center "
+          >
             <MdDelete className="fill-[#DC2626] " />
           </button>
         </div>

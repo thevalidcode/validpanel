@@ -83,7 +83,11 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
                   <StatusBadge status={store.status} />
                 </td>
                 <td className="px-6 py-4">
-                  <button className="text-purple-600 hover:text-purple-800">
+                  <button
+                    type="button"
+                    title="see"
+                    className="text-purple-600 hover:text-purple-800"
+                  >
                     <Eye size={20} />
                   </button>
                 </td>

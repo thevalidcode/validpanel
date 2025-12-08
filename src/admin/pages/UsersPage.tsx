@@ -1,7 +1,7 @@
-import DashboardLayout from "../../../components/DashboardLayout";
 import { useState } from "react";
-import UsersMobileView from "./UsersMobileView";
-import UsersDesktopView from "./UsersDesktopView";
+import UsersMobileView from "../components/users/UsersMobileView";
+import UsersDesktopView from "../components/users/UsersDesktopView";
+import Layout from "@/admin/components/Layout";
 
 const initialUsers = [
   {
@@ -60,24 +60,24 @@ const UsersPage = () => {
     setUsers((prev) => [...prev, ...moreUsers]);
   };
   return (
-    <DashboardLayout role="admin">
-      <div className="w-full space-y-5">
-        <div className="md:hidden w-full space-y-5">
-          <h1 className="text-center font-medium text-xl">User Management</h1>
-          <UsersMobileView
-            search={search}
-            onSetSearch={setSearch}
-            filter={filter}
-            onSetFilter={setFilter}
-            users={filteredUsers}
-            onHandleLoadMore={handleLoadMore}
-          />
-        </div>
-        <div className="hidden md:block">
-          <UsersDesktopView />
-        </div>
+    <Layout
+      title="Users Management"
+      description="View and manage all created users."
+    >
+      <div className="md:hidden w-full space-y-5">
+        <UsersMobileView
+          search={search}
+          onSetSearch={setSearch}
+          filter={filter}
+          onSetFilter={setFilter}
+          users={filteredUsers}
+          onHandleLoadMore={handleLoadMore}
+        />
       </div>
-    </DashboardLayout>
+      <div className="hidden md:block">
+        <UsersDesktopView />
+      </div>
+    </Layout>
   );
 };
 

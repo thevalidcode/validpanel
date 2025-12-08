@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "@/context/useAppContext";
+import { Settings } from "lucide-react";
 
 interface MenuItem {
   name: string;
@@ -21,6 +22,7 @@ const menu: MenuItem[] = [
   { name: "Users", icon: UserGroupIcon, to: "/users" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
   { name: "Orders", icon: CurrencyDollarIcon, to: "/orders" },
+  { name: "Settings", icon: Settings, to: "/settings" },
 ];
 
 export default function StoreSidebar(): JSX.Element {

@@ -1,8 +1,8 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import Button from "../components/general/Button";
-import TextInput from "../components/general/TextInput";
-import AuthWrapper from "../components/Login/AuthWrapper";
-import Toast from "../components/general/Toast";
+import Button from "../../components/general/Button";
+import TextInput from "../../components/general/TextInput";
+import AuthWrapper from "../components/login/AuthWrapper";
+import Toast from "../../components/general/Toast";
 import type { Err } from "../../types/utility.types";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";

@@ -23,26 +23,26 @@ const Step6: React.FC = () => {
 
   const paymentOptions: PaymentOption[] = [
     {
-      img: "./Card.svg",
+      img: "/Card.svg",
       title: "Credit Card",
       desc: "Visa, Mastercard & others",
       bg: "bg-purple-100",
       defaultChecked: true,
     },
     {
-      img: "./Paypal.svg",
+      img: "/Paypal.svg",
       title: "PayPal",
       desc: "Pay easily with your PayPal account",
       bg: "bg-blue-100",
     },
     {
-      img: "./Apple.svg",
+      img: "/Apple.svg",
       title: "Apple Pay",
       desc: "Quick checkout with Apple Pay",
       bg: "bg-purple-50",
     },
     {
-      img: "./Google.svg",
+      img: "/Google.svg",
       title: "Google Pay",
       desc: "Pay directly using your Google account",
       bg: "bg-purple-100",
@@ -61,7 +61,7 @@ const Step6: React.FC = () => {
         {/* Logo */}
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2">
           <img
-            src="./Valid2.svg"
+            src="/Valid2.svg"
             alt="ValidPanel logo"
             className="w-24 sm:w-28 md:w-32 lg:ml-80 lg:w-full object-contain"
           />
@@ -88,7 +88,7 @@ const Step6: React.FC = () => {
             {paymentOptions.map(({ img, title, desc, bg, defaultChecked }) => (
               <label
                 key={title}
-                className="flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:border-purple-500 transition"
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-purple-500 transition"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -112,7 +112,7 @@ const Step6: React.FC = () => {
           </div>
 
           {/* Order Summary */}
-          <div className="mt-6 border-t pt-4">
+          <div className="mt-6 border-t border-gray-200 pt-4">
             <h3 className="font-semibold text-gray-800 mb-2">Order Summary</h3>
             <div className="flex justify-between text-sm text-gray-600 mb-1">
               <span>Pro Plan - Monthly</span>

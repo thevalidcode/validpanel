@@ -1,13 +1,13 @@
-import DashboardLayout from "../../../components/DashboardLayout";
-import AnalyticsDesktopView from "./AnalyticsDesktopView";
-import AnalyticsMobileView from "./AnalyticsMobileView";
+import AnalyticsDesktopView from "../components/analytics/AnalyticsDesktopView";
+import AnalyticsMobileView from "../components/analytics/AnalyticsMobileView";
 import { DollarSign, Users, BarChart3 } from "lucide-react";
-import type { TimeRange } from "../RevenueTrend";
+import type { TimeRange } from "../components/analytics/RevenueTrend";
 import { useState } from "react";
-import type { AnalyticsSummaryCardProps } from "./AnalyticsSummaryCard";
-import type { StorePerformanceData } from "./StorePerformanceChart";
-import type { StoreData } from "./AllStoresTable";
+import type { AnalyticsSummaryCardProps } from "../components/analytics/AnalyticsSummaryCard";
+import type { StorePerformanceData } from "../components/analytics/StorePerformanceChart";
+import type { StoreData } from "../components/analytics/AllStoresTable";
 import { FaStore } from "react-icons/fa";
+import Layout from "@/admin/components/Layout";
 
 // const UpArrow = () => (
 //   <svg
@@ -161,7 +161,10 @@ const allStoresData: StoreData[] = [
 const AnalyticsPage = () => {
   const [range, setRange] = useState<TimeRange>("Last 7 days");
   return (
-    <DashboardLayout role="admin">
+    <Layout
+      title="Analytics"
+      description="Track all stores performance and platfom's revenue."
+    >
       <div className="w-full space-y-5 p-6">
         <AnalyticsMobileView
           summaryData={summaryData}
@@ -179,7 +182,7 @@ const AnalyticsPage = () => {
           setRange={setRange}
         />
       </div>
-    </DashboardLayout>
+    </Layout>
   );
 };
 

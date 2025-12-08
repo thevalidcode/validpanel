@@ -1,9 +1,4 @@
-import { Bars3Icon } from "@heroicons/react/24/outline";
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
-
-interface AdminSettingsProps {
-  onMenuClick?: () => void;
-}
 
 interface ThrottleOptions {
   progressiveDelays: boolean;
@@ -12,7 +7,7 @@ interface ThrottleOptions {
   whitelistIPs: boolean;
 }
 
-export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
+export default function AdminSettings() {
   const [siteName, setSiteName] = useState<string>("My Application");
   const [adminEmail, setAdminEmail] = useState<string>("admin@example.com");
   const [currency, setCurrency] = useState<string>("USD - US Dollar");
@@ -66,27 +61,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
   };
 
   return (
-    <div className="w-full bg-gray-100">
-      <header className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <button
-          className="md:hidden text-gray-700 hover:text-purple-700"
-          onClick={onMenuClick}
-        >
-          <Bars3Icon className="w-6 h-6" />
-        </button>
-
-        <h2 className="hidden lg:block text-2xl font-bold">System Settings</h2>
-
-        <div className="flex items-center gap-2">
-          <img
-            src="Sarah.png"
-            alt="profile"
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <p className="font-medium text-gray-800">Sarah Johnson</p>
-        </div>
-      </header>
-
+    <div>
       <form onSubmit={handleSave} className="space-y-8 p-6">
         <section className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -102,6 +77,8 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
                 Site Name
               </label>
               <input
+                type="text"
+                title="siteName"
                 value={siteName}
                 onChange={(e) => setSiteName(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -114,6 +91,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="email"
+                title="email"
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -126,6 +104,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <select
                 value={currency}
+                title="currency"
                 onChange={(e) => setCurrency(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
               >
@@ -141,6 +120,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <select
                 value={timezone}
+                title="timezone"
                 onChange={(e) => setTimezone(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
               >
@@ -156,6 +136,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <textarea
                 rows={2}
+                title="siteDescription"
                 value={siteDesc}
                 onChange={(e) => setSiteDesc(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none bg-white"
@@ -168,6 +149,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <select
                 value={language}
+                title="language"
                 onChange={(e) => setLanguage(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
               >
@@ -182,6 +164,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
                 Date Format
               </label>
               <select
+                title="dateFormat"
                 value={dateFormat}
                 onChange={(e) => setDateFormat(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -220,6 +203,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="datetime-local"
+                title="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -232,6 +216,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="datetime-local"
+                title="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -244,6 +229,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <textarea
                 rows={2}
+                title="maintenanceMessage"
                 value={maintenanceMsg}
                 onChange={(e) => setMaintenanceMsg(e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -279,6 +265,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="reqestPerMinute"
                 value={rpm}
                 onChange={(e) => handleNumberChange(setRpm, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -291,6 +278,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="reqestPerHour"
                 value={rph}
                 onChange={(e) => handleNumberChange(setRph, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -303,6 +291,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="reqestPerDay"
                 value={rpd}
                 onChange={(e) => handleNumberChange(setRpd, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -317,6 +306,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="newLoginAttempts"
                 value={maxLoginAttempts}
                 onChange={(e) => handleNumberChange(setMaxLoginAttempts, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -329,6 +319,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="lockoutDuration"
                 value={lockoutDuration}
                 onChange={(e) => handleNumberChange(setLockoutDuration, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -343,6 +334,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="maxFileSize"
                 value={maxFileSize}
                 onChange={(e) => handleNumberChange(setMaxFileSize, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -355,6 +347,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="uploadPerHour"
                 value={uploadsPerHour}
                 onChange={(e) => handleNumberChange(setUploadsPerHour, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
@@ -367,6 +360,7 @@ export default function AdminSettings({ onMenuClick }: AdminSettingsProps) {
               </label>
               <input
                 type="number"
+                title="concurrentUploads"
                 value={concurrentUploads}
                 onChange={(e) => handleNumberChange(setConcurrentUploads, e)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"

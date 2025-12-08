@@ -32,7 +32,7 @@ const Step5: React.FC = () => {
       id: 1,
       title: "Bank Transfer",
       description: "Direct bank account transfers",
-      icon: <img src="./Frame.svg" alt="bank" className="w-7 h-7" />,
+      icon: <img src="/Frame.svg" alt="bank" className="w-7 h-7" />,
       details: (
         <div className="mt-4 text-sm text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-y-3">
           <p>
@@ -64,10 +64,10 @@ const Step5: React.FC = () => {
       id: 2,
       title: "Flutterwave",
       description: "Accept cards and online payments",
-      icon: <img src="./svg.svg" alt="flutterwave" className="w-7 h-7" />,
+      icon: <img src="/svg.svg" alt="flutterwave" className="w-7 h-7" />,
       details: (
         <div className="flex items-center gap-2 mt-3">
-          <img src="./Secureicon.svg" alt="secure" className="w-4 h-4" />
+          <img src="/Secureicon.svg" alt="secure" className="w-4 h-4" />
           <span className="text-green-600 text-sm font-medium">
             Secure payment processing
           </span>
@@ -87,7 +87,7 @@ const Step5: React.FC = () => {
       >
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2 mb-4">
           <img
-            src="./Valid2.svg"
+            src="/Valid2.svg"
             alt="ValidPanel logo"
             className="mb-6 sm:w-28 md:w-32 lg:w-full lg:ml-60 object-contain"
           />

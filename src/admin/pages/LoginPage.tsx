@@ -4,10 +4,10 @@ import TextInput from "../../components/general/TextInput";
 import Button from "../../components/general/Button";
 import type { Err } from "../../types/utility.types";
 import Toast from "../../components/general/Toast";
-import { useUserLogin } from "@/hooks/use-user";
+import { useAdminLogin } from "@/hooks/use-admin";
 
 const LoginPage = () => {
-  const { mutateAsync: loginUser } = useUserLogin();
+  const { mutateAsync: loginUser } = useAdminLogin();
 
   const [error, setError] = useState("");
 

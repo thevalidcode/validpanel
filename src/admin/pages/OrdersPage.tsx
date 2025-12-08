@@ -1,9 +1,11 @@
-import DashboardLayout from "../../../components/DashboardLayout";
-import OrdersDesktopView from "./OrdersDesktopView";
-import OrdersMobileView, { type NameType } from "./OrdersMobileView";
-import type { Order } from "./OrderCard";
-import type { RecentOrder } from "./RecentOrdersTable";
+import OrdersDesktopView from "../components/orders/OrdersDesktopView";
+import OrdersMobileView, {
+  type NameType,
+} from "../components/orders/OrdersMobileView";
+import type { Order } from "../components/orders/OrderCard";
+import type { RecentOrder } from "../components/orders/RecentOrdersTable";
 import { useState } from "react";
+import Layout from "@/admin/components/Layout";
 
 const ordersData: Order[] = [
   {
@@ -105,14 +107,14 @@ const OrdersPage = () => {
     return order.status === activeTab;
   });
   return (
-    <DashboardLayout role="admin">
+    <Layout title="Orders" description="View all stores orders.">
       <OrdersMobileView
         orders={filteredOrder}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
       <OrdersDesktopView recentOrders={recentOrdersData} />
-    </DashboardLayout>
+    </Layout>
   );
 };
 

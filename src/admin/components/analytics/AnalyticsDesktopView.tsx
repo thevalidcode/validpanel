@@ -1,5 +1,4 @@
-import { Bell } from "lucide-react";
-import RevenueTrend, { type TimeRange } from "../RevenueTrend";
+import RevenueTrend, { type TimeRange } from "./RevenueTrend";
 import type { FC } from "react";
 import AnalyticsSummaryCard, {
   type AnalyticsSummaryCardProps,
@@ -28,25 +27,7 @@ const AnalyticsDesktopView: FC<AnalyticsDesktopViewProps> = ({
 }) => {
   return (
     <div className="w-full mx-auto space-y-5 hidden md:block ">
-      {/* Header */}
-      <div className=" w-full flex h-20.5 px-6 justify-between items-center border border-[#E5E7EB] bg-white ">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">Store Analytics</h1>
-          <p className="text-sm text-gray-500">
-            Track your store performance and revenue
-          </p>
-        </div>
-        <div className="flex gap-4 items-center">
-          <Bell className="text-[#9CA3AF]" />
-          <img
-            src="/Sarah.png"
-            alt="Admin Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-
-      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {summaryData.map((data) => (
           <AnalyticsSummaryCard key={data.title} {...data} />
         ))}

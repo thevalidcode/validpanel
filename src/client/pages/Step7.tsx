@@ -61,37 +61,37 @@ const Step7: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 text-sm">
               {[
                 {
-                  img: "./Store.svg",
+                  img: "/Store.svg",
                   title: "Store Type",
                   desc: "E-commerce Store",
                   bg: "bg-[#DBEAFE]",
                 },
                 {
-                  img: "./Logo.svg",
+                  img: "/Logo.svg",
                   title: "Logo",
                   desc: "Custom Design",
                   bg: "bg-[#FFEDD5]",
                 },
                 {
-                  img: "./Fashion.svg",
+                  img: "/Fashion.svg",
                   title: "Store Name",
                   desc: "Trendy Fashion Hub",
                   bg: "bg-[#F3E8FF]",
                 },
                 {
-                  img: "./Card2.svg",
+                  img: "/Card2.svg",
                   title: "Payment",
                   desc: "Stripe • Connected",
                   bg: "bg-[#D1FAE5]",
                 },
                 {
-                  img: "./URL.svg",
+                  img: "/URL.svg",
                   title: "Domain",
                   desc: "trendyfashionhub.com",
                   bg: "bg-[#DCFCE7]",
                 },
                 {
-                  img: "./Star.svg",
+                  img: "/Star.svg",
                   title: "Features",
                   desc: "Premium Plan",
                   bg: "bg-[#E0E7FF]",
@@ -125,7 +125,7 @@ const Step7: React.FC = () => {
               onClick={handleContinue}
             >
               <div className="flex items-center gap-2 animate-pulse hover:animate-none">
-                <img src="./Jet.svg" alt="Jet" /> <span>Launch Store</span>
+                <img src="/Jet.svg" alt="Jet" /> <span>Launch Store</span>
               </div>
             </motion.button>
           </div>
@@ -194,7 +194,7 @@ const Step7: React.FC = () => {
           <div className="bg-white border border-gray-200 rounded-xl p-5 text-center shadow-sm">
             <div className="flex justify-center mb-3">
               <div className="bg-blue-50 rounded-full p-2">
-                <img src="./Help.svg" alt="Help" />
+                <img src="/Help.svg" alt="Help" />
               </div>
             </div>
             <h4 className="font-semibold text-gray-800">Need Help?</h4>

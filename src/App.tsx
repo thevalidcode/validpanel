@@ -6,8 +6,7 @@ import { Toaster } from "sonner";
 import Loader from "./components/Loader";
 
 // Layouts
-import DashLayout from "./layout/DashLayout";
-import StoreLayout from "./client/pages/Stores";
+import PublicLayout from "./components/PublicLayout";
 
 // Pages with Navbar & Footer
 import HomePage from "./client/pages/HomePage";
@@ -18,31 +17,27 @@ import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 
 // Step pages (no Navbar or Footer)
-import Step1 from "./client/pages/StoreOne";
-import Step2 from "./client/pages/Store2";
+import Step1 from "./client/pages/Step1";
+import Step2 from "./client/pages/Step2";
 import Step3 from "./client/pages/Step3";
 import Step4 from "./client/pages/Step4";
 import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
 import CreateStore from "./client/pages/CreateStorePage";
-
-// User pages (no admin)
 import SettingsPage from "./client/pages/SettingsPage";
 import UserOverview from "./client/pages/Useroverview";
+import StoresPage from "./client/pages/Stores";
+
+// Admin pages
+import AdminSettings from "./admin/pages/AdminSettings";
+import AdminLogin from "./admin/pages/LoginPage";
 
 // Admin pages (lazy loaded)
-const UsersPage = React.lazy(
-  () => import("./admin/pages/usersManagement/UsersPage")
-);
-const AnalyticsPage = React.lazy(
-  () => import("./admin/pages/AnalyticsPage/AnalyticsPage")
-);
-const AdminOrdersPage = React.lazy(
-  () => import("./admin/pages/Orders/OrdersPage")
-);
+const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
+const AnalyticsPage = React.lazy(() => import("./admin/pages/AnalyticsPage"));
+const AdminOrdersPage = React.lazy(() => import("./admin/pages/OrdersPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
-import AdminSettings from "./admin/pages/Adminsettings";
 
 const App: React.FC = () => {
   return (
@@ -54,13 +49,21 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             {/* Public & client routes with Dashboard layout */}
-            <Route path="/" element={<DashLayout />}>
+            <Route path="/" element={<PublicLayout />}>
               <Route index element={<HomePage />} />
               <Route path="faq" element={<FAQPage />} />
               <Route path="pricing" element={<PricingPage />} />
               <Route path="contact-us" element={<ContactUs />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
+              <Route
+                path="/admin/login"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminLogin />
+                  </Suspense>
+                }
+              />
             </Route>
 
             {/* Onboarding & store creation (no layout) */}
@@ -72,7 +75,7 @@ const App: React.FC = () => {
             <Route path="/onboarding/step6" element={<Step6 />} />
             <Route path="/onboarding/step7" element={<Step7 />} />
             <Route path="/create-store" element={<CreateStore />} />
-            <Route path="/stores" element={<StoreLayout />} />
+            <Route path="/stores" element={<StoresPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/overview" element={<UserOverview />} />
 

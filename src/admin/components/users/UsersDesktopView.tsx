@@ -1,4 +1,4 @@
-import { Ban, Bell, Check, Download, Search, Trash } from "lucide-react";
+import { Ban, Check, Download, Search, Trash } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 
 type User = {
@@ -86,25 +86,7 @@ export default function UsersDesktopView() {
 
   return (
     <div className="w-full mx-auto ">
-      {/* Header */}
-      <div className=" w-full flex h-20.5 px-6 justify-between items-center border border-[#E5E7EB] bg-white ">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">Users Management</h1>
-          <p className="text-sm text-gray-500">
-            Manage user accounts and permissions
-          </p>
-        </div>
-        <div className="flex gap-4 items-center">
-          <Bell className="text-[#9CA3AF]" />
-          <img
-            src="/Sarah.png"
-            alt="Admin Avatar"
-            className="w-8 h-8 rounded-full"
-          />
-        </div>
-      </div>
-
-      <div className="py-10 px-6 w-full bg-vgrey-bg">
+      <div className="py-5 px-6 w-full bg-vgrey-bg">
         {/* Filters */}
         <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white h-[92px] px-5 ">
           <div className="w-[35%] relative items-center ">
@@ -118,6 +100,7 @@ export default function UsersDesktopView() {
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF] " />
           </div>
           <select
+            title="type"
             value={accountType}
             onChange={(e) => setAccountType(e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2"
@@ -129,6 +112,7 @@ export default function UsersDesktopView() {
           </select>
           <select
             value={statusFilter}
+            title="ststus"
             onChange={(e) => setStatusFilter(e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2"
           >
@@ -152,6 +136,7 @@ export default function UsersDesktopView() {
           <div>
             <input
               type="checkbox"
+              title="pagination"
               checked={
                 paginatedUsers.every((u) => selectedUsers.includes(u.id)) &&
                 paginatedUsers.length > 0
@@ -185,6 +170,7 @@ export default function UsersDesktopView() {
                 <th className="p-3">
                   <input
                     type="checkbox"
+                    title="select-all"
                     checked={
                       paginatedUsers.every((u) =>
                         selectedUsers.includes(u.id)
@@ -206,6 +192,7 @@ export default function UsersDesktopView() {
                   <td className="p-3">
                     <input
                       type="checkbox"
+                      title="select"
                       checked={selectedUsers.includes(u.id)}
                       onChange={() => handleSelectUser(u.id)}
                     />

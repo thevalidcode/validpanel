@@ -38,8 +38,7 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
   };
 
   return (
-    <div className="md:hidden w-full space-y-10 px-5">
-      <h1 className="text-center font-medium text-xl">Orders</h1>
+    <div className="md:hidden w-full space-y-10 px-5 pt-5">
       <div className="w-full gap-5 flex items-center justify-between">
         <select
           title="ststua"

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { mockPlans } from "./PricingCard";
+import { mockPlans } from "@/_docs/doc";
 
 function PricingTable() {
   const tableData = [

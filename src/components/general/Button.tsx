@@ -1,5 +1,5 @@
 import { type ButtonHTMLAttributes, forwardRef, type ReactNode } from "react";
-import googleImgUrl from "../../../assets/images/google.svg";
+import googleImgUrl from "../../assets/images/google.svg";
 
 interface ButtonComponentProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;

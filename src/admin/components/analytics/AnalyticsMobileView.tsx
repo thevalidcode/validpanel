@@ -1,8 +1,8 @@
-import { type AnalyticsCardProps } from "../../components/analytics/AnalyticsSummary";
-import RevenueTrend, { type TimeRange } from "../RevenueTrend";
-import RecentStores from "../../components/analytics/RecentStores";
+import { type AnalyticsCardProps } from "./AnalyticsCard";
+import RevenueTrend, { type TimeRange } from "./RevenueTrend";
+import RecentStores from "./RecentStores";
 import type { FC } from "react";
-import AnalyticsCard from "../../components/analytics/AnalyticsSummary";
+import AnalyticsCard from "./AnalyticsCard";
 import StorePerformanceChart, {
   type StorePerformanceData,
 } from "./StorePerformanceChart";
@@ -24,8 +24,6 @@ const AnalyticsMobileView: FC<AnalyticsMobileView> = ({
 }) => {
   return (
     <div className="md:hidden w-full space-y-10">
-      <h1 className="text-center font-medium text-xl">Store Analytics</h1>
-      {/* <AnalyticsSummary /> */}
       <div className="grid grid-cols-2 gap-6 md:hidden">
         {summaryData.map((data) => (
           <AnalyticsCard key={data.title} {...data} />

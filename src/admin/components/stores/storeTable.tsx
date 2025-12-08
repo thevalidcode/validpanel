@@ -92,6 +92,7 @@ const StoreTable: React.FC = () => {
           />
 
           <select
+            title="store"
             value={filterType}
             onChange={(e) =>
               setFilterType(e.target.value as "All" | "Shop" | "Store")
@@ -104,6 +105,7 @@ const StoreTable: React.FC = () => {
           </select>
 
           <select
+            title="status"
             value={filterStatus}
             onChange={(e) =>
               setFilterStatus(e.target.value as "All" | "Active" | "Paused")

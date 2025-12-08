@@ -6,7 +6,6 @@ export type Admin = {
   email: string;
   fullName: string;
   image: string | null;
-  password: string;
   apiKey: string;
   status: AdminStatus;
   timestamp: string;
