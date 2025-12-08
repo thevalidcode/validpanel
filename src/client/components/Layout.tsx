@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import StoreSidebar from "./Storesidebar";
+import StoreSidebar from "./StoreSidebar";
 import { useAppContext } from "@/context/useAppContext";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
