@@ -1,13 +1,13 @@
 import React from "react";
-import AdminSettings from "../components/settings/SystemSettings";
+import SystemSettings from "../components/settings/SystemSettings";
 import Layout from "../components/Layout";
 
-const AdminScreen: React.FC = () => {
+const AdminSettings: React.FC = () => {
   return (
     <Layout title="Settings" description="View and manage platform's settings.">
-      <AdminSettings />
+      <SystemSettings />
     </Layout>
   );
 };
 
-export default AdminScreen;
+export default AdminSettings;
