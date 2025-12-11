@@ -23,25 +23,25 @@ export default function AdminStores(): JSX.Element {
             title="Total Stores"
             value="247"
             color="text-blue-700"
-            icon="TotalS.svg"
+            icon="/TotalS.svg"
           />
           <StatCard
             title="Active Stores"
             value="198"
             color="text-green-700"
-            icon="ActiveS.svg"
+            icon="/ActiveS.svg"
           />
           <StatCard
             title="Paused Stores"
             value="32"
             color="text-yellow-700"
-            icon="Pausedstore.svg"
+            icon="/Pausedstore.svg"
           />
           <StatCard
             title="This Month"
             value="17"
             color="text-purple-700"
-            icon="Calender.svg"
+            icon="/Calender.svg"
           />
         </div>
 

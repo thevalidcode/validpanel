@@ -1,6 +1,6 @@
 import { useAppContext } from "@/context/useAppContext";
 import { BellIcon, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-
+import { mockUserSubscription } from "@/_docs/doc";
 interface HeaderProps {
   title: string;
   description: string;
@@ -50,9 +50,14 @@ const Header = ({
             alt="profile"
             className="w-10 h-10 rounded-full object-cover"
           />
-          <p className="font-medium text-sm text-gray-700 truncate">
-            {userInfo?.fullName}
-          </p>
+          <div className="flex flex-col">
+            <p className="font-medium text-sm text-gray-700 truncate">
+              {userInfo?.fullName}
+            </p>{" "}
+            <p className="inter tracking-wide uppercase text-xs text-gray-500 truncate">
+              {mockUserSubscription.plan.name}
+            </p>
+          </div>
         </div>
 
         {/* Notifications */}

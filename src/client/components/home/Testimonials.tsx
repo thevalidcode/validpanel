@@ -30,7 +30,7 @@ const Testimonials: FC = () => {
 
   return (
     <section className="bg-gray-50 px-[16px] md:px-[150px] pb-40 max-md:pb-20 inter  pt-10">
-      <h2 className="text-2xl md:text-[40.21px] playfair font-bold text-center mb-5">
+      <h2 className="text-2xl md:text-[40.21px] merriweather font-bold text-center mb-5">
         What Our Users Are Saying
       </h2>
       <h5 className="text-sm md:text-[19.3px] font-[400] text-center mb-12 max-w-[630.5px] mx-auto">

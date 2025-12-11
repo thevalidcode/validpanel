@@ -1,3 +1,9 @@
+import type {
+  Subscription,
+  PaymentGateway,
+  PaymentMethod,
+  PaymentGatewayStatus,
+} from "@/types";
 import type { SubscriptionPlan } from "@/types/models/subscription-plan";
 
 export const currency = {
@@ -345,6 +351,8 @@ export const mockPlans: SubscriptionPlan[] = [
     currency: "USD",
     description: "ideal for testing or new sellers",
     status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
     features: {
       launch_stores: "1",
       upload_products: "up to 10",
@@ -362,6 +370,8 @@ export const mockPlans: SubscriptionPlan[] = [
     currency: "USD",
     description: "right for small businesses",
     status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
     features: {
       launch_stores: "up to 5",
       unlimited_products: true,
@@ -379,6 +389,8 @@ export const mockPlans: SubscriptionPlan[] = [
     currency: "USD",
     description: "for full-time digital entrepreneurs",
     status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
     features: {
       launch_stores: "unlimited",
       unlimited_products: true,
@@ -398,6 +410,8 @@ export const mockPlans: SubscriptionPlan[] = [
     currency: "USD",
     description: "for growing enterprises",
     status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
     features: {
       launch_stores: "unlimited",
       unlimited_products: true,
@@ -419,6 +433,8 @@ export const mockPlans: SubscriptionPlan[] = [
     currency: "USD",
     description: "for large scale operations",
     status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
     features: {
       launch_stores: "unlimited",
       unlimited_products: true,
@@ -433,5 +449,135 @@ export const mockPlans: SubscriptionPlan[] = [
     interval: "MONTHLY",
     createdAt: new Date(),
     updatedAt: new Date(),
+  },
+];
+
+export const mockUserSubscription: Subscription = {
+  uid: "sub-001",
+  status: "ACTIVE",
+  startedAt: "2024-11-10T00:00:00Z",
+  expiresAt: "2025-01-10T00:00:00Z",
+  plan: {
+    id: 2,
+    uid: "standard-plan-001",
+    name: "Standard Plan",
+    price: "20",
+    status: "ACTIVE",
+    tax: 10,
+    discountForAnnually: 30,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    currency: "USD",
+    description: "right for small businesses",
+    features: {
+      launch_stores: "up to 5",
+      unlimited_products: true,
+      custom_branding: true,
+    },
+    interval: "MONTHLY",
+  },
+};
+
+export const mockPaymentHistory = [
+  {
+    uid: "pay-001",
+    amount: "20.00",
+    chargedAmount: "20.00",
+    currency: "USD",
+    status: "SUCCESS",
+    method: "CREDIT_CARD",
+    createdAt: "2024-12-10T00:00:00Z",
+    plan: { name: "Standard Plan" },
+  },
+  {
+    uid: "pay-002",
+    amount: "20.00",
+    chargedAmount: "20.00",
+    currency: "USD",
+    status: "SUCCESS",
+    method: "CREDIT_CARD",
+    createdAt: "2024-11-10T00:00:00Z",
+    plan: { name: "Standard Plan" },
+  },
+  {
+    uid: "pay-003",
+    amount: "0.00",
+    chargedAmount: "0.00",
+    currency: "USD",
+    status: "SUCCESS",
+    method: "FREE",
+    createdAt: "2024-10-10T00:00:00Z",
+    plan: { name: "Free Plan" },
+  },
+];
+
+export const mockPaymentGateways: PaymentGateway[] = [
+  {
+    id: 1,
+    uid: "stripe-001",
+    platform: "FLUTTERWAVE" as PaymentMethod,
+    name: "Stripe",
+    description: "Credit/Debit Card, Apple Pay, Google Pay",
+    signature: null,
+    encryptedSecretKey: null,
+    iv: null,
+    image: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/stripe.svg",
+    status: "ACTIVE" as PaymentGatewayStatus,
+    createdAt: new Date(),
+    position: 1,
+    min: "1.00",
+    max: "10000.00",
+  },
+
+  {
+    id: 2,
+    uid: "paystack-001",
+    platform: "PAYSTACK" as PaymentMethod,
+    name: "Paystack",
+    description: "Bank Transfer, Card, Mobile Money",
+    signature: null,
+    encryptedSecretKey: null,
+    iv: null,
+    image: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paystack.svg",
+    status: "ACTIVE" as PaymentGatewayStatus,
+    createdAt: new Date(),
+    position: 2,
+    min: "1.00",
+    max: "5000.00",
+  },
+
+  {
+    id: 3,
+    uid: "flutterwave-001",
+    platform: "FLUTTERWAVE" as PaymentMethod,
+    name: "Flutterwave",
+    description: "Multiple payment options",
+    signature: null,
+    encryptedSecretKey: null,
+    iv: null,
+    image: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/flutterwave.svg",
+    status: "ACTIVE" as PaymentGatewayStatus,
+    createdAt: new Date(),
+    position: 3,
+    min: "1.00",
+    max: "8000.00",
+  },
+
+  {
+    id: 4,
+    uid: "manual-001",
+    platform: "MANUAL" as PaymentMethod,
+    name: "Manual Payment",
+    description:
+      "Pay via bank transfer or other manual methods. Your subscription will be activated after payment verification by our team (usually within 24 hours).",
+    signature: null,
+    encryptedSecretKey: null,
+    iv: null,
+    image: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/cashapp.svg",
+    status: "ACTIVE" as PaymentGatewayStatus,
+    createdAt: new Date(),
+    position: 4,
+    min: "0.00",
+    max: "999999.00",
   },
 ];

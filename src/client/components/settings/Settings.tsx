@@ -1,4 +1,6 @@
 import React, { useState, type JSX } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function UserSettings(): JSX.Element {
   const [firstName, setFirstName] = useState<string>("Sarah");
@@ -9,10 +11,11 @@ export default function UserSettings(): JSX.Element {
     "UTC-5 [Eastern Standard Time]"
   );
   const [language, setLanguage] = useState<string>("English (US)");
+  const navigate = useNavigate();
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    alert("Changes saved successfully!");
+    toast.success("Changes saved successfully!");
   };
 
   return (
@@ -33,14 +36,6 @@ export default function UserSettings(): JSX.Element {
               JPG, PNG or GIF. Max size 2MB.
             </p>
           </div>
-        </div>
-
-        {/* Account Type */}
-        <div className="mb-8">
-          <p className="text-gray-700 font-medium mb-2">Account Type</p>
-          <span className="inline-block bg-purple-100 text-purple-700 text-xs font-medium px-3 py-1 rounded-xl">
-            Shop Owner
-          </span>
         </div>
 
         {/* Form */}
@@ -116,6 +111,7 @@ export default function UserSettings(): JSX.Element {
               </div>
               <button
                 type="button"
+                onClick={() => navigate("/forgot-password")}
                 className="text-sm text-purple-600 hover:underline font-medium"
               >
                 Change Password

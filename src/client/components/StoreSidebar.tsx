@@ -2,14 +2,12 @@ import React, { type JSX } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Cog6ToothIcon,
-  UserGroupIcon,
   ShoppingBagIcon,
-  CurrencyDollarIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "@/context/useAppContext";
-import { Settings } from "lucide-react";
+import { CreditCard, Settings } from "lucide-react";
 
 interface MenuItem {
   name: string;
@@ -19,9 +17,8 @@ interface MenuItem {
 
 const menu: MenuItem[] = [
   { name: "Overview", icon: HomeIcon, to: "/overview" },
-  { name: "Users", icon: UserGroupIcon, to: "/users" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
-  { name: "Orders", icon: CurrencyDollarIcon, to: "/orders" },
+  { name: "Subscription", icon: CreditCard, to: "/subscription" },
   { name: "Settings", icon: Settings, to: "/settings" },
 ];
 

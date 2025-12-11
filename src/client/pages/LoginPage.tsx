@@ -1,15 +1,13 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/general/TextInput";
 import Button from "../../components/general/Button";
 import type { Err } from "../../types/utility.types";
-import Toast from "../../components/general/Toast";
 import { useUserLogin } from "@/hooks/use-user";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser } = useUserLogin();
-
-  const [error, setError] = useState("");
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -35,28 +33,18 @@ const LoginPage = () => {
       await loginUser(values);
     } catch (error) {
       if ((error as Err)?.status === 500) {
-        setError((error as Err)?.message);
+        toast.error((error as Err)?.message);
       } else {
         console.log(error);
         if ((error as any)?.response?.data?.error) {
-          setError((error as any)?.response?.data?.error);
+          toast.error((error as any)?.response?.data?.error);
         }
       }
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      const reportError = setTimeout(() => setError(""), 4000);
-
-      return () => clearTimeout(reportError);
-    }
-  }, [error]);
-
   return (
     <AuthWrapper pageTitle="Welcome back" type="login">
-      {error ? <Toast type="error" message={error} /> : ""}
-
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col gap-4 w-full">
           <TextInput
@@ -65,13 +53,15 @@ const LoginPage = () => {
             placeholder="E-mail address*"
             aria-label="email"
             value={inputs.email}
+            required
             onChange={handleInputs}
           />
           <TextInput
             type="password"
             placeholder="Password*"
             name="password"
-            aria-label="passoword"
+            required
+            aria-label="password"
             value={inputs.password}
             onChange={handleInputs}
           />

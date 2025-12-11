@@ -15,6 +15,8 @@ import PricingPage from "./client/pages/PricingPage";
 import ContactUs from "./client/pages/ContactUs";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
+import ForgetPassword from "./client/pages/ForgetPassword";
+import ResetPasswordPage from "./client/pages/ResetPassword";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/Step1";
@@ -26,12 +28,16 @@ import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
 import CreateStore from "./client/pages/CreateStorePage";
 import SettingsPage from "./client/pages/SettingsPage";
-import UserOverview from "./client/pages/Useroverview";
+import UserOverview from "./client/pages/UserOverview";
 import StoresPage from "./client/pages/Stores";
+import Subscription from "./client/pages/Subscription";
+import UpgradePlan from "./client/pages/UpgradePlan";
 
 // Admin pages
 import AdminSettings from "./admin/pages/AdminSettings";
 import AdminLogin from "./admin/pages/LoginPage";
+import AdminResetPassword from "./admin/pages/ResetPassword";
+import AdminForgotPassword from "./admin/pages/ForgetPassword";
 
 // Admin pages (lazy loaded)
 const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
@@ -56,13 +62,16 @@ const App: React.FC = () => {
               <Route path="contact-us" element={<ContactUs />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
+              <Route path="forgot-password" element={<ForgetPassword />} />
+              <Route path="reset-password" element={<ResetPasswordPage />} />
+              <Route path="admin/login" element={<AdminLogin />} />
               <Route
-                path="/admin/login"
-                element={
-                  <Suspense fallback={<Loader />}>
-                    <AdminLogin />
-                  </Suspense>
-                }
+                path="admin/forgot-password"
+                element={<AdminForgotPassword />}
+              />{" "}
+              <Route
+                path="admin/reset-password"
+                element={<AdminResetPassword />}
               />
             </Route>
 
@@ -78,6 +87,11 @@ const App: React.FC = () => {
             <Route path="/stores" element={<StoresPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/overview" element={<UserOverview />} />
+            <Route path="/subscription" element={<Subscription />} />
+            <Route
+              path="/subscription/upgrade-plan/:id"
+              element={<UpgradePlan />}
+            />
 
             {/* Admin routes with Suspense for lazy loading */}
             <Route

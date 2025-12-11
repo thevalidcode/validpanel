@@ -1,4 +1,4 @@
-import ContactForm from "../components/contact-us/ContactFormProps";
+import ContactForm from "../components/contact-us/ContactForm";
 import ContactMiniHolder from "../components/contact-us/ContactMiniHolder";
 
 

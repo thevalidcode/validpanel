@@ -6,6 +6,8 @@ import Hero from "../components/home/Hero";
 import Steps from "../components/home/Steps";
 import Testimonials from "../components/home/Testimonials";
 import LaunchPrompt from "../components/LaunchPrompt";
+import { useAppContext } from "@/context/useAppContext";
+import { useNavigate } from "react-router-dom";
 
 // Properly typed animation variants
 const containerVariants: Variants = {
@@ -47,7 +49,9 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children }) => {
   const controls = useAnimation();
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: false, margin: "-100px" });
-
+  const { userInfo, isAuthLoading } = useAppContext();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     if (isInView) {
       controls.start("visible");
@@ -55,6 +59,12 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children }) => {
       controls.start("exit");
     }
   }, [isInView, controls]);
+
+  useEffect(() => {
+    if (!isAuthLoading && userInfo) {
+      navigate("/overview");
+    }
+  }, [isAuthLoading, userInfo, navigate]);
 
   return (
     <motion.div

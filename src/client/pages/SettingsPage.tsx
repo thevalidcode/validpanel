@@ -1,5 +1,5 @@
 import React from "react";
-import UserSettings from "./Settings";
+import UserSettings from "../components/settings/Settings";
 import Layout from "../components/Layout";
 
 const Settings: React.FC = () => {

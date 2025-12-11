@@ -17,6 +17,8 @@ export interface SubscriptionPlan {
     [key: string]: any;
   };
   interval: "MONTHLY" | "YEARLY";
+  discountForAnnually: number;
+  tax: number;
   createdAt: Date;
   updatedAt: Date;
 }

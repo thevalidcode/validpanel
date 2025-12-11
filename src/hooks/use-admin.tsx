@@ -279,3 +279,50 @@ export function useUpdateAdminByAdmin() {
     },
   });
 }
+
+interface ForgetPasswordProps {
+  email: string;
+}
+
+export function useForgotPassword() {
+  const { api } = useAppContext();
+  return useMutation({
+    mutationFn: async (data: ForgetPasswordProps) => {
+      const res = await api.post(`/admins/forgot-password`, data);
+      if (!res.data) throw new Error("Failed to send email");
+      return res.data;
+    },
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        console.error(error.response?.data?.error || "Failed to send email");
+      } else {
+        console.error("Failed send email");
+      }
+    },
+  });
+}
+
+interface ResetPasswordProps {
+  token: string;
+  password: string;
+}
+
+export function useResetPassword() {
+  const { api } = useAppContext();
+  return useMutation({
+    mutationFn: async (data: ResetPasswordProps) => {
+      const res = await api.post(`/admins/reset-password`, data);
+      if (!res.data) throw new Error("Failed to reset password");
+      return res.data;
+    },
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        console.error(
+          error.response?.data?.error || "Failed to reset password"
+        );
+      } else {
+        console.error("Failed to reset password");
+      }
+    },
+  });
+}

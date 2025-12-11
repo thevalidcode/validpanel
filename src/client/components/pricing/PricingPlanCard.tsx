@@ -1,50 +1,62 @@
-import type { SubscriptionPlan } from "@/types/models/subscription-plan";
+import type { SubscriptionPlan, Subscription } from "@/types";
 import { motion } from "framer-motion";
+import PricingFeatures from "./PricingFeatures";
+import { useNavigate } from "react-router-dom";
+
+interface PricingPlanCardProps {
+  plan: SubscriptionPlan;
+  isAnnual?: boolean;
+  index: number;
+  currentSubscription?: Subscription | null;
+}
 
 function PricingPlanCard({
   plan,
-  isAnnual,
+  isAnnual = false,
   index,
-}: {
-  plan: SubscriptionPlan;
-  isAnnual: boolean;
-  index: number;
-}) {
+  currentSubscription,
+}: PricingPlanCardProps) {
+  const navigate = useNavigate();
+  const isCurrentPlan =
+    !!currentSubscription &&
+    currentSubscription.status === "ACTIVE" &&
+    currentSubscription.plan.uid === plan.uid;
+
   const monthlyPrice = parseFloat(plan.price);
   const displayPrice = isAnnual
     ? (monthlyPrice * 12).toFixed(0)
     : monthlyPrice.toFixed(0);
-  const formatFeatureKey = (key: string): string => {
-    return key
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-  const formatFeatureValue = (key: string, value: any): string => {
-    if (typeof value === "boolean") {
-      return value ? formatFeatureKey(key) : "";
-    }
-    if (key.includes("stores")) {
-      return `Launch ${value} stores`;
-    }
-    if (key.includes("products")) {
-      return `Upload ${value} products`;
-    }
-    return `${formatFeatureKey(key)}: ${value}`;
-  };
-  const features = Object.entries(plan.features)
-    .filter(([_, value]) => value)
-    .map(([key, value]) => formatFeatureValue(key, value))
-    .filter(Boolean);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="w-full"
+      className="relative w-full"
     >
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md shadow-primary transition-all duration-300 p-6">
+      {/* Ribbon for Current Plan */}
+      {isCurrentPlan && (
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="absolute -top-3 right-4 bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-20"
+        >
+          Current Plan
+        </motion.div>
+      )}
+
+      <motion.div
+        animate={
+          isCurrentPlan
+            ? { boxShadow: "0 0 22px rgba(125, 30, 254, 0.35)" }
+            : { boxShadow: "0 0 6px rgba(0,0,0,0.08)" }
+        }
+        transition={{ duration: 0.4 }}
+        className={`bg-white border border-gray-200 rounded-2xl hover:shadow-md transition-all duration-300 p-6 ${
+          isCurrentPlan ? "border-purple-400" : ""
+        }`}
+      >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           {/* Left Section */}
           <div className="flex-1">
@@ -55,30 +67,7 @@ function PricingPlanCard({
               {plan.description}
             </p>
 
-            <ul className="space-y-3 mb-4">
-              {features.map((feature, idx) => (
-                <motion.li
-                  key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + idx * 0.1 }}
-                  className="flex items-center gap-3"
-                >
-                  <svg
-                    className="w-5 h-5 text-purple-600 flex-shrink-0"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-gray-700 text-sm">{feature}</span>
-                </motion.li>
-              ))}
-            </ul>
+            <PricingFeatures plan={plan} />
           </div>
 
           {/* Right Section */}
@@ -99,28 +88,36 @@ function PricingPlanCard({
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full lg:w-auto px-8 poppins py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+              disabled={isCurrentPlan}
+              whileHover={!isCurrentPlan ? { scale: 1.05 } : {}}
+              whileTap={!isCurrentPlan ? { scale: 0.95 } : {}}
+              onClick={() => navigate(`/subscription/upgrade-plan/${plan.id}`)}
+              className={`w-full lg:w-auto px-8 poppins py-3 rounded-full font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
+                isCurrentPlan
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+              }`}
             >
-              Upgrade Now
+              {isCurrentPlan ? "Your Current Plan" : "Upgrade Now"}
+
               <svg
                 className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
+                {" "}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
+                />{" "}
               </svg>
             </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }

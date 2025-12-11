@@ -1,16 +1,14 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import Button from "../../components/general/Button";
 import TextInput from "../../components/general/TextInput";
 import AuthWrapper from "../components/login/AuthWrapper";
-import Toast from "../../components/general/Toast";
 import type { Err } from "../../types/utility.types";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const { mutateAsync: createUser } = useCreateUser();
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
@@ -37,15 +35,15 @@ const RegisterPage = () => {
     try {
       const data = await createUser(values);
       if (data) {
-        setSuccess("Successful, proceed to login");
+        toast.success("Successful, proceed to login");
         navigate("/login");
       }
     } catch (error) {
       if ((error as Err)?.status === 500) {
-        setError((error as Err)?.message);
+        toast.error((error as Err)?.message);
       } else {
         if ((error as Err)?.response?.data?.error?.fieldErrors?.fullName) {
-          setError(
+          toast.error(
             (error as Err)?.response?.data?.error?.fieldErrors?.fullName
           );
         }
@@ -53,24 +51,15 @@ const RegisterPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      const reportError = setTimeout(() => setError(""), 4000);
-
-      return () => clearTimeout(reportError);
-    }
-  }, [error]);
-
   return (
     <AuthWrapper pageTitle="Create an account" type="register">
-      {error ? <Toast type="error" message={error} /> : ""}
-      {success ? <Toast type="success" message={success} /> : ""}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 w-full">
         <div className="grid grid-cols-2 gap-5">
           <TextInput
             type="text"
             placeholder="First name*"
             name="firstName"
+            required
             value={inputs.firstName}
             aria-label="First Name"
             onChange={handleInputs}
@@ -79,6 +68,7 @@ const RegisterPage = () => {
             type="text"
             placeholder="Last name*"
             aria-label="Last Name"
+            required
             name="lastName"
             value={inputs.lastName}
             onChange={handleInputs}
@@ -89,12 +79,14 @@ const RegisterPage = () => {
           placeholder="Email address*"
           aria-label="Email"
           name="email"
+          required
           value={inputs.email}
           onChange={handleInputs}
         />
         <TextInput
           type="password"
           placeholder="Password*"
+          required
           aria-label="Password"
           name="password"
           value={inputs.password}
