@@ -62,7 +62,7 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({ children }) => {
 
   useEffect(() => {
     if (!isAuthLoading && userInfo) {
-      navigate("/overview");
+      navigate("/analytics");
     }
   }, [isAuthLoading, userInfo, navigate]);
 

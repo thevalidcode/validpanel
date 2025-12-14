@@ -28,7 +28,7 @@ import Step6 from "./client/pages/Step6";
 import Step7 from "./client/pages/Step7";
 import CreateStore from "./client/pages/CreateStorePage";
 import SettingsPage from "./client/pages/SettingsPage";
-import UserOverview from "./client/pages/UserOverview";
+import AnalyticsPage from "./client/pages/AnalyticsPage";
 import StoresPage from "./client/pages/Stores";
 import Subscription from "./client/pages/Subscription";
 import UpgradePlan from "./client/pages/UpgradePlan";
@@ -41,7 +41,7 @@ import AdminForgotPassword from "./admin/pages/ForgetPassword";
 
 // Admin pages (lazy loaded)
 const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
-const AnalyticsPage = React.lazy(() => import("./admin/pages/AnalyticsPage"));
+const OverviewPage = React.lazy(() => import("./admin/pages/Overview"));
 const AdminOrdersPage = React.lazy(() => import("./admin/pages/OrdersPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
 
@@ -83,10 +83,10 @@ const App: React.FC = () => {
             <Route path="/onboarding/step5" element={<Step5 />} />
             <Route path="/onboarding/step6" element={<Step6 />} />
             <Route path="/onboarding/step7" element={<Step7 />} />
-            <Route path="/create-store" element={<CreateStore />} />
+            <Route path="/stores/create" element={<CreateStore />} />
             <Route path="/stores" element={<StoresPage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/overview" element={<UserOverview />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route
               path="/subscription/upgrade-plan/:id"
@@ -112,10 +112,10 @@ const App: React.FC = () => {
               }
             />
             <Route
-              path="/admin/analytics"
+              path="/admin/overview"
               element={
                 <Suspense fallback={<Loader />}>
-                  <AnalyticsPage />
+                  <OverviewPage />
                 </Suspense>
               }
             />

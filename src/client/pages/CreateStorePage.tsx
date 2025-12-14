@@ -1,17 +1,24 @@
 import React, { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import Layout from "../components/Layout";
+import { useCreateStore } from "@/hooks/use-store";
+import type { StoreType } from "@/types";
+import LivePreview from "../components/stores/LivePreview";
+import DomainInput from "../components/DomainInput";
+import ImageUploadBox from "@/components/ImageUploadBox";
 
 const CreateStoreForm: React.FC = () => {
-  const [storeType, setStoreType] = useState<"shop" | "social-media-store">(
-    "shop"
-  );
+  const [storeType, setStoreType] = useState<StoreType>("SHOP");
   const [brandColor, setBrandColor] = useState<string>("#6D28D9");
-  const [payment, setPayment] = useState<
-    "stripe" | "paypal" | "flutterwave" | "paystack"
-  >("stripe");
   const [storeName, setStoreName] = useState<string>("");
-  const [subdomain, setSubdomain] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [domain, setDomain] = useState<string>("");
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [useCustomDomain, setUseCustomDomain] = useState<boolean>(false);
+
+  const { mutateAsync: createStore } = useCreateStore();
+  const navigate = useNavigate();
 
   const brandColors: string[] = [
     "#4C1D95",
@@ -25,30 +32,46 @@ const CreateStoreForm: React.FC = () => {
     "#f97316",
   ];
 
-  const navigate = useNavigate();
-
-  const handleCreate = (): void => {
-    navigate("/dashboard");
+  const handleCreate = async (): Promise<void> => {
+    if (!storeName.trim() || !domain.trim()) return; // required field validation
+    const parsedDomain = useCustomDomain ? domain : domain + ".validpanel.com";
+    await createStore({
+      type: storeType,
+      name: storeName,
+      description: description || undefined,
+      domain: parsedDomain,
+      logoUrl,
+      color: brandColor,
+      subscriptionId: 1, // Change this as needed
+    });
+    navigate("/analytics");
   };
 
-  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) =>
     setStoreName(e.target.value);
-  };
-
-  const handleSubdomainChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSubdomain(e.target.value);
-  };
+  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
+    setDescription(e.target.value);
+  const handleToggleDomain = (): void => setUseCustomDomain((prev) => !prev);
 
   return (
     <Layout
       title="Create Store"
       description="Create a shop or a social media store"
     >
-      {/* Main Container */}
-      <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-4 sm:p-6 lg:p-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col lg:flex-row justify-center items-start gap-8 p-4 sm:p-6 lg:p-10"
+      >
         <div className="flex flex-col lg:flex-row gap-8 w-full max-w-5xl">
           {/* Left Form */}
-          <div className="bg-white p-6 sm:p-8 flex-1 rounded-xl shadow-md">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white p-6 sm:p-8 flex-1 rounded-xl shadow-md"
+          >
             <h2 className="text-2xl font-bold mb-2 text-center">
               Create a New Store
             </h2>
@@ -56,10 +79,10 @@ const CreateStoreForm: React.FC = () => {
               Set up a new store by filling in the details below.
             </p>
 
-            <div className="mb-6  rounded-lg p-4 sm:p-6">
+            <div className="mb-6 rounded-lg p-4 sm:p-6">
               {/* Store Type */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                {(["shop", "social-media-store"] as const).map((type) => (
+                {(["SHOP", "SOCIAL"] as const).map((type) => (
                   <button
                     key={type}
                     className={`flex-1 border rounded-lg py-6 sm:py-8 text-center transition-all duration-200 ${
@@ -70,17 +93,17 @@ const CreateStoreForm: React.FC = () => {
                     onClick={() => setStoreType(type)}
                   >
                     <img
-                      src={type === "shop" ? "Shop2.svg" : "Link.svg"}
+                      src={type === "SHOP" ? "/Shop2.svg" : "/Link.svg"}
                       alt={type}
                       className="mx-auto w-5 mb-2"
                     />
                     <span className="font-medium capitalize">
-                      {type.replaceAll("-", " ")}
+                      {type === "SOCIAL" ? "Social Media Store" : "Shop"}
                     </span>
                     <p className="text-xs text-gray-400">
-                      {type === "shop"
+                      {type === "SHOP"
                         ? "Traditional e-commerce store"
-                        : "Social commerce platform"}
+                        : "Social media marketing platform"}
                     </p>
                   </button>
                 ))}
@@ -88,37 +111,48 @@ const CreateStoreForm: React.FC = () => {
 
               {/* Store Name */}
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Store Name
+                Store Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="Enter your store name"
                 value={storeName}
                 onChange={handleNameChange}
-                className="w-full border  border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                required
+                className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
 
-              {/* Custom Subdomain */}
+              {/* Description */}
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Custom Subdomain
+                Description (Optional)
               </label>
-              <div className="flex flex-col sm:flex-row mb-4">
-                <input
-                  type="text"
-                  placeholder="mystore"
-                  value={subdomain}
-                  onChange={handleSubdomainChange}
-                  className="flex-1 border border-gray-300 rounded-md sm:rounded-l-md sm:rounded-r-none p-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-                <span className="border border-gray-300 sm:rounded-r-md sm:rounded-l-none bg-gray-100 px-3 py-2 flex items-center justify-center text-gray-500 text-sm mt-2 sm:mt-0">
-                  .validpanel.com
-                </span>
-              </div>
+              <textarea
+                placeholder="Enter a short description of your store"
+                value={description}
+                onChange={handleDescriptionChange}
+                className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                rows={3}
+              />
+
+              {/* Domain Setup */}
+              <DomainInput
+                value={domain}
+                onChange={setDomain}
+                useCustomDomain={useCustomDomain}
+                onToggleCustomDomain={handleToggleDomain}
+                required
+              />
+
+              <ImageUploadBox
+                label="Brand Logo (Optional)"
+                collection="store"
+                onUploaded={(url) => setLogoUrl(url)}
+              />
 
               {/* Brand Color */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Brand Color
+                  Brand Color <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-3">
                   {brandColors.map((color) => (
@@ -133,32 +167,7 @@ const CreateStoreForm: React.FC = () => {
                       }`}
                       style={{ backgroundColor: color }}
                       onClick={() => setBrandColor(color)}
-                    ></button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Payment Method */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Payment Method
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {(
-                    ["stripe", "paypal", "flutterwave", "paystack"] as const
-                  ).map((method) => (
-                    <button
-                      key={method}
-                      type="button"
-                      className={`border rounded-md py-2 capitalize transition ${
-                        payment === method
-                          ? "border-purple-500 bg-purple-50 text-primary"
-                          : "border-gray-200 text-gray-600 hover:border-purple-200"
-                      }`}
-                      onClick={() => setPayment(method)}
-                    >
-                      {method}
-                    </button>
+                    />
                   ))}
                 </div>
               </div>
@@ -168,70 +177,39 @@ const CreateStoreForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="border border-purple-500 text-purple-500 rounded-md px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
+                  className="border cursor-pointer border-purple-500 text-purple-500 rounded-md px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={handleCreate}
-                  className="bg-purple-600 text-white rounded-md px-4 py-2 hover:bg-primary w-full sm:w-auto"
+                  title="create-store"
+                  className="bg-purple-600 cursor-pointer text-white rounded-md px-4 py-2 hover:bg-primary w-full sm:w-auto flex items-center gap-2 animate-pulse hover:animate-none"
                 >
-                  Create Store
+                  <img src="/Jet.svg" alt="Jet" /> <span>Create Store</span>
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Live Preview */}
-          <div className="bg-white shadow rounded-lg p-6 h-fit w-full lg:w-1/3">
-            <h3 className="font-semibold mb-3 text-center sm:text-left">
-              Live Preview
-            </h3>
-            <div className="border-2 border-gray-100 flex flex-col p-4 rounded-lg">
-              <div className="flex items-center mb-4 justify-between flex-wrap gap-2">
-                <div className="flex items-center">
-                  <div
-                    className="w-6 h-6 rounded-md mr-2 flex items-center justify-center"
-                    style={{ backgroundColor: brandColor }}
-                  >
-                    <img src="Prev_shop.svg" alt="icon" className="w-3 h-3" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 truncate max-w-[150px]">
-                      {storeName || "My Store"}
-                    </p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {subdomain || "mystore"}.validpanel.com
-                    </p>
-                  </div>
-                </div>
-                <img src="Cart.svg" alt="cart" className="w-5 h-5" />
-              </div>
-
-              <div className="flex flex-wrap gap-3 justify-center mb-4">
-                {[1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="border border-gray-200 p-3 rounded-lg bg-[#F3F4F6] w-[48%] sm:w-[45%] text-center"
-                  >
-                    <img src="Preview.svg" alt="product" className="mx-auto" />
-                    <p className="text-xs text-black mt-1">Product {i}</p>
-                    <p className="text-xs text-purple-500 font-bold">$29.99</p>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                className="w-full text-white py-2 rounded-md text-sm sm:text-base transition"
-                style={{ backgroundColor: brandColor }}
-              >
-                Shop Now
-              </button>
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            className="w-full lg:w-1/3"
+          >
+            <LivePreview
+              storeName={storeName}
+              brandColor={brandColor}
+              useCustomDomain={useCustomDomain}
+              domain={domain}
+              logoUrl={logoUrl}
+            />
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </Layout>
   );
 };

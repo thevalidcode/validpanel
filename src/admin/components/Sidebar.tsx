@@ -108,7 +108,6 @@ const sections: MenuSection[] = [
     ],
   },
 ];
-
 export default function AdminSidebar(): JSX.Element {
   const location = useLocation();
   const isActive = (path: string) => location.pathname.startsWith(path);

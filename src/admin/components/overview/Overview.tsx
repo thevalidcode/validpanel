@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  ArrowUpIcon,
-  ArrowDownRightIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowUpIcon, ArrowDownRightIcon } from "@heroicons/react/24/outline";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -14,7 +10,6 @@ import {
   Tooltip,
   Filler,
 } from "chart.js";
-import { useNavigate } from "react-router-dom";
 
 // Register Chart.js components
 ChartJS.register(
@@ -99,31 +94,15 @@ const Overview: React.FC<OverviewProps> = () => {
       },
     },
   };
-  const navigate = useNavigate();
-  const handleCreateStore = (): void => {
-    navigate("/create-store");
-  };
 
   return (
     <div className="p-6 min-h-screen">
-      {/* Header */}
-      <div className="flex justify-end items-center mb-6">
-        <button
-          type="button"
-          onClick={handleCreateStore}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 text-sm"
-        >
-          <PlusIcon className="w-4 h-4" />
-          Create New Store
-        </button>
-      </div>
-
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Revenue"
           value="$124,350"
-          icon="Icon.svg"
+          icon="/Icon.svg"
           change="+12.5% from last month"
           color="text-green-600"
           up
@@ -131,7 +110,7 @@ const Overview: React.FC<OverviewProps> = () => {
         <StatCard
           title="Active Users"
           value="8,549"
-          icon="Usericon.svg"
+          icon="/Usericon.svg"
           change="+8.2% from last week"
           color="text-blue-600"
           up
@@ -139,7 +118,7 @@ const Overview: React.FC<OverviewProps> = () => {
         <StatCard
           title="Conversion Rate"
           value="3.24%"
-          icon="Rate.svg"
+          icon="/Rate.svg"
           change="-2.1% from last week"
           color="text-red-600"
           down
@@ -147,7 +126,7 @@ const Overview: React.FC<OverviewProps> = () => {
         <StatCard
           title="Total Orders"
           value="2,847"
-          icon="Orders.svg"
+          icon="/Orders.svg"
           change="+16.3% from last month"
           color="text-green-600"
           up
@@ -215,19 +194,19 @@ const Overview: React.FC<OverviewProps> = () => {
 
           <ul className="space-y-3">
             <OrderItem
-              icon="Mac.svg"
+              icon="/Mac.svg"
               name="MacBook Pro"
               category="Electronics"
               price="$2,499"
             />
             <OrderItem
-              icon="Iphone.svg"
+              icon="/Iphone.svg"
               name="iPhone 15"
               category="Electronics"
               price="$999"
             />
             <OrderItem
-              icon="Airpod.svg"
+              icon="/Airpod.svg"
               name="AirPods Pro"
               category="Accessories"
               price="$249"

@@ -1,14 +1,15 @@
-import { type AnalyticsCardProps } from "./AnalyticsCard";
 import RevenueTrend, { type TimeRange } from "./RevenueTrend";
 import RecentStores from "./RecentStores";
 import type { FC } from "react";
-import AnalyticsCard from "./AnalyticsCard";
 import StorePerformanceChart, {
   type StorePerformanceData,
 } from "./StorePerformanceChart";
+import AnalyticsSummaryCard, {
+  type AnalyticsSummaryCardProps,
+} from "./AnalyticsSummaryCard";
 
 interface AnalyticsMobileView {
-  summaryData: AnalyticsCardProps[];
+  summaryData: AnalyticsSummaryCardProps[];
   dataSets: Record<TimeRange, { name: string; value: number }[]>;
   range: TimeRange;
   setRange: (value: TimeRange) => void;
@@ -24,25 +25,14 @@ const AnalyticsMobileView: FC<AnalyticsMobileView> = ({
 }) => {
   return (
     <div className="md:hidden w-full space-y-10">
-      <div className="grid grid-cols-2 gap-6 md:hidden">
+      <div className="grid grid-cols-2 w-full gap-4">
         {summaryData.map((data) => (
-          <AnalyticsCard key={data.title} {...data} />
+          <AnalyticsSummaryCard key={data.title} {...data} />
         ))}
       </div>
-      <RevenueTrend dataSets={dataSets} range={range} setRange={setRange} />
-      <div className="w-full">
+      <div className="flex flex-col gap-5 w-full">
+        <RevenueTrend dataSets={dataSets} range={range} setRange={setRange} />
         <StorePerformanceChart data={data} />
-        <div className="flex justify-between items-center w-full ">
-          {[
-            { name: "Active", count: "120" },
-            { name: "InActive", count: "8,500" },
-          ].map((store) => (
-            <div key={store.name} className="space-y-1 text-vgrey-text">
-              <p className="">{store.name}</p>
-              <p className="text-sm">{store.count}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       <RecentStores />

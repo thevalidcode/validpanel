@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const StoreLayout: FC = () => {
   const navigate = useNavigate();
   const handleCreateStore = (): void => {
-    navigate("/create-store");
+    navigate("/stores/create");
   };
 
   return (

@@ -2,7 +2,7 @@ export interface SubscriptionPlan {
   id: number;
   uid: string;
   name: string;
-  price: string; // Decimal as string
+  price: string;
   currency: string;
   description: string | null;
   status: "ACTIVE" | "INACTIVE";
@@ -17,8 +17,8 @@ export interface SubscriptionPlan {
     [key: string]: any;
   };
   interval: "MONTHLY" | "YEARLY";
-  discountForAnnually: number;
-  tax: number;
+  discountForAnnually: number | null;
+  tax: number | null;
   createdAt: Date;
   updatedAt: Date;
 }

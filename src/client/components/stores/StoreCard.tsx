@@ -5,15 +5,8 @@ import {
   TrashIcon,
   PlayIcon,
 } from "@heroicons/react/24/outline";
-
-// Define the shape of a store (same as in MyStores.tsx)
-interface Store {
-  name: string;
-  type: string;
-  date: string;
-  status: string;
-  logo?: string;
-}
+import type { Store } from "@/types";
+import { DateTime } from "@/components/DateTime";
 
 // Define props for StoreCard
 interface StoreCardProps {
@@ -29,9 +22,9 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
         {/* Store info */}
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-gray-200 rounded-md overflow-hidden">
-            {store.logo ? (
+            {store.logoUrl ? (
               <img
-                src={store.logo}
+                src={store.logoUrl}
                 alt={store.name}
                 className="object-cover w-full h-full"
               />
@@ -46,7 +39,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             <h3 className="font-semibold text-gray-800">{store.name}</h3>
             <span
               className={`text-xs font-medium px-2 py-1 rounded-full ${
-                store.type === "Shop"
+                store.type === "SHOP"
                   ? "bg-primary text-white"
                   : "bg-purple-600 text-white"
               }`}
@@ -54,7 +47,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
               {store.type}
             </span>
             <p className="text-xs text-gray-500 mt-1">
-              Created on {store.date}
+              Created on <DateTime date={store.timestamp} />
             </p>
           </div>
         </div>
@@ -62,7 +55,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
         {/* Status */}
         <div
           className={`text-xs font-medium px-2 py-1 rounded-full h-fit ${
-            store.status === "Active"
+            store.status === "ACTIVE"
               ? "bg-green-100 text-green-600"
               : "bg-gray-100 text-gray-500"
           }`}

@@ -16,7 +16,7 @@ interface MenuItem {
 }
 
 const menu: MenuItem[] = [
-  { name: "Overview", icon: HomeIcon, to: "/overview" },
+  { name: "Analytics", icon: HomeIcon, to: "/analytics" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
   { name: "Subscription", icon: CreditCard, to: "/subscription" },
   { name: "Settings", icon: Settings, to: "/settings" },
@@ -36,7 +36,7 @@ export default function StoreSidebar(): JSX.Element {
   return (
     <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm">
       <div>
-        <Link to="/overview" className="flex items-center justify-center mb-6">
+        <Link to="/analytics" className="flex items-center justify-center mb-6">
           <img
             src="/Valid2.svg"
             alt="ValidPanel Logo"

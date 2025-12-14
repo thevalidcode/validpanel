@@ -58,7 +58,7 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
           </thead>
           <tbody>
             {data.map((store) => (
-              <tr key={store.id} className="bg-white border-b">
+              <tr key={store.id} className="bg-white border-b border-gray-200">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${store.iconBg}`}>

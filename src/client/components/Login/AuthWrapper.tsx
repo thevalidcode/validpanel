@@ -48,7 +48,7 @@ const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
 
   useEffect(() => {
     if (!isAuthLoading && userInfo && type !== "forgot-password") {
-      navigate("/overviw");
+      navigate("/analytics");
     }
   }, [userInfo, isAuthLoading, navigate, type]);
 

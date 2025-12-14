@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import DomainInput from "../components/DomainInput";
 
 const Step3: React.FC = () => {
   const navigate = useNavigate();
@@ -72,53 +73,14 @@ const Step3: React.FC = () => {
         </div>
 
         {/* Domain Setup */}
-        <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
-            <label
-              htmlFor="domain"
-              className="block text-gray-700 font-medium text-sm sm:text-base"
-            >
-              Domain Setup
-            </label>
-            <div
-              onClick={handleToggleDomain}
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <span className="text-xs sm:text-sm text-gray-600">
-                Use custom domain
-              </span>
-              <div
-                className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${
-                  useCustomDomain ? "bg-purple-600" : "bg-gray-300"
-                }`}
-              >
-                <div
-                  className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
-                    useCustomDomain ? "right-0.5" : "left-0.5"
-                  }`}
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center">
-            <input
-              id="domain"
-              type="text"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              placeholder={
-                useCustomDomain ? "yourcustomdomain.com" : "yourstore"
-              }
-              className="flex-1 border border-gray-300 rounded-t-md sm:rounded-l-md sm:rounded-t-none px-4 py-2 text-sm sm:text-base focus:outline-none focus:border-purple-500"
-            />
-            {!useCustomDomain && (
-              <span className="border border-gray-300 border-t-0 sm:border-t sm:border-l-0 bg-gray-50 text-gray-600 px-3 py-2 rounded-b-md sm:rounded-r-md sm:rounded-b-none text-xs sm:text-sm text-center">
-                .validpanel.com
-              </span>
-            )}
-          </div>
-        </div>
+        <DomainInput
+          label="Domain Setup"
+          value={domain}
+          onChange={setDomain}
+          useCustomDomain={useCustomDomain}
+          onToggleCustomDomain={handleToggleDomain}
+          required
+        />
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mt-8">

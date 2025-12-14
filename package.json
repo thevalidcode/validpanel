@@ -19,6 +19,7 @@
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.7",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "decimal.js": "^10.6.0",
     "framer-motion": "^12.23.11",
     "heroicons": "^2.2.0",

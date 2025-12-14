@@ -70,7 +70,7 @@ const Navbar: FC = () => {
             ) : (
               <>
                 <Link
-                  to="/overview"
+                  to="/analytics"
                   className="border border-primary text-primary px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
                 >
                   Overview
@@ -175,7 +175,7 @@ const Navbar: FC = () => {
             ) : (
               <div className="mt-19 px-5 flex flex-col gap-3">
                 <Link
-                  to="/overview"
+                  to="/analytics"
                   onClick={() => setOpen(false)}
                   className="border border-primary text-primary py-3 rounded-4xl text-[16px] text-center"
                 >

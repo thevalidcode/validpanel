@@ -7,59 +7,9 @@ import type { AnalyticsSummaryCardProps } from "../components/analytics/Analytic
 import type { StorePerformanceData } from "../components/analytics/StorePerformanceChart";
 import type { StoreData } from "../components/analytics/AllStoresTable";
 import { FaStore } from "react-icons/fa";
-import Layout from "@/admin/components/Layout";
+import Layout from "@/client/components/Layout";
 
-// const UpArrow = () => (
-//   <svg
-//     width="12"
-//     height="12"
-//     viewBox="0 0 12 12"
-//     fill="none"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path
-//       d="M6 9.5V2.5M6 2.5L2.5 6M6 2.5L9.5 6"
-//       stroke="#7C3AED"
-//       stroke-width="1.5"
-//       stroke-linecap="round"
-//       stroke-linejoin="round"
-//     />
-//   </svg>
-// );
-// const DownArrow = () => (
-//   <svg
-//     width="12"
-//     height="12"
-//     viewBox="0 0 12 12"
-//     fill="none"
-//     xmlns="http://www.w3.org/2000/svg"
-//   >
-//     <path
-//       d="M6 2.5V9.5M6 9.5L9.5 6M6 9.5L2.5 6"
-//       stroke="#F05252"
-//       stroke-width="1.5"
-//       stroke-linecap="round"
-//       stroke-linejoin="round"
-//     />
-//   </svg>
-// );
-
-const summaryData = [
-  {
-    icon: <FaStore size={24} />,
-    title: "Total Stores",
-    value: "247",
-    percentage: 12,
-  },
-  {
-    icon: <DollarSign size={24} />,
-    title: "Total Revenue",
-    value: "$24.7K",
-    percentage: 8,
-  },
-];
-
-const desktopSummaryData: AnalyticsSummaryCardProps[] = [
+const summaryData: AnalyticsSummaryCardProps[] = [
   {
     title: "Total Stores",
     value: "12",
@@ -175,7 +125,7 @@ const AnalyticsPage = () => {
         />
         <AnalyticsDesktopView
           dataSets={dataSets}
-          summaryData={desktopSummaryData}
+          summaryData={summaryData}
           storePerformanceData={storePerformanceData}
           allStoresData={allStoresData}
           range={range}

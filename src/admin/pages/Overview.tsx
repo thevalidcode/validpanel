@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Overview from "../components/overview/Overview";
-import Layout from "../components/Layout";
+import OverviewComponent from "../components/overview/Overview";
+import Layout from "@/admin/components/Layout";
 import { useAppContext } from "@/context/useAppContext";
 
-const Useroverview: React.FC = () => {
+const Overview: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const { userInfo } = useAppContext();
 
@@ -15,10 +15,10 @@ const Useroverview: React.FC = () => {
       } Here’s what’s happening today.`}
     >
       <main className="flex-1">
-        <Overview onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+        <OverviewComponent onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       </main>
     </Layout>
   );
 };
 
-export default Useroverview;
+export default Overview;

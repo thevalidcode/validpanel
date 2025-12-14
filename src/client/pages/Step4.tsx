@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import type { ChangeEvent } from "react";
 import { motion } from "framer-motion";
-import { Upload, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ImageUploadBox from "@/components/ImageUploadBox";
 
 const Step4: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string>("");
   const navigate = useNavigate();
 
   const colors: string[] = [
@@ -71,12 +73,11 @@ const Step4: React.FC = () => {
           yours.
         </p>
 
-        {/* Upload Box */}
-        <label className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-center mb-8 cursor-pointer hover:border-purple-400 transition">
-          <Upload className="w-10 h-10 text-gray-400 mb-2" />
-          <p className="text-gray-400 text-sm">PNG, JPG up to 5MB</p>
-          <input type="file" accept="image/*" className="hidden" />
-        </label>
+        <ImageUploadBox
+          label="Brand Logo (Optional)"
+          collection="store"
+          onUploaded={(url) => setLogoUrl(url)}
+        />
 
         {/* Brand Colors */}
         <h3 className="text-gray-800 font-semibold mb-3">Brand Color</h3>
