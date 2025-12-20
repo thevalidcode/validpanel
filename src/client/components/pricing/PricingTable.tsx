@@ -1,73 +1,45 @@
 import { motion } from "framer-motion";
-import { mockPlans } from "@/_docs/doc";
+import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
+import Loader from "@/components/Loader";
+import NotFound from "@/components/NotFound";
+import { formatPlanFeatures } from "@/utils/subscription-plan.utils"; // your helper
+import type { SubscriptionPlanFeatures } from "@/types";
 
 function PricingTable() {
-  const tableData = [
-    {
-      feature: "Stores allowed",
-      free: "1",
-      standard: "5",
-      pro: "Unlimited",
-      business: "Unlimited",
-      empire: "Unlimited",
-    },
-    {
-      feature: "Custom Domain",
-      free: false,
-      standard: true,
-      pro: true,
-      business: true,
-      empire: true,
-    },
-    {
-      feature: "Unlimited Products",
-      free: false,
-      standard: true,
-      pro: true,
-      business: true,
-      empire: true,
-    },
-    {
-      feature: "Support Type",
-      free: "Email",
-      standard: "Chat",
-      pro: "Priority",
-      business: "Priority",
-      empire: "Dedicated",
-    },
-    {
-      feature: "Store Analytics",
-      free: false,
-      standard: false,
-      pro: true,
-      business: true,
-      empire: true,
-    },
-    {
-      feature: "Custom Branding",
-      free: false,
-      standard: true,
-      pro: true,
-      business: true,
-      empire: true,
-    },
-    {
-      feature: "API Access",
-      free: false,
-      standard: false,
-      pro: false,
-      business: true,
-      empire: true,
-    },
-    {
-      feature: "White Label",
-      free: false,
-      standard: false,
-      pro: false,
-      business: true,
-      empire: true,
-    },
-  ];
+  const { data: subscriptionPlans, isLoading } = useGetUserSubscriptionPlans();
+
+  if (isLoading) return <Loader />;
+  if (!subscriptionPlans || subscriptionPlans.length === 0)
+    return <NotFound title="No subscription plan found" variant="page" />;
+
+  // Generate dynamic tableData from subscriptionPlans
+  const tableData = (() => {
+    // Collect all possible features
+    const allFeatureKeys = Array.from(
+      new Set(subscriptionPlans.flatMap((plan) => Object.keys(plan.features)))
+    ) as (keyof SubscriptionPlanFeatures)[];
+
+    return allFeatureKeys.map((key) => {
+      const row: Record<string, string | boolean> = {
+        feature: formatPlanFeatures({ [key]: "_" })[0] || key,
+      };
+      subscriptionPlans.forEach((plan) => {
+        const value = plan.features[key];
+
+        // If boolean feature, keep as boolean
+        if (typeof value === "boolean") {
+          row[plan.uid] = value;
+        } else if (typeof value === "number") {
+          row[plan.uid] = value.toString();
+        } else if (value === null || value === undefined) {
+          row[plan.uid] = false; // treat null/undefined as not available
+        } else {
+          row[plan.uid] = value;
+        }
+      });
+      return row;
+    });
+  })();
 
   return (
     <motion.div
@@ -88,21 +60,14 @@ function PricingTable() {
                 <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">
                   Features
                 </th>
-                <th className="text-center py-4 px-6 text-sm font-semibold text-gray-700">
-                  Free
-                </th>
-                <th className="text-center py-4 px-6 text-sm font-semibold text-gray-700">
-                  Standard
-                </th>
-                <th className="text-center py-4 px-6 text-sm font-semibold text-gray-700">
-                  Pro
-                </th>
-                <th className="text-center py-4 px-6 text-sm font-semibold text-gray-700">
-                  Business
-                </th>
-                <th className="text-center py-4 px-6 text-sm font-semibold text-gray-700">
-                  Empire
-                </th>
+                {subscriptionPlans.map((plan) => (
+                  <th
+                    key={plan.uid}
+                    className="text-center py-4 px-6 text-sm font-semibold text-gray-700"
+                  >
+                    {plan.name}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -117,11 +82,12 @@ function PricingTable() {
                   <td className="py-4 px-6 text-sm text-gray-700 font-medium">
                     {row.feature}
                   </td>
-                  {["free", "standard", "pro", "business", "empire"].map(
-                    (plan) => (
-                      <td key={plan} className="py-4 px-6 text-center">
-                        {typeof row[plan as keyof typeof row] === "boolean" ? (
-                          row[plan as keyof typeof row] ? (
+                  {subscriptionPlans.map((plan) => {
+                    const value = row[plan.uid];
+                    return (
+                      <td key={plan.uid} className="py-4 px-6 text-center">
+                        {typeof value === "boolean" ? (
+                          value ? (
                             <svg
                               className="w-5 h-5 text-purple-600 mx-auto"
                               fill="currentColor"
@@ -137,45 +103,16 @@ function PricingTable() {
                             <span className="text-gray-300">-</span>
                           )
                         ) : (
-                          <span className="text-sm text-gray-700">
-                            {row[plan as keyof typeof row] as string}
-                          </span>
+                          <span className="text-sm text-gray-700">{value}</span>
                         )}
                       </td>
-                    )
-                  )}
+                    );
+                  })}
                 </motion.tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-
-      {/* Bottom pricing cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
-        {mockPlans.map((plan, index) => (
-          <motion.div
-            key={plan.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 + index * 0.1 }}
-            className="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-md hover:shadow-lg transition-shadow"
-          >
-            <div className="text-3xl font-bold text-gray-900 mb-1">
-              ${plan.price}
-            </div>
-            <div className="text-xs text-gray-500 uppercase mb-3">
-              per month
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-sm font-semibold rounded-full hover:from-purple-700 hover:to-purple-800 transition-all"
-            >
-              Upgrade
-            </motion.button>
-          </motion.div>
-        ))}
       </div>
     </motion.div>
   );

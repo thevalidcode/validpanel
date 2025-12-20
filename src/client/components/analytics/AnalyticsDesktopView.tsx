@@ -1,18 +1,17 @@
-import RevenueTrend, { type TimeRange } from "./RevenueTrend";
+import PlatFormActivity, { type TimeRange } from "./PlatformActivity";
 import type { FC } from "react";
 import AnalyticsSummaryCard, {
   type AnalyticsSummaryCardProps,
 } from "./AnalyticsSummaryCard";
-import StorePerformanceChart, {
-  type StorePerformanceData,
-} from "./StorePerformanceChart";
-import AllStoresTable, { type StoreData } from "./AllStoresTable";
+import PlanFeatureUsage, { type ChartData } from "./PlanFeatureUsage";
+import AllStoresTable from "./AllStoresTable";
+import type { Store } from "@/types";
 
 interface AnalyticsDesktopViewProps {
   dataSets: Record<TimeRange, { name: string; value: number }[]>;
   summaryData: AnalyticsSummaryCardProps[];
-  storePerformanceData: StorePerformanceData[];
-  allStoresData: StoreData[];
+  featuresData: ChartData[];
+  allStoresData: Store[];
   range: TimeRange;
   setRange: (value: TimeRange) => void;
 }
@@ -21,7 +20,7 @@ const AnalyticsDesktopView: FC<AnalyticsDesktopViewProps> = ({
   dataSets,
   range,
   summaryData,
-  storePerformanceData,
+  featuresData,
   allStoresData,
   setRange,
 }) => {
@@ -34,11 +33,15 @@ const AnalyticsDesktopView: FC<AnalyticsDesktopViewProps> = ({
       </div>
 
       <div className="w-full grid grid-cols-2 gap-5">
-        <RevenueTrend dataSets={dataSets} range={range} setRange={setRange} />
-        <StorePerformanceChart data={storePerformanceData} />
+        <PlatFormActivity
+          dataSets={dataSets}
+          range={range}
+          setRange={setRange}
+        />
+        <PlanFeatureUsage data={featuresData} />
       </div>
 
-      <AllStoresTable data={allStoresData} />
+      {allStoresData.length > 0 && <AllStoresTable data={allStoresData} />}
     </div>
   );
 };

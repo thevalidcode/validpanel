@@ -15,5 +15,6 @@ export type PaymentGateway = {
   createdAt: Date;
   position: number;
   min: string;
+  content: string | null;
   max: string;
 };

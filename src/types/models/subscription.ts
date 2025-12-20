@@ -1,9 +1,21 @@
-import type { SubscriptionPlan } from "./subscription-plan";
+import type {
+  SubscriptionPlan,
+  SubscriptionPlanInterval,
+} from "./subscription-plan";
+
+export type SubscriptionStatus =
+  | "ACTIVE"
+  | "PENDING"
+  | "EXPIRED"
+  | "CANCELED"
+  | "TRIAL";
 
 export interface Subscription {
+  id: number;
   uid: string;
-  status: "ACTIVE" | "PENDING" | "EXPIRED" | "CANCELED" | "TRIAL";
+  status: SubscriptionStatus;
   startedAt: string;
+  billingCycle: SubscriptionPlanInterval;
   expiresAt: string;
   plan: SubscriptionPlan;
 }

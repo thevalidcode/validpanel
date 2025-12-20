@@ -1,11 +1,12 @@
 import type { FC, ReactNode } from "react";
 
 interface NotFoundProps {
-  title: string; // e.g., "No Store Found"
-  description?: string; // e.g., "You haven't added any stores yet."
-  icon?: ReactNode; // optional icon component
-  actionLabel?: string; // e.g., "Add Store"
-  onActionClick?: () => void; // optional click handler
+  title: string;
+  description?: string;
+  icon?: ReactNode;
+  actionLabel?: string;
+  onActionClick?: () => void;
+  variant?: "inline" | "card" | "page";
 }
 
 const NotFound: FC<NotFoundProps> = ({
@@ -14,29 +15,52 @@ const NotFound: FC<NotFoundProps> = ({
   icon,
   actionLabel,
   onActionClick,
+  variant = "card",
 }) => {
+  const isPage = variant === "page";
+
   return (
-    <div className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition border-l-4 border-l-primary flex flex-col items-center text-center">
-      <div className="text-gray-400 mb-4">
+    <div
+      className={[
+        "flex flex-col items-center justify-center text-center",
+        isPage ? "min-h-[70vh] px-6" : "bg-white rounded-xl border border-gray-200 shadow-xs p-6",
+      ].join(" ")}
+    >
+      <div className="mb-4">
         {icon ? (
-          icon
+          <div className="text-gray-400">{icon}</div>
         ) : (
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xl">
             ?
           </div>
         )}
       </div>
 
-      <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
+      <h3
+        className={[
+          "font-semibold text-gray-900",
+          isPage ? "text-2xl" : "text-lg",
+        ].join(" ")}
+      >
+        {title}
+      </h3>
+
       {description && (
-        <p className="text-sm text-gray-500 mt-1">{description}</p>
+        <p
+          className={[
+            "text-gray-500 max-w-md",
+            isPage ? "mt-3 text-base" : "mt-2 text-sm",
+          ].join(" ")}
+        >
+          {description}
+        </p>
       )}
 
       {actionLabel && onActionClick && (
         <button
           type="button"
           onClick={onActionClick}
-          className="mt-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition"
+          className="mt-6 cursor-pointer inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition"
         >
           {actionLabel}
         </button>

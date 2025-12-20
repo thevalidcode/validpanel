@@ -5,3 +5,5 @@ export * from "./models/subscription-plan";
 export * from "./models/payment-gateway";
 export * from "./models/store";
 export * from "./models/upload-log";
+export * from "./models/payment";
+export * from "./models/notification";

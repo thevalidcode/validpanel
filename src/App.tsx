@@ -38,6 +38,7 @@ import AdminSettings from "./admin/pages/AdminSettings";
 import AdminLogin from "./admin/pages/LoginPage";
 import AdminResetPassword from "./admin/pages/ResetPassword";
 import AdminForgotPassword from "./admin/pages/ForgetPassword";
+import RenewSubscription from "./client/pages/RenewSubscription";
 
 // Admin pages (lazy loaded)
 const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
@@ -88,6 +89,7 @@ const App: React.FC = () => {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/subscription" element={<Subscription />} />
+            <Route path="/subscription/renew" element={<RenewSubscription />} />
             <Route
               path="/subscription/upgrade-plan/:id"
               element={<UpgradePlan />}

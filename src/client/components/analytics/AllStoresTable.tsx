@@ -1,32 +1,11 @@
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 import { Eye } from "lucide-react";
-
-export interface StoreData {
-  id: number;
-  name: string;
-  created: string;
-  category: string;
-  revenue: string;
-  orders: number;
-  status: "Active" | "Pending";
-  icon: ReactNode;
-  iconBg: string;
-}
+import type { Store } from "@/types";
+import { StatusBadge } from "@/utils/store.utils";
 
 interface AllStoresTableProps {
-  data: StoreData[];
+  data: Store[];
 }
-
-const StatusBadge: FC<{ status: StoreData["status"] }> = ({ status }) => {
-  const baseClasses = "px-2.5 py-0.5 text-xs font-medium rounded-full";
-  const statusClasses = {
-    Active: "bg-green-100 text-green-800",
-    Pending: "bg-yellow-100 text-yellow-800",
-  };
-  return (
-    <span className={`${baseClasses} ${statusClasses[status]}`}>{status}</span>
-  );
-};
 
 const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
   return (
@@ -40,13 +19,10 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
                 Store Name
               </th>
               <th scope="col" className="px-6 py-3">
-                Category
+                Type
               </th>
               <th scope="col" className="px-6 py-3">
-                Revenue
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Orders
+                Plan
               </th>
               <th scope="col" className="px-6 py-3">
                 Status
@@ -58,35 +34,40 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
           </thead>
           <tbody>
             {data.map((store) => (
-              <tr key={store.id} className="bg-white border-b border-gray-200">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${store.iconBg}`}>
-                      {store.icon}
+              <tr
+                key={store.storeId}
+                className="bg-white border-t border-gray-200 hover:bg-gray-50 transition"
+              >
+                <td className="px-6 py-4 flex items-center gap-3">
+                  <img
+                    src={store.logoUrl}
+                    alt={store.name}
+                    className="w-10 h-10 rounded-lg object-cover"
+                  />
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      {store.name}
                     </div>
-                    <div>
-                      <div className="font-bold text-gray-900">
-                        {store.name}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {store.created}
-                      </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(store.timestamp).toDateString()}
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">{store.category}</td>
-                <td className="px-6 py-4 font-bold text-gray-900">
-                  {store.revenue}
+                <td className="px-6 py-4 capitalize">
+                  {store.type.toLowerCase()}
                 </td>
-                <td className="px-6 py-4">{store.orders}</td>
+                <td className="px-6 py-4">{store.plan}</td>
                 <td className="px-6 py-4">
                   <StatusBadge status={store.status} />
                 </td>
                 <td className="px-6 py-4">
                   <button
                     type="button"
-                    title="see"
-                    className="text-purple-600 hover:text-purple-800"
+                    onClick={() =>
+                      window.open(`https://${store.uid}`, "_blank")
+                    }
+                    title="View Store"
+                    className="text-purple-600 hover:text-purple-800 transition"
                   >
                     <Eye size={20} />
                   </button>

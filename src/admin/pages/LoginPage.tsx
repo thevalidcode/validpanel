@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import AuthWrapper from "../components/login/AuthWrapper";
-import TextInput from "../../components/general/TextInput";
-import Button from "../../components/general/Button";
+import TextInput from "../../components/ui/TextInput";
+import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
 import { useAdminLogin } from "@/hooks/use-admin";
 import { toast } from "sonner";

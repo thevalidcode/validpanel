@@ -1,12 +1,35 @@
 "use client";
+import type { TimeRange } from "@/client/components/analytics/PlatformActivity";
 import { useAppContext } from "@/context/useAppContext";
-import type { User, UserStatus } from "@/types";
+import type { User, Store, StoreType } from "@/types";
+import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+export type UserAnalyticsResponse = {
+  stores: {
+    total: {
+      value: number;
+      change: string;
+    };
+    active: {
+      value: number;
+      change: string;
+    };
+  };
+  subscription: {
+    currentPlan: string;
+    nextBillingDate: string | null; // ISO string from backend
+    features: {
+      name: string;
+      value: number | null;
+    }[];
+  };
+  platformEvents: Record<TimeRange, { name: string; value: number }[]>;
+  allStores: Store[];
+};
 // Custom hook for user-related queries and mutations
-// Naming follows the convention: useUsers for fetching, useCreateUser/useUpdateUser for mutations
 
 interface NewUser {
   email: string;
@@ -56,23 +79,7 @@ export function useCreateUser() {
       });
     },
     onError: (error: unknown) => {
-      // Enhanced error extraction to handle various backend formats
-      let errorMsg = "An unexpected error occurred";
-      if (error instanceof AxiosError) {
-        // Try to extract error from common backend formats
-        const data = error.response?.data;
-        if (typeof data === "string") {
-          errorMsg = data;
-        } else if (data?.error) {
-          errorMsg = data.error;
-        } else if (data?.message) {
-          errorMsg = data.message;
-        } else {
-          errorMsg = "Failed to create user";
-        }
-      } else if (error instanceof Error) {
-        errorMsg = error.message;
-      }
+      const errorMsg = normalizeApiError(error, "Failed to create user");
       toast.error(errorMsg);
     },
   });
@@ -108,23 +115,7 @@ export function useUserLogin() {
       router("/stores");
     },
     onError: (error: unknown) => {
-      // Enhanced error extraction for better user feedback
-      let errorMsg = "An unexpected error occurred during login.";
-      if (error instanceof AxiosError) {
-        const data = error.response?.data;
-        if (typeof data === "string") {
-          errorMsg = data;
-        } else if (data?.error) {
-          errorMsg = data.error;
-        } else if (data?.message) {
-          errorMsg = data.message;
-        } else {
-          errorMsg =
-            "Failed to login user: Server returned an unknown error format.";
-        }
-      } else if (error instanceof Error) {
-        errorMsg = error.message;
-      }
+      const errorMsg = normalizeApiError(error, "Failed to login user");
       toast.error(errorMsg);
     },
   });
@@ -136,11 +127,24 @@ export function useGetUsers() {
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      // The 'withCredentials' option is now set globally in the API context.
-      const res = await api.get<User[]>(`/users`, {});
+      const res = await api.get<User[]>(`/users`);
       if (!res.data) throw new Error("Failed to fetch user");
       return res.data;
     },
+  });
+}
+
+// get user analytics
+export function useGetUserAnalytics() {
+  const { api, userInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["userAnalytics", userInfo?.uid],
+    queryFn: async () => {
+      const res = await api.get(`/users/analytics`);
+      if (!res.data) throw new Error("Failed to fetch user analytics");
+      return res.data as UserAnalyticsResponse;
+    },
+    enabled: !!userInfo,
   });
 }
 
@@ -152,8 +156,7 @@ export function useGetUserById(id: string) {
     queryFn: async () => {
       const res = await api.get(`/users/${id}`);
       if (!res.data) throw new Error("Failed to fetch user");
-      `
-        return res.data;`;
+      return res.data;
     },
   });
 }
@@ -177,11 +180,8 @@ export function useDeleteMultipleUsers() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Failed to delete users");
-      } else {
-        toast.error("Failed to delete users");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to delete users");
+      toast.error(errorMsg);
     },
   });
 }
@@ -205,11 +205,8 @@ export const useDeleteASingleUser = () => {
       toast.success("User deleted successfully");
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Failed to delete user");
-      } else {
-        toast.error("Failed to delete user");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to delete user");
+      toast.error(errorMsg);
     },
   });
 };
@@ -218,10 +215,9 @@ export const useDeleteASingleUser = () => {
 interface UpdateUserProps {
   username?: string;
   email?: string;
-  apiKey?: string;
   fullName?: string;
   image?: string;
-  status?: UserStatus;
+  phoneNumber?: string;
 }
 
 export function useUpdateUser() {
@@ -231,20 +227,17 @@ export function useUpdateUser() {
     mutationFn: async (data: UpdateUserProps) => {
       const res = await api.patch(`/users`, data);
       if (!res.data) throw new Error("Failed to update user");
-      return res.data;
+      return res.data.user;
     },
-    onSuccess: (updatedUser: any) => {
+    onSuccess: (updatedUser: User) => {
       toast.success("User updated successfully");
       handleSetUserInfo({
-        ...updatedUser.user,
+        ...updatedUser,
       });
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Failed to update user");
-      } else {
-        toast.error("Failed to update user");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to update user");
+      toast.error(errorMsg);
     },
   });
 }
@@ -271,11 +264,8 @@ export function useUpdateUserByAdmin() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Failed to update user");
-      } else {
-        toast.error("Failed to update user");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to update user");
+      toast.error(errorMsg);
     },
   });
 }
@@ -293,17 +283,15 @@ export function useForgotPassword() {
       return res.data;
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        console.error(error.response?.data?.error || "Failed to send email");
-      } else {
-        console.error("Failed send email");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to send email");
+      toast.error(errorMsg);
     },
   });
 }
 
 interface ResetPasswordProps {
   token: string;
+  email: string;
   password: string;
 }
 
@@ -316,13 +304,37 @@ export function useResetPassword() {
       return res.data;
     },
     onError: (error: unknown) => {
-      if (error instanceof AxiosError) {
-        console.error(
-          error.response?.data?.error || "Failed to reset password"
-        );
-      } else {
-        console.error("Failed to reset password");
-      }
+      const errorMsg = normalizeApiError(error, "Failed to reset password");
+      toast.error(errorMsg);
+    },
+  });
+}
+
+interface OnboardingSetupStoreProps {
+  type: StoreType;
+  subscriptionId: number;
+  logoUrl?: string;
+  color: string;
+  domain: string;
+  name: string;
+  paymentMethod: string;
+}
+
+export function useOnboardingSetupStore() {
+  const { api } = useAppContext();
+  return useMutation({
+    mutationFn: async (data: OnboardingSetupStoreProps) => {
+      const res = await api.post<{
+        message: string;
+        store: Store;
+        onboardingStep: "COMPLETE";
+      }>(`/users/onboarding/setup`, data);
+      if (!res.data) throw new Error("Failed to setup store");
+      return res.data;
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(error, "Failed to setup store");
+      toast.error(errorMsg);
     },
   });
 }

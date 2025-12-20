@@ -6,7 +6,6 @@ import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 // Custom hook for admin-related queries and mutations
-// Naming follows the convention: useAdmins for fetching, useCreateUser/useUpdateUser for mutations
 
 interface NewAdmin {
   email: string;

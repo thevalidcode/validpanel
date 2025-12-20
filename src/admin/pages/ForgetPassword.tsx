@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import AuthWrapper from "../components/login/AuthWrapper";
-import TextInput from "../../components/general/TextInput";
-import Button from "../../components/general/Button";
+import TextInput from "../../components/ui/TextInput";
+import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
 import { useForgotPassword } from "@/hooks/use-admin";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ const ForgotPasswordPage = () => {
     e.preventDefault();
     try {
       await requestReset({ email });
-      toast.success("Reset link sent to your email.");
+      toast.success("Reset link has been sent to your email.");
     } catch (error) {
       if ((error as Err)?.status === 500) {
         toast.error((error as Err)?.message);

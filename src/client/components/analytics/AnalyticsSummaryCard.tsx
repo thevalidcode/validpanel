@@ -1,11 +1,11 @@
 import type { FC, ReactNode } from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, Minus } from "lucide-react";
 
 export interface AnalyticsSummaryCardProps {
   title: string;
   value: string;
   change: string;
-  changeType: "increase" | "decrease";
+  changeType: "increase" | "decrease" | "neutral";
   icon: ReactNode;
   iconBg: string;
 }
@@ -18,9 +18,19 @@ const AnalyticsSummaryCard: FC<AnalyticsSummaryCardProps> = ({
   icon,
   iconBg,
 }) => {
-  const isIncrease = changeType === "increase";
-  const changeColor = isIncrease ? "text-purple-600" : "text-red-500";
-  const ChangeIcon = isIncrease ? ArrowUp : ArrowDown;
+  const changeColor =
+    changeType === "increase"
+      ? "text-purple-600"
+      : changeType === "decrease"
+      ? "text-red-500"
+      : "text-gray-400"; // neutral color
+
+  const ChangeIcon =
+    changeType === "increase"
+      ? ArrowUp
+      : changeType === "decrease"
+      ? ArrowDown
+      : Minus;
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm flex justify-between items-start">

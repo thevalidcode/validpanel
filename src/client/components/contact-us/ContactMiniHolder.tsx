@@ -17,7 +17,7 @@ const ContactMiniHolder: FC = () => (
       <ContactMiniCard
         icon={<FaBug size={40} />}
         title="Technical Support"
-        description="Found a persistent bug or need help setting a team member up?"
+        description="Found a persistent bug or need help setting a store?"
       />
       <ContactMiniCard
         icon={<FaInfoCircle size={40} />}

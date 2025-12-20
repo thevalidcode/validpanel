@@ -1,8 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import AuthWrapper from "../components/login/AuthWrapper";
-import TextInput from "../../components/general/TextInput";
-import Button from "../../components/general/Button";
+import TextInput from "../../components/ui/TextInput";
+import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
 import { useResetPassword } from "@/hooks/use-user";
 import { toast } from "sonner";
@@ -10,9 +10,11 @@ import { toast } from "sonner";
 const ResetPasswordPage = () => {
   const [params] = useSearchParams();
   const resetToken = params.get("token");
+  const email = params.get("email");
 
   const { mutateAsync: resetPassword } = useResetPassword();
   const [inputs, setInputs] = useState({
+    email: email || "",
     password: "",
     confirmPassword: "",
   });
@@ -54,10 +56,11 @@ const ResetPasswordPage = () => {
       await resetPassword({
         token: resetToken,
         password: inputs.password,
+        email: inputs.email,
       });
 
       toast.success("Password reset successful. You can now log in.");
-      setInputs({ password: "", confirmPassword: "" });
+      setInputs({ email: "", password: "", confirmPassword: "" });
     } catch (error) {
       if ((error as Err)?.status === 500) {
         toast.error((error as Err)?.message);

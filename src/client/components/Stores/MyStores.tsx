@@ -3,25 +3,22 @@ import StoreCard from "./StoreCard";
 import { useGetUserStores } from "@/hooks/use-store";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
-import { useNavigate } from "react-router-dom";
 import { ShoppingBagIcon } from "lucide-react";
 
 const MyStores: FC = () => {
   const { data: stores, isLoading } = useGetUserStores();
-  const navigate = useNavigate();
 
   if (isLoading) {
     return <Loader />;
   }
 
-  if (!stores) {
+  if (!stores || stores?.length === 0) {
     return (
       <NotFound
         title="No Stores Found"
         description="You haven't added any stores yet."
-        actionLabel="Add Store"
+        variant="card"
         icon={<ShoppingBagIcon className="w-10 h-10 mx-auto text-gray-400" />}
-        onActionClick={() => navigate("/stores/create")}
       />
     );
   }

@@ -7,6 +7,7 @@ interface DomainInputProps {
   onChange: (value: string) => void;
 
   useCustomDomain: boolean;
+  showUseCustomDomain?: boolean;
   onToggleCustomDomain: () => void;
 
   required?: boolean;
@@ -24,6 +25,7 @@ const DomainInput: FC<DomainInputProps> = ({
   onChange,
   useCustomDomain,
   onToggleCustomDomain,
+  showUseCustomDomain = true,
   required = false,
   defaultSuffix = ".validpanel.com",
   customPlaceholder = "yourcustomdomain.com",
@@ -39,25 +41,27 @@ const DomainInput: FC<DomainInputProps> = ({
           {label} {required && <span className="text-red-500">*</span>}
         </label>
 
-        <div
-          onClick={onToggleCustomDomain}
-          className="flex items-center space-x-2 cursor-pointer select-none"
-        >
-          <span className="text-xs sm:text-sm text-gray-600">
-            Use custom domain
-          </span>
+        {showUseCustomDomain && (
           <div
-            className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${
-              useCustomDomain ? "bg-purple-600" : "bg-gray-300"
-            }`}
+            onClick={onToggleCustomDomain}
+            className="flex items-center space-x-2 cursor-pointer select-none"
           >
+            <span className="text-xs sm:text-sm text-gray-600">
+              Use custom domain
+            </span>
             <div
-              className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
-                useCustomDomain ? "right-0.5" : "left-0.5"
+              className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${
+                useCustomDomain ? "bg-purple-600" : "bg-gray-300"
               }`}
-            />
+            >
+              <div
+                className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
+                  useCustomDomain ? "right-0.5" : "left-0.5"
+                }`}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Input */}

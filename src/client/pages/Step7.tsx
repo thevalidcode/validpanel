@@ -1,47 +1,91 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import OnboardingLayout from "../components/onboarding/OnboardingLayout";
+import { FaArrowLeft } from "react-icons/fa";
+import {
+  clearOnboardingDraft,
+  getOnboardingDraft,
+} from "@/utils/onboarding.utils";
+import { useGetUserSubscriptionPlanByUid } from "@/hooks/use-subscription-plan";
+import { useOnboardingSetupStore } from "@/hooks/use-user";
 
 const Step7: React.FC = () => {
   const navigate = useNavigate();
+  const draft = getOnboardingDraft();
+  const [searchParams] = useSearchParams();
+  const subscriptionId = parseInt(searchParams.get("subscriptionId") || "");
+  const { data: subscriptionPlan } = useGetUserSubscriptionPlanByUid(
+    draft?.planUid || ""
+  );
+  const { mutateAsync: setupStore, isPending } = useOnboardingSetupStore();
+
+  useEffect(() => {
+    if (!subscriptionId) {
+      console.warn("Subscription ID missing from URL");
+    }
+  }, [subscriptionId]);
 
   const handleBack = (): void => {
     navigate("/onboarding/step6");
   };
 
-  const handleContinue = (): void => {
+  const handleLaunchStore = async (): Promise<void> => {
+    if (isPending) return;
+    if (
+      !draft?.storeType ||
+      !draft?.color ||
+      !draft?.domain ||
+      !draft?.storeName ||
+      !draft?.paymentMethod
+    )
+      return;
+
+    await setupStore({
+      type: draft?.storeType,
+      subscriptionId,
+      name: draft.storeName,
+      logoUrl: draft.logoUrl,
+      domain: draft.domain,
+      color: draft.color,
+      paymentMethod: draft.paymentMethod,
+    });
+
+    clearOnboardingDraft();
     navigate("/stores");
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-[linear-gradient(to_right,#d4b2ff_40%,#ffffff_30%,#d4b2ff_100%)]">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-10 w-full"
-      >
-        <div className="max-w-6xl mx-auto">
-          <img src="/Valid2.svg" alt="ValidPanel Logo" className="w-30" />
+    <OnboardingLayout
+      step={7}
+      totalSteps={7}
+      title="You’re All Set!"
+      description="Your online business is just one click away from going live."
+      selected={!!subscriptionId && !isPending}
+      onNext={handleLaunchStore}
+      onBack={handleBack}
+      nextButton={
+        <div className="flex items-center gap-2 animate-pulse hover:animate-none">
+          <img src="/Jet.svg" alt="Jet" />{" "}
+          <span>{isPending ? "Launching..." : "Launch Store"}</span>
         </div>
-        <p className="font-bold text-xl text-left ml-36">Step 7</p>
-        <div className="w-full max-w-6xl mx-auto mt-2">
-          <div className="h-2 bg-white rounded-full">
-            <div className="h-2 bg-purple-600 rounded-full w-full"></div>
-          </div>
-        </div>
-      </motion.div>
-
+      }
+      backButton={
+        <>
+          <FaArrowLeft />
+          <span>Back</span>
+        </>
+      }
+    >
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="rounded-2xl p-8 md:p-10 max-w-6xl w-full grid md:grid-cols-3 gap-6"
+        className="rounded-2xl w-full grid md:grid-cols-2 gap-6 mx-auto"
       >
-        {/* Left Section */}
-        <div className="md:col-span-2 bg-white rounded-2xl p-6 md:p-10 shadow-lg flex flex-col">
+        {/* Left Column */}
+        <div className="bg-white rounded-2xl p-6 shadow-lg flex flex-col w-full">
           <div className="flex flex-col items-center text-center">
             <div className="bg-gradient-to-r from-[#6A0DAD] to-[#8B5CF6] rounded-full p-3 mb-4">
               <Check className="text-white w-8 h-8" />
@@ -63,11 +107,11 @@ const Step7: React.FC = () => {
                 {
                   img: "/Store.svg",
                   title: "Store Type",
-                  desc: "E-commerce Store",
+                  desc: draft?.storeType,
                   bg: "bg-[#DBEAFE]",
                 },
                 {
-                  img: "/Logo.svg",
+                  img: draft?.logoUrl || "/Logo.svg",
                   title: "Logo",
                   desc: "Custom Design",
                   bg: "bg-[#FFEDD5]",
@@ -75,25 +119,25 @@ const Step7: React.FC = () => {
                 {
                   img: "/Fashion.svg",
                   title: "Store Name",
-                  desc: "Trendy Fashion Hub",
+                  desc: draft?.storeName,
                   bg: "bg-[#F3E8FF]",
                 },
                 {
                   img: "/Card2.svg",
                   title: "Payment",
-                  desc: "Stripe • Connected",
+                  desc: `${draft?.paymentMethod} • Connected`,
                   bg: "bg-[#D1FAE5]",
                 },
                 {
                   img: "/URL.svg",
                   title: "Domain",
-                  desc: "trendyfashionhub.com",
+                  desc: draft?.domain,
                   bg: "bg-[#DCFCE7]",
                 },
                 {
                   img: "/Star.svg",
                   title: "Features",
-                  desc: "Premium Plan",
+                  desc: subscriptionPlan?.name || "Free Plan",
                   bg: "bg-[#E0E7FF]",
                 },
               ].map(({ img, title, desc, bg }, i) => (
@@ -109,31 +153,12 @@ const Step7: React.FC = () => {
               ))}
             </div>
           </div>
-
-          {/* Buttons */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={handleBack}
-              className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition"
-            >
-              ← Back
-            </button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-primary hover:bg-purple-700 text-white font-semibold px-6 py-4 rounded-lg shadow-md transition"
-              onClick={handleContinue}
-            >
-              <div className="flex items-center gap-2 animate-pulse hover:animate-none">
-                <img src="/Jet.svg" alt="Jet" /> <span>Launch Store</span>
-              </div>
-            </motion.button>
-          </div>
         </div>
 
-        {/* Right Section */}
-        <div className="space-y-4">
-          {/* Checklist */}
+        {/* Right Column */}
+        <div className="flex flex-col gap-6">
+          {/* Next Steps */}
+          {/* Pre-Launch Checklist */}
           <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
             <h4 className="font-semibold text-gray-800 mb-3">
               Pre-Launch Checklist
@@ -154,8 +179,6 @@ const Step7: React.FC = () => {
               ))}
             </ul>
           </div>
-
-          {/* Next Steps */}
           <div className="bg-gradient-to-r from-[#8B5CF60D] to-[#6A0DAD0D] rounded-xl p-5 shadow-sm border border-purple-400 w-full">
             <h4 className="font-semibold text-gray-800 mb-3">What’s Next?</h4>
             <ul className="space-y-3 text-sm">
@@ -167,8 +190,8 @@ const Step7: React.FC = () => {
                 },
                 {
                   num: 2,
-                  title: "Configure Shipping",
-                  desc: "Set up your delivery options",
+                  title: "Configure Payment methods",
+                  desc: "Set up your payment method options",
                 },
                 {
                   num: 3,
@@ -201,13 +224,16 @@ const Step7: React.FC = () => {
             <p className="text-sm text-gray-500 mb-3">
               Our support team is here to help you get started
             </p>
-            <button className="text-[#2563EB] hover:animate-pulse font-medium text-sm bg-[#EFF6FF] px-20 py-2 rounded-lg transition">
+            <button
+              onClick={() => navigate("/contact-us")}
+              className="text-[#2563EB] hover:animate-pulse font-medium text-sm bg-[#EFF6FF] px-20 py-2 rounded-lg transition"
+            >
               Contact Support
             </button>
           </div>
         </div>
       </motion.div>
-    </div>
+    </OnboardingLayout>
   );
 };
 

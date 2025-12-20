@@ -7,6 +7,7 @@ export type User = {
   id: number;
   refCode: number | null;
   uid: string;
+  phoneNumber: string;
   email: string;
   fullName: string;
   image: string | null;

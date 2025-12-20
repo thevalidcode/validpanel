@@ -1,32 +1,10 @@
 import type { SubscriptionPlan } from "@/types";
+import { formatPlanFeatures } from "@/utils/subscription-plan.utils";
 import { motion } from "framer-motion";
 
 function PricingFeatures({ plan }: { plan: SubscriptionPlan }) {
-  const formatFeatureKey = (key: string): string => {
-    return key
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
+  const features = formatPlanFeatures(plan.features);
 
-  const formatFeatureValue = (key: string, value: any): string => {
-    if (typeof value === "boolean") {
-      return value ? formatFeatureKey(key) : "";
-    }
-    if (key.includes("stores")) {
-      return `Launch ${value} stores`;
-    }
-    if (key.includes("products")) {
-      return `Upload ${value} products`;
-    }
-    return `${formatFeatureKey(key)}: ${value}`;
-  };
-
-  const features = Object.entries(plan.features)
-    .filter(([_, value]) => value)
-    .map(([key, value]) => formatFeatureValue(key, value))
-    .filter(Boolean);
-    
   return (
     <div>
       <ul className="space-y-3 mb-4">

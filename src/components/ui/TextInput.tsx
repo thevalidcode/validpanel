@@ -13,8 +13,6 @@ const TextInput = forwardRef<HTMLInputElement, InputComponentProps>(
         className={`w-full rounded-[4px] outline-none border-2 focus:border-primary px-5 py-4 ${props.styles}`}
       />
     );
-
-    TextInput.displayName = "TextInput";
   }
 );
 

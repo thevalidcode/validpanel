@@ -1,8 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import AuthWrapper from "../components/login/AuthWrapper";
-import TextInput from "../../components/general/TextInput";
-import Button from "../../components/general/Button";
+import TextInput from "../../components/ui/TextInput";
+import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
 import { useResetPassword } from "@/hooks/use-admin";
 import { toast } from "sonner";

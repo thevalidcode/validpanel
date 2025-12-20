@@ -15,6 +15,11 @@ interface MenuItem {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
+interface StoreSidebarProps {
+  onNavClick?: () => void; // optional callback when a nav item is clicked
+  isMobile?: boolean;
+}
+
 const menu: MenuItem[] = [
   { name: "Analytics", icon: HomeIcon, to: "/analytics" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
@@ -22,7 +27,10 @@ const menu: MenuItem[] = [
   { name: "Settings", icon: Settings, to: "/settings" },
 ];
 
-export default function StoreSidebar(): JSX.Element {
+export default function StoreSidebar({
+  onNavClick,
+  isMobile,
+}: StoreSidebarProps): JSX.Element {
   const location = useLocation();
   const isActive = (path: string) => location.pathname.startsWith(path);
   const { userInfo, handleSetUserInfo } = useAppContext();
@@ -31,6 +39,12 @@ export default function StoreSidebar(): JSX.Element {
 
   const onLogout = () => {
     handleSetUserInfo(null);
+  };
+
+  const handleNavClick = () => {
+    if (isMobile && onNavClick) {
+      onNavClick();
+    }
   };
 
   return (
@@ -51,6 +65,7 @@ export default function StoreSidebar(): JSX.Element {
               <Link
                 to={item.to}
                 key={item.name}
+                onClick={handleNavClick}
                 className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition font-medium text-sm
                 ${
                   active

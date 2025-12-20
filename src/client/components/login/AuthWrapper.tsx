@@ -4,9 +4,9 @@ import productImage from "../../../assets/images/product.png";
 import storeImage from "../../../assets/images/chat.png";
 import salesImage from "../../../assets/images/sales.png";
 import pinImage from "../../../assets/images/pin.png";
-import MainTitle from "../../../components/general/MainTitle";
-import Button from "../../../components/general/Button";
-import Horizontals from "../../../components/general/Horizontals";
+import MainTitle from "../../../components/ui/MainTitle";
+import Button from "../../../components/ui/Button";
+import Horizontals from "../../../components/ui/Horizontals";
 import { useAppContext } from "../../../context/useAppContext";
 
 const authBody = [

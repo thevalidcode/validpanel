@@ -15,15 +15,20 @@ function Layout({
   title?: string;
   description?: string;
 }) {
+  const isMobile = useIsMobile();
+
   const [sidebarOpen, setSidebarOpen] = useState(() => {
-    // Get initial value from localStorage, default to false
+    if (isMobile) return false; // mobile always starts closed
     const saved = localStorage.getItem("sidebarOpen");
-    return saved ? JSON.parse(saved) : false;
+    return saved ? JSON.parse(saved) : true; // desktop remembers state
   });
 
   const { adminInfo, isAuthLoading } = useAppContext();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (isMobile) localStorage.setItem("sidebarOpen", JSON.stringify(false));
+  }, [isMobile]);
 
   useEffect(() => {
     if (!isAuthLoading && adminInfo) {
@@ -42,6 +47,20 @@ function Layout({
   useEffect(() => {
     localStorage.setItem("sidebarOpen", JSON.stringify(sidebarOpen));
   }, [sidebarOpen]);
+
+  const toggleSidebar = (state?: boolean) => {
+    // Only update localStorage for desktop (md+) so desktop remembers its state
+    if (!isMobile) {
+      setSidebarOpen((prev: boolean) => {
+        const nextState = state ?? !prev;
+        localStorage.setItem("sidebarOpen", JSON.stringify(nextState));
+        return nextState;
+      });
+    } else {
+      // Mobile toggle just updates state, not localStorage
+      setSidebarOpen(state ?? !sidebarOpen);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
@@ -65,14 +84,14 @@ function Layout({
   transform transition-transform duration-300 ease-in-out overflow-hidden
   ${sidebarOpen ? "translate-x-0 w-64" : "-translate-x-[100%] w-0"}`}
       >
-        <Sidebar />
+        <Sidebar isMobile={isMobile} onNavClick={() => toggleSidebar(false)} />
       </aside>
 
       {/* Overlay (for mobile sidebar) */}
-      {sidebarOpen && (
+      {sidebarOpen && isMobile && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 bg-gray-100 opacity-80 md:hidden"
+          className="fixed inset-0 bg-gray-100/40 backdrop-blur-sm md:hidden z-50"
         ></div>
       )}
 
@@ -86,7 +105,7 @@ function Layout({
           <Header
             title={title}
             description={description}
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onToggleSidebar={() => toggleSidebar()}
             isSidebarOpen={sidebarOpen}
           />
         )}

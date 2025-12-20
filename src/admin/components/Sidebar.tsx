@@ -108,7 +108,16 @@ const sections: MenuSection[] = [
     ],
   },
 ];
-export default function AdminSidebar(): JSX.Element {
+
+interface SidebarProps {
+  onNavClick?: () => void; // optional callback when a nav item is clicked
+  isMobile?: boolean;
+}
+
+export default function AdminSidebar({
+  onNavClick,
+  isMobile,
+}: SidebarProps): JSX.Element {
   const location = useLocation();
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -118,7 +127,11 @@ export default function AdminSidebar(): JSX.Element {
   const onLogout = () => {
     handleSetAdminInfo(null);
   };
-
+  const handleNavClick = () => {
+    if (isMobile && onNavClick) {
+      onNavClick();
+    }
+  };
   return (
     <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm">
       {/* Logo */}
@@ -150,6 +163,7 @@ export default function AdminSidebar(): JSX.Element {
                     <Link
                       key={item.name}
                       to={item.to}
+                      onClick={handleNavClick}
                       className={`flex items-center gap-3 px-3 py-2 rounded-lg transition text-sm font-medium
                         ${
                           active

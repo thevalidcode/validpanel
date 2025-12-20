@@ -1,22 +1,54 @@
-import React, { useState, type JSX } from "react";
+import ImageUploadBox from "@/components/ImageUploadBox";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
+import { useAppContext } from "@/context/useAppContext";
+import { useUpdateUser } from "@/hooks/use-user";
+import React, { useEffect, useState, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { currency as currencyMap, getCurrencySymbol } from "@/_docs/doc";
 
 export default function UserSettings(): JSX.Element {
   const [firstName, setFirstName] = useState<string>("Sarah");
   const [lastName, setLastName] = useState<string>("Johnson");
   const [email, setEmail] = useState<string>("sarah.johnson@example.com");
   const [phone, setPhone] = useState<string>("+1 (505) 123-4567");
-  const [timezone, setTimezone] = useState<string>(
-    "UTC-5 [Eastern Standard Time]"
-  );
-  const [language, setLanguage] = useState<string>("English (US)");
+  const [image, setImage] = useState<string>("");
   const navigate = useNavigate();
+  const { mutateAsync: updateUser } = useUpdateUser();
+  const { userInfo, setUserCurrency, userCurrency } = useAppContext();
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>): void => {
+  useEffect(() => {
+    if (userInfo) {
+      setEmail(userInfo.email || "");
+      setPhone(userInfo.phoneNumber || "");
+      setImage(userInfo.image || "");
+
+      const fullName = userInfo.fullName || "";
+      const [first, ...rest] = fullName.split(" ");
+      setFirstName(first || "");
+      setLastName(rest.join(" ") || "");
+    }
+  }, [userInfo]);
+
+  const handleSave = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
+    await updateUser({
+      email,
+      phoneNumber: phone,
+      fullName: lastName + " " + firstName,
+      image,
+    });
     toast.success("Changes saved successfully!");
   };
+
+  const currencyOptions: Option<string>[] = Object.keys(currencyMap).map(
+    (code) => ({
+      label: `${code} (${getCurrencySymbol(code)})`,
+      value: code,
+    })
+  );
 
   return (
     <div className="p-6 min-h-screen">
@@ -24,18 +56,18 @@ export default function UserSettings(): JSX.Element {
         <p className="mb-3 font-semibold text-lg">Profile Picture</p>
         <div className="flex items-center gap-4 mb-8">
           <img
-            src="Sarah.png"
+            src={image || "Sarah.png"}
             alt="Profile"
             className="w-20 h-20 rounded-full object-cover"
           />
-          <div>
-            <button className="border border-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-100 transition">
-              Upload New Picture
-            </button>
-            <p className="text-xs text-gray-500 mt-1">
-              JPG, PNG or GIF. Max size 2MB.
-            </p>
-          </div>
+
+          <ImageUploadBox
+            collection="users"
+            variant="button"
+            buttonLabel="Upload New Picture"
+            description="JPG, PNG or GIF. Max size 2MB."
+            onUploaded={(url) => setImage(url)}
+          />
         </div>
 
         {/* Form */}
@@ -100,14 +132,36 @@ export default function UserSettings(): JSX.Element {
             </div>
           </div>
 
+          {/* Currency Section */}
+          <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Currency
+            </label>
+            <CustomSelect
+              options={currencyOptions}
+              value={
+                userCurrency
+                  ? currencyOptions.find((opt) => opt.value === userCurrency)
+                  : undefined
+              }
+              placeholder="Currency"
+              onChange={(selected) => {
+                const option = selected as Option<string>;
+                setUserCurrency(option.value as keyof typeof currencyMap);
+              }}
+              className="w-44"
+              isSearchable
+            />
+          </div>
+
           {/* Password Section */}
           <div className="border border-gray-200 rounded-md p-4 bg-gray-50">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm text-gray-700">Password</p>
-                <p className="text-xs text-gray-500">
+                {/* <p className="text-xs text-gray-500">
                   Last changed 3 months ago
-                </p>
+                </p> */}
               </div>
               <button
                 type="button"
@@ -122,43 +176,6 @@ export default function UserSettings(): JSX.Element {
               regularly.
             </p>
           </div>
-
-          {/* Timezone and Language */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Timezone
-              </label>
-              <select
-                value={timezone}
-                title="timezone"
-                onChange={(e) => setTimezone(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
-              >
-                <option>UTC-5 [Eastern Standard Time]</option>
-                <option>UTC+0 [Greenwich Mean Time]</option>
-                <option>UTC+1 [Central European Time]</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Language
-              </label>
-              <select
-                value={language}
-                title="language"
-                onChange={(e) => setLanguage(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
-              >
-                <option>English (US)</option>
-                <option>English (UK)</option>
-                <option>French</option>
-                <option>Spanish</option>
-              </select>
-            </div>
-          </div>
-
           {/* Save Button */}
           <div className="flex justify-end pt-4">
             <button
