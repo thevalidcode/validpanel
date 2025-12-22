@@ -6,13 +6,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 // Custom hook for notifications-related queries and mutations
 
-export function useGetUserNotifications() {
+export function useGetUserNotifications(page: number = 1, limit: number = 20) {
   const { api, userInfo } = useAppContext();
   return useQuery({
     queryKey: ["notifications", userInfo?.uid],
     queryFn: async () => {
       const res = await api.get<{ notifications: Notification[] }>(
-        `/notifications/me`
+        `/notifications/me?page=${page}&limit=${limit}`
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
       return res.data.notifications;
@@ -38,25 +38,11 @@ export function useGetUserUnreadNotificationCount() {
   });
 }
 
-export function useGetNotifications() {
-  const { api } = useAppContext();
-  return useQuery({
-    queryKey: ["notifications-all"],
-    queryFn: async () => {
-      const res = await api.get<{ notifications: Notification[] }>(
-        `/notifications`
-      );
-      if (!res.data) throw new Error("Failed to fetch notifications");
-      return res.data.notifications;
-    },
-  });
-}
-
 export function useMarkNotificationAsRead() {
   const { api, userInfo } = useAppContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["notifications-all"],
+    mutationKey: ["notifications-mark-as-read"],
     mutationFn: async (uid: string) => {
       const res = await api.patch<{ success: string }>(
         `/notifications/${uid}/mark-as-read`
@@ -75,6 +61,20 @@ export function useMarkNotificationAsRead() {
         "Failed to mark notification as read"
       );
       toast.error(errorMsg);
+    },
+  });
+}
+
+export function useGetNotifications(page: number = 1, limit: number = 20) {
+  const { api } = useAppContext();
+  return useQuery({
+    queryKey: ["notifications-all"],
+    queryFn: async () => {
+      const res = await api.get<{ notifications: Notification[] }>(
+        `/notifications?page=${page}&limit=${limit}`
+      );
+      if (!res.data) throw new Error("Failed to fetch notifications");
+      return res.data.notifications;
     },
   });
 }

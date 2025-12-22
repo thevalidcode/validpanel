@@ -1,5 +1,9 @@
+import Loader from "@/components/Loader";
+import NotificationPopup from "@/components/NotificationPopup";
 import { useAppContext } from "@/context/useAppContext";
+import { useGetNotifications } from "@/hooks/use-notification";
 import { BellIcon, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { useState } from "react";
 
 interface HeaderProps {
   title: string;
@@ -15,6 +19,13 @@ const Header = ({
   isSidebarOpen,
 }: HeaderProps) => {
   const { adminInfo } = useAppContext();
+  const [open, setOpen] = useState(false);
+  const { data: notifications, isLoading: isNotificationsLoading } =
+    useGetNotifications();
+
+  if (isNotificationsLoading) {
+    return <Loader />;
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between relative">
@@ -50,19 +61,33 @@ const Header = ({
             alt="profile"
             className="w-10 h-10 rounded-full object-cover"
           />
-          <p className="font-medium text-sm text-gray-700 truncate">
-            {adminInfo?.fullName}
-          </p>
+          <div className="flex flex-col">
+            <p className="font-medium text-sm text-gray-700 truncate">
+              {adminInfo?.fullName}
+            </p>
+            <p className="tracking-wide uppercase text-xs text-gray-500 truncate">
+              {adminInfo?.role.name || "Administrator"}
+            </p>
+          </div>
         </div>
 
         {/* Notifications */}
-        <button
-          type="button"
-          title="Notifications"
-          className="p-2 rounded-full hover:bg-gray-100"
-        >
-          <BellIcon className="w-6 h-6 text-gray-600" />
-        </button>
+        <div className="relative">
+          <button
+            type="button"
+            title="Notifications"
+            onClick={() => setOpen(true)}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <BellIcon className="w-6 h-6 text-gray-600" />
+          </button>
+          <NotificationPopup
+            open={open}
+            notifications={notifications || []}
+            type="admin"
+            onClose={() => setOpen(false)}
+          />
+        </div>
       </div>
     </header>
   );

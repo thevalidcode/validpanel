@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowUpIcon, ArrowDownRightIcon } from "@heroicons/react/24/outline";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,6 +9,12 @@ import {
   Tooltip,
   Filler,
 } from "chart.js";
+import { StatCard } from "../StatCard";
+import { Activity } from "./Activity";
+import { SubscriptionItem } from "./SubscriptionItem";
+import { useGetOverview } from "@/hooks/use-admin";
+import Loader from "@/components/Loader";
+import NotFound from "@/components/NotFound";
 
 // Register Chart.js components
 ChartJS.register(
@@ -26,51 +31,23 @@ interface OverviewProps {
   onMenuClick: () => void;
 }
 
-interface StatCardProps {
-  title: string;
-  value: string;
-  icon: string;
-  change: string;
-  color: string;
-  up?: boolean;
-  down?: boolean;
-}
-
-interface ActivityProps {
-  name: string;
-  task: string;
-  time: string;
-  img: string;
-}
-
-interface OrderItemProps {
-  icon: string;
-  name: string;
-  category: string;
-  price: string;
-}
-
-//  Main Component
 const Overview: React.FC<OverviewProps> = () => {
+  const { data: overviewData, isLoading } = useGetOverview();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (!overviewData) {
+    return <NotFound title="Overview Data Not Found" variant="card" />;
+  }
+
   const chartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: overviewData.revenueChart.labels,
     datasets: [
       {
         label: "Revenue",
-        data: [30, 38, 42, 50, 58, 65, 60, 68, 62, 70, 75, 80],
+        data: overviewData.revenueChart.data,
         backgroundColor: "rgba(147, 51, 234, 0.15)",
         borderColor: "#9333EA",
         pointBackgroundColor: "#9333EA",
@@ -95,42 +72,56 @@ const Overview: React.FC<OverviewProps> = () => {
     },
   };
 
+  const statIconMap: Record<string, string> = {
+    "Total Revenue": "/Icon.svg",
+    "Active Users": "/Usericon.svg",
+    "Conversion Rate": "/Rate.svg",
+    "Active Subscriptions": "/Orders.svg",
+  };
+
+  const getStatIcon = (title: string) => statIconMap[title] ?? "/Icon.svg";
+
+  const subscriptionMetrics = [
+    {
+      title: "MRR Growth (MoM)",
+      value: overviewData.subscriptionHealth.mrrGrowth.value,
+      up: overviewData.subscriptionHealth.mrrGrowth.up,
+    },
+    {
+      title: "Churn Rate",
+      value: overviewData.subscriptionHealth.churnRate.value,
+    },
+    {
+      title: "ARPU",
+      value: overviewData.subscriptionHealth.arpu.value,
+    },
+    {
+      title: "Net Revenue Retention",
+      value: overviewData.subscriptionHealth.netRevenueRetention.value,
+    },
+  ];
+
   return (
     <div className="p-6 min-h-screen">
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard
-          title="Total Revenue"
-          value="$124,350"
-          icon="/Icon.svg"
-          change="+12.5% from last month"
-          color="text-green-600"
-          up
-        />
-        <StatCard
-          title="Active Users"
-          value="8,549"
-          icon="/Usericon.svg"
-          change="+8.2% from last week"
-          color="text-blue-600"
-          up
-        />
-        <StatCard
-          title="Conversion Rate"
-          value="3.24%"
-          icon="/Rate.svg"
-          change="-2.1% from last week"
-          color="text-red-600"
-          down
-        />
-        <StatCard
-          title="Total Orders"
-          value="2,847"
-          icon="/Orders.svg"
-          change="+16.3% from last month"
-          color="text-green-600"
-          up
-        />
+        {overviewData.stats.map((stat, index) => (
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            icon={getStatIcon(stat.title)}
+            change={stat.change}
+            color={
+              stat.up === undefined
+                ? "text-gray-500"
+                : stat.up
+                ? "text-green-600"
+                : "text-red-600"
+            }
+            up={stat.up}
+          />
+        ))}
       </div>
 
       {/* Chart + Performance */}
@@ -138,22 +129,32 @@ const Overview: React.FC<OverviewProps> = () => {
         <div className="col-span-2 bg-white border border-gray-200 rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <h2 className="font-medium text-gray-700">Revenue Trend</h2>
-            <select
-              title="time"
-              className="border border-gray-200 rounded-md px-2 py-1 text-sm"
-            >
-              <option>Last 30 days</option>
-              <option>Last 6 months</option>
-              <option>Last year</option>
-            </select>
           </div>
           <Line data={chartData} options={chartOptions} />
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h2 className="font-medium text-gray-700 mb-2">Performance Score</h2>
-          <div className="flex justify-center items-center h-full text-gray-400 text-sm">
-            (Performance Metrics Coming Soon)
+          <h2 className="font-medium text-gray-700 mb-4">
+            Subscription Health
+          </h2>
+
+          <div className="space-y-3">
+            {subscriptionMetrics.map((metric, idx) => (
+              <div key={idx} className="flex justify-between items-center">
+                <p className="text-sm text-gray-500">{metric.title}</p>
+                <p
+                  className={`text-sm font-semibold ${
+                    metric.up === undefined
+                      ? "text-gray-800"
+                      : metric.up
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {metric.value}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -163,54 +164,36 @@ const Overview: React.FC<OverviewProps> = () => {
         <div className="bg-white border border-gray-200 rounded-lg p-4">
           <h2 className="font-medium text-gray-700 mb-4">Recent Activity</h2>
           <ul className="space-y-3">
-            <Activity
-              name="John Smith"
-              task="completed project 'Website Redesign'"
-              time="2 hours ago"
-              img="https://randomuser.me/api/portraits/men/32.jpg"
-            />
-            <Activity
-              name="Emma Wilson"
-              task="uploaded new designs"
-              time="4 hours ago"
-              img="https://randomuser.me/api/portraits/women/45.jpg"
-            />
-            <Activity
-              name="Mike Davis"
-              task="created new task"
-              time="6 hours ago"
-              img="https://randomuser.me/api/portraits/men/12.jpg"
-            />
+            {overviewData.recentActivities.map((activity, idx) => (
+              <Activity
+                index={idx}
+                name={activity.name}
+                task={activity.message}
+                img={activity.img}
+                time={new Date(activity.time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              />
+            ))}
           </ul>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-medium text-gray-700">Top Orders</h2>
-            <button className="text-sm text-purple-600 hover:underline">
-              View All
-            </button>
+          <div className="flex items-center mb-4">
+            <h2 className="font-medium text-gray-700">Top Subscriptions</h2>
           </div>
-
           <ul className="space-y-3">
-            <OrderItem
-              icon="/Mac.svg"
-              name="MacBook Pro"
-              category="Electronics"
-              price="$2,499"
-            />
-            <OrderItem
-              icon="/Iphone.svg"
-              name="iPhone 15"
-              category="Electronics"
-              price="$999"
-            />
-            <OrderItem
-              icon="/Airpod.svg"
-              name="AirPods Pro"
-              category="Accessories"
-              price="$249"
-            />
+            {overviewData.topSubscriptions.map((subscription, idx) => (
+              <SubscriptionItem
+                key={idx}
+                planName={subscription.planName}
+                billingCycle={subscription.billingCycle}
+                subscribers={subscription.subscribers}
+                revenue={subscription.revenue}
+                isTrending={subscription.isTrending}
+              />
+            ))}
           </ul>
         </div>
       </div>
@@ -219,60 +202,3 @@ const Overview: React.FC<OverviewProps> = () => {
 };
 
 export default Overview;
-
-// Reusable Components
-
-const StatCard: React.FC<StatCardProps> = ({
-  title,
-  value,
-  icon,
-  change,
-  color,
-  up,
-  down,
-}) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1 hover:shadow-sm transition">
-    <p className="text-sm text-gray-500">{title}</p>
-
-    <div className="flex justify-between items-center">
-      <p className="text-2xl font-semibold text-gray-800">{value}</p>
-      <img src={icon} className="w-10 h-10 text-purple-500" alt={title} />
-    </div>
-    <div className={`flex items-center gap-1 text-sm ${color}`}>
-      {up && <ArrowUpIcon className="w-4 h-4" />}
-      {down && <ArrowDownRightIcon className="w-4 h-4" />}
-      <span>{change}</span>
-    </div>
-  </div>
-);
-
-const Activity: React.FC<ActivityProps> = ({ name, task, time, img }) => (
-  <li className="flex items-center gap-3">
-    <img src={img} alt={name} className="w-10 h-10 rounded-full object-cover" />
-    <div>
-      <p className="text-gray-700 text-sm">
-        <span className="font-medium">{name}</span> {task}
-      </p>
-      <p className="text-xs text-gray-500">{time}</p>
-    </div>
-  </li>
-);
-
-const OrderItem: React.FC<OrderItemProps> = ({
-  icon,
-  name,
-  category,
-  price,
-}) => (
-  <li className="flex justify-between items-center">
-    <div className="flex items-center gap-3">
-      <img src={icon} className="w-10 h-10 text-purple-600" alt={name} />
-
-      <div>
-        <p className="font-medium text-gray-700 text-sm">{name}</p>
-        <p className="text-xs text-gray-500">{category}</p>
-      </div>
-    </div>
-    <p className="text-gray-800 font-medium">{price}</p>
-  </li>
-);

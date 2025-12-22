@@ -19,6 +19,7 @@ interface NotificationPopupProps {
   open: boolean;
   notifications: Notification[];
   onClose: () => void;
+  type?: "user" | "admin"; // New prop
 }
 
 const categoryIcons: Record<NotificationCategory, LucideIcon> = {
@@ -46,9 +47,10 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
   open,
   notifications,
   onClose,
+  type = "user",
 }) => {
-  const { mutate: markAsRead } = useMarkNotificationAsRead();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { mutate: markAsRead } = useMarkNotificationAsRead();
 
   // Close on outside click
   useEffect(() => {
@@ -65,6 +67,8 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open, onClose]);
+
+  const isAdmin = type === "admin";
 
   return (
     <AnimatePresence>
@@ -106,24 +110,33 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
                   const Icon = categoryIcons[notif.category];
                   const typeColor =
                     typeColors[notif.meta.type] || "bg-gray-100 text-gray-600";
+
                   return (
                     <motion.div
                       key={notif.uid}
                       layout
                       className={`flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer transition`}
                       onClick={() => {
-                        markAsRead(notif.uid);
+                        if (!isAdmin) markAsRead(notif.uid); // only user
                         onClose();
                       }}
                     >
                       <div
                         className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
-                          notif.isRead ? "bg-gray-200" : typeColor
+                          isAdmin
+                            ? typeColor
+                            : notif.isRead
+                            ? "bg-gray-200"
+                            : typeColor
                         }`}
                       >
                         <Icon
                           className={`w-5 h-5 ${
-                            notif.isRead ? "text-gray-500" : "text-white"
+                            isAdmin
+                              ? "text-white"
+                              : notif.isRead
+                              ? "text-gray-500"
+                              : "text-white"
                           }`}
                         />
                       </div>
@@ -131,7 +144,11 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
                       <div className="flex-1 min-w-0">
                         <p
                           className={`font-medium text-sm truncate ${
-                            notif.isRead ? "text-gray-700" : "text-gray-900"
+                            isAdmin
+                              ? "text-gray-900"
+                              : notif.isRead
+                              ? "text-gray-700"
+                              : "text-gray-900"
                           }`}
                         >
                           {notif.title}
@@ -144,7 +161,7 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
                         </p>
                       </div>
 
-                      {!notif.isRead && (
+                      {!isAdmin && !notif.isRead && (
                         <CheckCircle className="w-4 h-4 text-primary mt-1" />
                       )}
                     </motion.div>

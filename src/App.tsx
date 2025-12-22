@@ -45,6 +45,7 @@ const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
 const OverviewPage = React.lazy(() => import("./admin/pages/Overview"));
 const AdminOrdersPage = React.lazy(() => import("./admin/pages/OrdersPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
+const Notifications = React.lazy(() => import("./admin/pages/Notifications"));
 
 const App: React.FC = () => {
   return (
@@ -126,6 +127,14 @@ const App: React.FC = () => {
               element={
                 <Suspense fallback={<Loader />}>
                   <UsersPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/notifications"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Notifications />
                 </Suspense>
               }
             />

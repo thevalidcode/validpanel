@@ -133,7 +133,7 @@ export default function AdminSidebar({
     }
   };
   return (
-    <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm">
+    <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm flex-1 overflow-y-auto">
       {/* Logo */}
       <div>
         <Link

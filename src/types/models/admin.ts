@@ -1,3 +1,5 @@
+import type { Role } from "./role";
+
 export type AdminStatus = "ACTIVE" | "INACTIVE" | "BANNED";
 
 export type Admin = {
@@ -11,4 +13,5 @@ export type Admin = {
   timestamp: string;
   lastSeen: string;
   roleId: number;
+  role: Role;
 };

@@ -8,6 +8,7 @@ import MainTitle from "../../../components/ui/MainTitle";
 import Button from "../../../components/ui/Button";
 import Horizontals from "../../../components/ui/Horizontals";
 import { useAppContext } from "../../../context/useAppContext";
+import Loader from "@/components/Loader";
 
 const authBody = [
   {
@@ -47,10 +48,16 @@ const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
   const { isAuthLoading, adminInfo } = useAppContext();
 
   useEffect(() => {
-    if (!isAuthLoading && adminInfo && type !== "forgot-password") {
-      navigate("/admin/stores");
+    if (isAuthLoading) return;
+    if (adminInfo && type !== "forgot-password") {
+      navigate("/admin/overview");
+      return;
     }
   }, [adminInfo, isAuthLoading, navigate, type]);
+
+  if (isAuthLoading) {
+    return <Loader />;
+  }
 
   return (
     <main className="lg:h-screen items-center py-20 justify-center w-full radial_background_primary text-black flex flex-col lg:flex-row">

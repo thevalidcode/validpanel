@@ -2,9 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
-import type { Err } from "../../types/utility.types";
 import { useAdminLogin } from "@/hooks/use-admin";
-import { toast } from "sonner";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser } = useAdminLogin();
@@ -29,18 +27,7 @@ const LoginPage = () => {
       email: inputs.email,
       password: inputs.password,
     };
-    try {
-      await loginUser(values);
-    } catch (error) {
-      if ((error as Err)?.status === 500) {
-        toast.error((error as Err)?.message);
-      } else {
-        console.log(error);
-        if ((error as any)?.response?.data?.error) {
-          toast.error((error as any)?.response?.data?.error);
-        }
-      }
-    }
+    await loginUser(values);
   };
 
   return (

@@ -25,10 +25,12 @@ const AppProvider = ({ children }: AppProviderProps) => {
     const loadUserInfo = async () => {
       try {
         const storedUser = await get<User | null>("userInfo");
-        if (storedUser) setUserInfo(storedUser);
+        if (storedUser)
+          setUserInfo(JSON.parse(JSON.stringify(storedUser)) || null);
 
         const storedAdmin = await get<Admin | null>("adminInfo");
-        if (storedAdmin) setAdminInfo(storedAdmin);
+        if (storedAdmin)
+          setAdminInfo(JSON.parse(JSON.stringify(storedAdmin)) || null);
       } catch (err) {
         console.error("Failed to load auth info from IndexedDB:", err);
       } finally {

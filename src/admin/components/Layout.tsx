@@ -5,6 +5,7 @@ import { useAppContext } from "@/context/useAppContext";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Loader from "@/components/Loader";
 
 function Layout({
   children,
@@ -31,9 +32,10 @@ function Layout({
   }, [isMobile]);
 
   useEffect(() => {
-    if (!isAuthLoading && adminInfo) {
-      // The adminInfo should be turned to false after the authentication system has been worked on
-      navigate("/");
+    if (isAuthLoading) return;
+    if (!adminInfo) {
+      navigate("/admin/login");
+      return;
     }
   }, [isAuthLoading, adminInfo, navigate]);
 
@@ -47,6 +49,10 @@ function Layout({
   useEffect(() => {
     localStorage.setItem("sidebarOpen", JSON.stringify(sidebarOpen));
   }, [sidebarOpen]);
+
+  if (isAuthLoading) {
+    return <Loader />;
+  }
 
   const toggleSidebar = (state?: boolean) => {
     // Only update localStorage for desktop (md+) so desktop remembers its state

@@ -48,7 +48,7 @@ export default function StoreSidebar({
   };
 
   return (
-    <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm">
+    <aside className="flex flex-col justify-between w-64 h-screen border-r border-gray-200 bg-white px-5 py-4 shadow-sm flex-1 overflow-y-auto">
       <div>
         <Link to="/analytics" className="flex items-center justify-center mb-6">
           <img

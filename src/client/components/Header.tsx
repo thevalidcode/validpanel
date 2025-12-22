@@ -98,6 +98,7 @@ const Header = ({
           <NotificationPopup
             open={open}
             notifications={notifications || []}
+            type="user"
             onClose={() => setOpen(false)}
           />
         </div>
