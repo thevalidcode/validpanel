@@ -8,7 +8,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 
-import { ChartSpline, Key, Settings, UsersIcon } from "lucide-react";
+import { Key, Settings, UsersIcon } from "lucide-react";
 
 import { FaShoppingCart, FaUsers } from "react-icons/fa";
 import { MdApi, MdPayment } from "react-icons/md";
@@ -39,12 +39,7 @@ const sections: MenuSection[] = [
         name: "Notifications",
         to: "/admin/notifications",
         icon: <BellIcon className="w-5 h-5" />,
-      },
-      {
-        name: "Analytics",
-        to: "/admin/analytics",
-        icon: <ChartSpline className="w-5 h-5" />,
-      },
+      }
     ],
   },
   {

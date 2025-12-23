@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect,  } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
 
@@ -70,7 +70,9 @@ const CustomSelect = <T,>({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full ${className} font-inter text-sm`}
+      className={`relative ${
+        className ? className : "w-full"
+      } font-inter text-sm`}
     >
       <button
         type="button"
@@ -108,7 +110,9 @@ const CustomSelect = <T,>({
           )}
         </div>
         <ChevronDown
-          className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
         />
       </button>
 

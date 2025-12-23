@@ -1,7 +1,7 @@
 "use client";
 import type { TimeRange } from "@/client/components/analytics/PlatformActivity";
 import { useAppContext } from "@/context/useAppContext";
-import type { User, Store, StoreType } from "@/types";
+import type { User, Store, StoreType, UserStatus } from "@/types";
 import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -121,16 +121,27 @@ export function useUserLogin() {
   });
 }
 
+export interface UserWithStoreCount {
+  id: number;
+  uid: string;
+  email: string;
+  image: string;
+  fullName: string;
+  status: UserStatus;
+  storesCount: number;
+}
+
 // get users
 export function useGetUsers() {
-  const { api } = useAppContext();
+  const { api, adminInfo } = useAppContext();
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await api.get<User[]>(`/users`);
-      if (!res.data) throw new Error("Failed to fetch user");
+      const res = await api.get<UserWithStoreCount[]>(`/users`);
+      if (!res.data) throw new Error("Failed to fetch users");
       return res.data;
     },
+    enabled: !!adminInfo,
   });
 }
 
@@ -161,7 +172,7 @@ export function useGetUserById(id: string) {
   });
 }
 
-interface DeleteUsersProps {
+interface UidsProps {
   uids: string[];
 }
 
@@ -170,7 +181,7 @@ export function useDeleteMultipleUsers() {
   const { api } = useAppContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: DeleteUsersProps) => {
+    mutationFn: async (data: UidsProps) => {
       const res = await api.delete(`/users/multiple`, { data });
       if (!res.data) throw new Error("Failed to delete users");
       return res.data;
@@ -186,8 +197,49 @@ export function useDeleteMultipleUsers() {
   });
 }
 
-//! delete a single user
+// ban multiple users
+export function useBanMultipleUsers() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: UidsProps) => {
+      const res = await api.patch(`/users/ban-multiple`, data);
+      if (!res.data) throw new Error("Failed to ban users");
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Users banned successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(error, "Failed to ban users");
+      toast.error(errorMsg);
+    },
+  });
+}
 
+// activate multiple users
+export function useActivateMultipleUsers() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: UidsProps) => {
+      const res = await api.patch(`/users/activate-multiple`, data);
+      if (!res.data) throw new Error("Failed to activate users");
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Users activated successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(error, "Failed to activate users");
+      toast.error(errorMsg);
+    },
+  });
+}
+
+//! delete a single user
 interface DeleteUserProps {
   uid: string;
 }
