@@ -143,7 +143,7 @@ export interface OverviewResponse {
 }
 
 export function useGetOverview() {
-  const { api, userInfo } = useAppContext();
+  const { api, adminInfo } = useAppContext();
   return useQuery({
     queryKey: ["overview-data"],
     queryFn: async () => {
@@ -151,7 +151,7 @@ export function useGetOverview() {
       if (!res.data) throw new Error("Failed to fetch overview");
       return res.data;
     },
-    enabled: !!userInfo,
+    enabled: !!adminInfo,
   });
 }
 

@@ -11,7 +11,7 @@ import type { Store, StoreStatus } from "@/types";
 import { DateTime } from "@/components/DateTime";
 import DeleteDialog from "@/components/DeleteDialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import EditStoreDialog from "./EditStoreDialog";
+import EditStoreDialog from "../../../components/EditStoreDialog";
 import { useDeleteUserStore, useUpdateStore } from "@/hooks/use-store";
 import { StatusBadge } from "@/utils/store.utils";
 

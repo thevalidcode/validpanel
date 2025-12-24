@@ -60,6 +60,7 @@ const EditStoreDialog: FC<EditStoreDialogProps> = ({
 
   const handleSubmit = () => {
     onSubmit(form);
+    onCancel();
   };
 
   return (

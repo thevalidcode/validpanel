@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 
 interface NotFoundProps {
   title: string;
+  className?: string;
   description?: string;
   icon?: ReactNode;
   actionLabel?: string;
@@ -14,6 +15,7 @@ const NotFound: FC<NotFoundProps> = ({
   description,
   icon,
   actionLabel,
+  className,
   onActionClick,
   variant = "card",
 }) => {
@@ -23,7 +25,10 @@ const NotFound: FC<NotFoundProps> = ({
     <div
       className={[
         "flex flex-col items-center justify-center text-center",
-        isPage ? "min-h-[70vh] px-6" : "bg-white rounded-xl border border-gray-200 shadow-xs p-6 m-6",
+        isPage
+          ? "min-h-[70vh] px-6"
+          : "bg-white rounded-xl border border-gray-200 shadow-xs p-6",
+        className || "",
       ].join(" ")}
     >
       <div className="mb-4">

@@ -1,3 +1,5 @@
+import type { User } from "./user";
+
 export type StoreStatus =
   | "ACTIVE"
   | "PENDING"
@@ -20,4 +22,8 @@ export type Store = {
   ownerId: number;
   logoUrl: string;
   color: string;
+};
+
+export type StoreWithOwner = Store & {
+  owner: User;
 };

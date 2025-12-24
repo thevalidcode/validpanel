@@ -26,13 +26,13 @@ const UsersPage = () => {
     type: "BAN" | "ACTIVATE";
   } | null>(null);
 
-  const [isDeletePending, setIsDeletePending] = useState(false);
-  const [isActionPending, setIsActionPending] = useState(false);
-
   const { data: fetchedUsers, isLoading } = useGetUsers();
-  const { mutateAsync: deleteUsers } = useDeleteMultipleUsers();
-  const { mutateAsync: banUsers } = useBanMultipleUsers();
-  const { mutateAsync: activateUsers } = useActivateMultipleUsers();
+  const { mutateAsync: deleteUsers, isPending: isDeletePending } =
+    useDeleteMultipleUsers();
+  const { mutateAsync: banUsers, isPending: isBanPending } =
+    useBanMultipleUsers();
+  const { mutateAsync: activateUsers, isPending: isActivatePending } =
+    useActivateMultipleUsers();
 
   useEffect(() => {
     if (fetchedUsers) setUsers(fetchedUsers);
@@ -68,14 +68,11 @@ const UsersPage = () => {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      setIsDeletePending(true);
       await deleteUsers({ uids: deleteTarget });
       setUsers((prev) => prev.filter((u) => !deleteTarget.includes(u.uid)));
       setDeleteTarget(null);
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsDeletePending(false);
     }
   };
 
@@ -83,7 +80,6 @@ const UsersPage = () => {
   const handleActionConfirm = async () => {
     if (!actionTarget) return;
     try {
-      setIsActionPending(true);
       if (actionTarget.type === "BAN") {
         await banUsers({ uids: actionTarget.uids });
         setUsers((prev) =>
@@ -102,8 +98,6 @@ const UsersPage = () => {
       setActionTarget(null);
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsActionPending(false);
     }
   };
 
@@ -179,7 +173,7 @@ const UsersPage = () => {
           </div>
         }
         confirmLabel={actionTarget?.type === "BAN" ? "Ban" : "Activate"}
-        isLoading={isActionPending}
+        isLoading={isBanPending || isActivatePending}
         onCancel={() => setActionTarget(null)}
         onConfirm={handleActionConfirm}
       />

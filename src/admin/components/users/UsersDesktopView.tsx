@@ -1,8 +1,9 @@
 import { useState } from "react";
 import type { UserWithStoreCount } from "@/hooks/use-user";
-import Pagination from "@/components/ui/Pagination";
+import { Pagination } from "@/components/ui/Pagination";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { Ban, Check, Trash } from "lucide-react";
+import { paginate } from "@/utils/paginate";
 
 interface UsersDesktopViewProps {
   users: UserWithStoreCount[];
@@ -20,9 +21,7 @@ export default function UsersDesktopView({
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage, setUsersPerPage] = useState(20);
 
-  // Pagination logic
-  const startIndex = (currentPage - 1) * usersPerPage;
-  const paginatedUsers = users.slice(startIndex, startIndex + usersPerPage);
+  const { data: paginatedUsers } = paginate(users, currentPage, usersPerPage);
 
   const handleSelectAll = (checked: boolean) => {
     const currentPageUsers = paginatedUsers.map((u) => u.uid);
