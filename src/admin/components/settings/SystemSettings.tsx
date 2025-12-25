@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
   type ChangeEvent,
   type FormEvent,
 } from "react";
@@ -8,12 +9,12 @@ import { motion } from "framer-motion";
 import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { useGetSettings, useUpdateSettings } from "@/hooks/use-setting";
+import Loader from "@/components/Loader";
 
 interface ThrottleOptions {
   progressiveDelays: boolean;
   blockSuspiciousIp: boolean;
   sendEmailAlerts: boolean;
-  whitelistedIps: boolean;
 }
 
 export default function AdminSettings() {
@@ -41,6 +42,15 @@ export default function AdminSettings() {
   const [maxLoginAttempts, setMaxLoginAttempts] = useState<number>(5);
   const [lockoutDuration, setLockoutDuration] = useState<number>(15);
 
+  // Security settings
+  const [sessionTimeout, setSessionTimeout] = useState<string>("30");
+  const [passwordMinLength, setPasswordMinLength] = useState<number>(8);
+  const [whitelistedIps, setWhitelistedIps] = useState<string>("");
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
+  const [passwordHistoryEnabled, setPasswordHistoryEnabled] =
+    useState<boolean>(false);
+  const [ipWhitelistEnabled, setIpWhitelistEnabled] = useState<boolean>(false);
+
   const [maxFileSize, setMaxFileSize] = useState<number>(10);
   const [uploadsPerHour, setUploadsPerHour] = useState<number>(20);
   const [concurrentUploads, setConcurrentUploads] = useState<number>(3);
@@ -49,8 +59,13 @@ export default function AdminSettings() {
     progressiveDelays: true,
     blockSuspiciousIp: false,
     sendEmailAlerts: true,
-    whitelistedIps: false,
   });
+
+  // Refs for validation
+  const currencyRef = useRef<any>(null);
+  const timezoneRef = useRef<any>(null);
+  const languageRef = useRef<any>(null);
+  const dateFormatRef = useRef<any>(null);
 
   useEffect(() => {
     if (settingsData) {
@@ -93,13 +108,40 @@ export default function AdminSettings() {
         progressiveDelays: settingsData.progressiveDelays || true,
         blockSuspiciousIp: settingsData.blockSuspiciousIp || false,
         sendEmailAlerts: settingsData.sendEmailAlerts || true,
-        whitelistedIps: !!settingsData.whitelistedIps?.length,
       });
+
+      setWhitelistedIps(
+        settingsData.whitelistedIps
+          ? settingsData.whitelistedIps.join(", ")
+          : ""
+      );
+
+      setSessionTimeout(settingsData.sessionTimeout?.toString() || "30");
+      setPasswordMinLength(settingsData.passwordMinLength || 8);
+      setTwoFactorEnabled(settingsData.twoFactorEnabled || false);
+      setPasswordHistoryEnabled(settingsData.passwordHistoryEnabled || false);
+      setIpWhitelistEnabled(settingsData.ipWhitelistEnabled || false);
     }
   }, [settingsData]);
 
   const handleSave = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+
+    // Validate required fields
+    const isCurrencyValid = currencyRef.current?.validate();
+    const isTimezoneValid = timezoneRef.current?.validate();
+    const isLanguageValid = languageRef.current?.validate();
+    const isDateFormatValid = dateFormatRef.current?.validate();
+
+    if (
+      !isCurrencyValid ||
+      !isTimezoneValid ||
+      !isLanguageValid ||
+      !isDateFormatValid
+    ) {
+      return;
+    }
+
     const data = {
       siteName,
       adminEmail,
@@ -114,7 +156,7 @@ export default function AdminSettings() {
       maintenanceEnd: endDate ? new Date(endDate) : null,
       allowedIps: allowedIPs
         ? allowedIPs.split(",").map((ip) => ip.trim())
-        : null,
+        : [],
       requestsPerMinute: rpm,
       requestsPerHour: rph,
       requestsPerDay: rpd,
@@ -126,7 +168,14 @@ export default function AdminSettings() {
       progressiveDelays: throttleOptions.progressiveDelays,
       blockSuspiciousIp: throttleOptions.blockSuspiciousIp,
       sendEmailAlerts: throttleOptions.sendEmailAlerts,
-      whitelistedIps: throttleOptions.whitelistedIps ? [] : null, // assuming empty array if enabled
+      whitelistedIps: whitelistedIps
+        ? whitelistedIps.split(",").map((ip) => ip.trim())
+        : [],
+      sessionTimeout: Number(sessionTimeout),
+      passwordMinLength,
+      twoFactorEnabled,
+      passwordHistoryEnabled,
+      ipWhitelistEnabled,
     };
     updateSettingsMutation.mutate(data);
   };
@@ -166,7 +215,7 @@ export default function AdminSettings() {
   ];
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
@@ -174,344 +223,443 @@ export default function AdminSettings() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="p-6"
+      className="w-full p-6 space-y-8"
     >
       <form onSubmit={handleSave} className="space-y-8">
-        <motion.section
+        {/* General Settings */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-y"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            General Settings
-          </h3>
-          <p className="text-sm text-gray-500 mb-6">
-            Configure your application's general preferences.
-          </p>
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 className="text-xl font-semibold text-gray-900">
+              General Settings
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Configure your application's general preferences.
+            </p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Site Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={siteName}
+                  onChange={(e) => setSiteName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  placeholder="Enter site name"
+                />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Site Name
-              </label>
-              <input
-                type="text"
-                title="siteName"
-                value={siteName}
-                onChange={(e) => setSiteName(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Admin Email
+                </label>
+                <input
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  placeholder="admin@example.com"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Admin Email
-              </label>
-              <input
-                type="email"
-                title="email"
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Default Currency <span className="text-red-500">*</span>
+                </label>
+                <CustomSelect
+                  ref={currencyRef}
+                  options={currencyOptions}
+                  value={currencyOptions.find((opt) => opt.value === currency)}
+                  onChange={(selected) =>
+                    setCurrency((selected as Option<string>).value)
+                  }
+                  placeholder="Select Currency"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Default Currency
-              </label>
-              <CustomSelect
-                options={currencyOptions}
-                value={currencyOptions.find((opt) => opt.value === currency)}
-                onChange={(selected) =>
-                  setCurrency((selected as Option<string>).value)
-                }
-                placeholder="Select Currency"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Timezone <span className="text-red-500">*</span>
+                </label>
+                <CustomSelect
+                  ref={timezoneRef}
+                  options={timezoneOptions}
+                  value={timezoneOptions.find((opt) => opt.value === timezone)}
+                  onChange={(selected) =>
+                    setTimezone((selected as Option<string>).value)
+                  }
+                  placeholder="Select Timezone"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Timezone
-              </label>
-              <CustomSelect
-                options={timezoneOptions}
-                value={timezoneOptions.find((opt) => opt.value === timezone)}
-                onChange={(selected) =>
-                  setTimezone((selected as Option<string>).value)
-                }
-                placeholder="Select Timezone"
-              />
-            </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Site Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={siteDesc}
+                  onChange={(e) => setSiteDesc(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
+                  placeholder="Describe your application..."
+                />
+              </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Site Description
-              </label>
-              <textarea
-                rows={2}
-                title="siteDescription"
-                value={siteDesc}
-                onChange={(e) => setSiteDesc(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none bg-white"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Default Language <span className="text-red-500">*</span>
+                </label>
+                <CustomSelect
+                  ref={languageRef}
+                  options={languageOptions}
+                  value={languageOptions.find((opt) => opt.value === language)}
+                  onChange={(selected) =>
+                    setLanguage((selected as Option<string>).value)
+                  }
+                  placeholder="Select Language"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Default Language
-              </label>
-              <CustomSelect
-                options={languageOptions}
-                value={languageOptions.find((opt) => opt.value === language)}
-                onChange={(selected) =>
-                  setLanguage((selected as Option<string>).value)
-                }
-                placeholder="Select Language"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date Format
-              </label>
-              <CustomSelect
-                options={dateFormatOptions}
-                value={dateFormatOptions.find(
-                  (opt) => opt.value === dateFormat
-                )}
-                onChange={(selected) =>
-                  setDateFormat((selected as Option<string>).value)
-                }
-                placeholder="Select Date Format"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date Format <span className="text-red-500">*</span>
+                </label>
+                <CustomSelect
+                  ref={dateFormatRef}
+                  options={dateFormatOptions}
+                  value={dateFormatOptions.find(
+                    (opt) => opt.value === dateFormat
+                  )}
+                  onChange={(selected) =>
+                    setDateFormat((selected as Option<string>).value)
+                  }
+                  placeholder="Select Date Format"
+                  required
+                />
+              </div>
             </div>
           </div>
-        </motion.section>
+        </motion.div>
 
-        <motion.section
+        {/* Maintenance Mode */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Maintenance Mode
-          </h3>
-          <p className="text-sm text-gray-500 mb-6">
-            Control when your application goes offline for updates.
-          </p>
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 className="text-xl font-semibold text-gray-900">
+              Maintenance Mode
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Control when your application goes offline for updates.
+            </p>
+          </div>
+          <div className="p-6">
+            <CustomCheckbox
+              checked={maintenanceEnabled}
+              onChange={setMaintenanceEnabled}
+              label="Enable maintenance mode"
+              className="mb-6"
+            />
 
-          <CustomCheckbox
-            checked={maintenanceEnabled}
-            onChange={setMaintenanceEnabled}
-            label="Enable maintenance mode"
-            className="mb-4"
-          />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Date
+                </label>
+                <input
+                  type="datetime-local"
+                  title="start-date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Start Date
-              </label>
-              <input
-                type="datetime-local"
-                title="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  End Date
+                </label>
+                <input
+                  type="datetime-local"
+                  value={endDate}
+                  title="end-date"
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                End Date
-              </label>
-              <input
-                type="datetime-local"
-                title="endDate"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Maintenance Message
+                </label>
+                <textarea
+                  rows={3}
+                  value={maintenanceMsg}
+                  onChange={(e) => setMaintenanceMsg(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
+                  placeholder="Enter maintenance message..."
+                />
+              </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Maintenance Message
-              </label>
-              <textarea
-                rows={2}
-                title="maintenanceMessage"
-                value={maintenanceMsg}
-                onChange={(e) => setMaintenanceMsg(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Allowed IPs
-              </label>
-              <input
-                value={allowedIPs}
-                onChange={(e) => setAllowedIPs(e.target.value)}
-                placeholder="e.g., 192.168.1.1, 127.0.0.1"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Allowed IPs
+                </label>
+                <input
+                  value={allowedIPs}
+                  onChange={(e) => setAllowedIPs(e.target.value)}
+                  placeholder="e.g., 192.168.1.1, 127.0.0.1"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
             </div>
           </div>
-        </motion.section>
+        </motion.div>
 
-        <motion.section
+        {/* Security Settings */}
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Rate Limits & Throttling
-          </h3>
-          <p className="text-sm text-gray-500 mb-6">
-            Manage API and user activity rate limits.
-          </p>
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 className="text-xl font-semibold text-gray-900">
+              Security Settings
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Configure security policies and access controls.
+            </p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Session Timeout (minutes) *
+                </label>
+                <input
+                  type="number"
+                  title="session-timeout"
+                  value={sessionTimeout}
+                  onChange={(e) => setSessionTimeout(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  required
+                />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Requests per Minute
-              </label>
-              <input
-                type="number"
-                title="reqestPerMinute"
-                value={rpm}
-                onChange={(e) => handleNumberChange(setRpm, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Max Login Attempts *
+                </label>
+                <input
+                  type="number"
+                  title="max-attempt"
+                  value={maxLoginAttempts}
+                  onChange={(e) => handleNumberChange(setMaxLoginAttempts, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password Min Length *
+                </label>
+                <input
+                  type="number"
+                  value={passwordMinLength}
+                  title="password-min"
+                  onChange={(e) => handleNumberChange(setPasswordMinLength, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Lockout Duration (minutes) *
+                </label>
+                <input
+                  type="number"
+                  title="lockout-duration"
+                  value={lockoutDuration}
+                  onChange={(e) => handleNumberChange(setLockoutDuration, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  required
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Whitelisted IPs
+                </label>
+                <input
+                  value={whitelistedIps}
+                  onChange={(e) => setWhitelistedIps(e.target.value)}
+                  placeholder="e.g., 192.168.1.1, 127.0.0.1"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Requests per Hour
-              </label>
-              <input
-                type="number"
-                title="reqestPerHour"
-                value={rph}
-                onChange={(e) => handleNumberChange(setRph, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
+            <div className="mt-6 space-y-4 flex flex-col">
+              <CustomCheckbox
+                checked={twoFactorEnabled}
+                onChange={setTwoFactorEnabled}
+                label="Enable two-factor authentication"
               />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Requests per Day
-              </label>
-              <input
-                type="number"
-                title="reqestPerDay"
-                value={rpd}
-                onChange={(e) => handleNumberChange(setRpd, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
+              <CustomCheckbox
+                checked={passwordHistoryEnabled}
+                onChange={setPasswordHistoryEnabled}
+                label="Enable password history check"
+              />
+
+              <CustomCheckbox
+                checked={ipWhitelistEnabled}
+                onChange={setIpWhitelistEnabled}
+                label="Enable IP whitelisting"
               />
             </div>
           </div>
+        </motion.div>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max Login Attempts
-              </label>
-              <input
-                type="number"
-                title="newLoginAttempts"
-                value={maxLoginAttempts}
-                onChange={(e) => handleNumberChange(setMaxLoginAttempts, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Lockout Duration (mins)
-              </label>
-              <input
-                type="number"
-                title="lockoutDuration"
-                value={lockoutDuration}
-                onChange={(e) => handleNumberChange(setLockoutDuration, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
+        {/* Rate Limits & Throttling */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+        >
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 className="text-xl font-semibold text-gray-900">
+              Rate Limits & Throttling
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              Manage API and user activity rate limits.
+            </p>
           </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Requests per Minute
+                </label>
+                <input
+                  type="number"
+                  title="requests-per-minute"
+                  value={rpm}
+                  onChange={(e) => handleNumberChange(setRpm, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max File Size (MB)
-              </label>
-              <input
-                type="number"
-                title="maxFileSize"
-                value={maxFileSize}
-                onChange={(e) => handleNumberChange(setMaxFileSize, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Requests per Hour
+                </label>
+                <input
+                  type="number"
+                  value={rph}
+                  title="requests-per-hour"
+                  onChange={(e) => handleNumberChange(setRph, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Requests per Day
+                </label>
+                <input
+                  type="number"
+                  title="requests-per-day"
+                  value={rpd}
+                  onChange={(e) => handleNumberChange(setRpd, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Max File Size (MB)
+                </label>
+                <input
+                  type="number"
+                  title="max-file-size"
+                  value={maxFileSize}
+                  onChange={(e) => handleNumberChange(setMaxFileSize, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Uploads per Hour
+                </label>
+                <input
+                  type="number"
+                  title="uploads-per-hour"
+                  value={uploadsPerHour}
+                  onChange={(e) => handleNumberChange(setUploadsPerHour, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Concurrent Uploads
+                </label>
+                <input
+                  type="number"
+                  title="concurrent-uploads"
+                  value={concurrentUploads}
+                  onChange={(e) => handleNumberChange(setConcurrentUploads, e)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Uploads per Hour
-              </label>
-              <input
-                type="number"
-                title="uploadPerHour"
-                value={uploadsPerHour}
-                onChange={(e) => handleNumberChange(setUploadsPerHour, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Concurrent Uploads
-              </label>
-              <input
-                type="number"
-                title="concurrentUploads"
-                value={concurrentUploads}
-                onChange={(e) => handleNumberChange(setConcurrentUploads, e)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              />
-            </div>
-          </div>
-
-          {/* Throttle Options */}
-          <div className="mt-6 space-y-2">
-            {(Object.keys(throttleOptions) as Array<keyof ThrottleOptions>).map(
-              (key) => (
+            {/* Throttle Options */}
+            <div className="mt-6 space-y-4 flex flex-col">
+              {(
+                Object.keys(throttleOptions) as Array<keyof ThrottleOptions>
+              ).map((key) => (
                 <CustomCheckbox
                   key={key}
                   checked={throttleOptions[key]}
                   onChange={() => toggleThrottleOption(key)}
                   label={key.replace(/([A-Z])/g, " $1")}
                 />
-              )
-            )}
+              ))}
+            </div>
           </div>
-        </motion.section>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-end"
+          transition={{ delay: 0.5 }}
+          className="flex justify-end pt-6"
         >
           <button
             type="submit"
             disabled={updateSettingsMutation.isPending}
-            className="bg-purple-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition disabled:opacity-50"
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-purple-700 focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
           </button>

@@ -9,9 +9,11 @@ export function useGetSettings() {
   return useQuery({
     queryKey: ["settings"],
     queryFn: async () => {
-      const res = await api.get(`/setting/admin`);
+      const res = await api.get<{ setting: Record<string, any> }>(
+        `/setting/admin`
+      );
       if (!res.data) throw new Error("Failed to fetch settings");
-      return res.data;
+      return res.data.setting;
     },
     enabled: !!adminInfo,
   });

@@ -6,7 +6,7 @@ const AdminSettingsPage: React.FC = () => {
   return (
     <Layout
       title="System Settings"
-      description="Configure system-wide settings and preferences"
+      description="Configure your application's system-wide preferences and security settings."
     >
       <SystemSettings />
     </Layout>
