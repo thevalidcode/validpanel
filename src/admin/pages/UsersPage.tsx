@@ -14,6 +14,7 @@ import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 import { Ban, Check, Download, Search } from "lucide-react";
 import DeleteDialog from "@/components/DeleteDialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import NotFound from "@/components/NotFound";
 
 const UsersPage = () => {
   const [users, setUsers] = useState<UserWithStoreCount[]>([]);
@@ -138,12 +139,24 @@ const UsersPage = () => {
         </div>
 
         {/* Mobile/ Desktop Views */}
-        <div className="md:hidden w-full space-y-5">
-          <UsersMobileView users={filteredUsers} handleAction={handleAction} />
-        </div>
-        <div className="hidden md:block">
-          <UsersDesktopView users={filteredUsers} handleAction={handleAction} />
-        </div>
+        {filteredUsers.length !== 0 ? (
+          <>
+            <div className="md:hidden w-full space-y-5">
+              <UsersMobileView
+                users={filteredUsers}
+                handleAction={handleAction}
+              />
+            </div>
+            <div className="hidden md:block">
+              <UsersDesktopView
+                users={filteredUsers}
+                handleAction={handleAction}
+              />
+            </div>
+          </>
+        ) : (
+          <NotFound title="No users found." className="mt-5" />
+        )}
       </div>
 
       {/* Confirm Ban / Activate */}

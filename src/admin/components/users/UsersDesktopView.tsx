@@ -93,7 +93,7 @@ export default function UsersDesktopView({
                   onChange={handleSelectAll}
                 />
               </th>
-              <th className="p-3">User Name</th>
+              <th className="p-3">Name</th>
               <th className="p-3">Email</th>
               <th className="p-3">Number of Stores</th>
               <th className="p-3">Status</th>

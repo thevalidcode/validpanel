@@ -13,6 +13,7 @@ export interface UploadLog {
 
 export type CollectionName =
   | "default"
+  | "admins"
   | "users"
   | "store"
   | "admins"

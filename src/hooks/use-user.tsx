@@ -373,16 +373,22 @@ interface OnboardingSetupStoreProps {
 }
 
 export function useOnboardingSetupStore() {
-  const { api } = useAppContext();
+  const { api, handleSetUserInfo } = useAppContext();
   return useMutation({
     mutationFn: async (data: OnboardingSetupStoreProps) => {
       const res = await api.post<{
         message: string;
+        user: User;
         store: Store;
         onboardingStep: "COMPLETE";
       }>(`/users/onboarding/setup`, data);
       if (!res.data) throw new Error("Failed to setup store");
       return res.data;
+    },
+    onSuccess: (data) => {
+      handleSetUserInfo({
+        ...data.user,
+      });
     },
     onError: (error: unknown) => {
       const errorMsg = normalizeApiError(error, "Failed to setup store");

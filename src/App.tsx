@@ -46,6 +46,11 @@ const OverviewPage = React.lazy(() => import("./admin/pages/Overview"));
 const AdminOrdersPage = React.lazy(() => import("./admin/pages/OrdersPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
 const Notifications = React.lazy(() => import("./admin/pages/Notifications"));
+const AdminManagement = React.lazy(
+  () => import("./admin/pages/AdminManagement")
+);
+const Permissions = React.lazy(() => import("./admin/pages/PermissionsPage"));
+const AdminAccount = React.lazy(() => import("./admin/pages/AdminAccountPage"));
 
 const App: React.FC = () => {
   return (
@@ -135,6 +140,32 @@ const App: React.FC = () => {
               element={
                 <Suspense fallback={<Loader />}>
                   <Notifications />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/admin-management"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AdminManagement />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path="/admin/permissions"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Permissions />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path="/admin/account"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AdminAccount />
                 </Suspense>
               }
             />

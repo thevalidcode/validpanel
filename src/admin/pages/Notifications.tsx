@@ -38,7 +38,11 @@ const AdminNotifications = () => {
   if (notifications.length === 0) {
     return (
       <Layout title="Notifications" description="View admin notifications">
-        <NotFound title="No notifications found." variant="card" />
+        <NotFound
+          title="No notifications found."
+          variant="card"
+          className="m-6"
+        />
       </Layout>
     );
   }

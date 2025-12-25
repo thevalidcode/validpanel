@@ -1,9 +1,14 @@
-import type { FC, ChangeEvent, ReactNode } from "react";
+import type {  ChangeEvent, ReactNode } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { Upload } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUploadImage } from "@/hooks/use-file";
 import type { CollectionName } from "@/types";
 import { toast } from "sonner";
+
+export interface ImageUploadBoxRef {
+  validate: () => boolean;
+}
 
 interface ImageUploadBoxProps {
   label?: string;
@@ -11,98 +16,123 @@ interface ImageUploadBoxProps {
   onUploaded: (url: string) => void;
   accept?: string;
   maxSizeMB?: number;
-  variant?: "box" | "button"; // new
-  buttonLabel?: string; // for button variant
+  variant?: "box" | "button";
+  buttonLabel?: string;
   labelIcon?: ReactNode;
-  description?: string; // optional description under button
+  description?: string;
+  required?: boolean; // new
 }
 
-const ImageUploadBox: FC<ImageUploadBoxProps> = ({
-  label = "Upload Image",
-  collection,
-  onUploaded,
-  accept = "image/png, image/jpeg",
-  maxSizeMB = 5,
-  variant = "box",
-  labelIcon,
-  buttonLabel = "Upload New Picture",
-  description = `PNG, JPG up to ${maxSizeMB}MB`,
-}) => {
-  const { mutateAsync: uploadImage, isPending } = useUploadImage();
+const ImageUploadBox = forwardRef<ImageUploadBoxRef, ImageUploadBoxProps>(
+  (
+    {
+      label = "Upload Image",
+      collection,
+      onUploaded,
+      accept = "image/png, image/jpeg",
+      maxSizeMB = 5,
+      variant = "box",
+      labelIcon,
+      buttonLabel = "Upload New Picture",
+      description = `PNG, JPG up to ${maxSizeMB}MB`,
+      required = false,
+    },
+    ref
+  ) => {
+    const { mutateAsync: uploadImage, isPending } = useUploadImage();
+    const [uploaded, setUploaded] = useState(false);
 
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    // Expose validate() method for forms
+    useImperativeHandle(ref, () => ({
+      validate: () => {
+        if (required && !uploaded) {
+          toast.error("Please upload an image before continuing.");
+          return false;
+        }
+        return true;
+      },
+    }));
 
-    const sizeMB = file.size / 1024 / 1024;
-    if (sizeMB > maxSizeMB) {
-      toast.error(`Image must be smaller than ${maxSizeMB}MB`);
-      return;
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const sizeMB = file.size / 1024 / 1024;
+      if (sizeMB > maxSizeMB) {
+        toast.error(`Image must be smaller than ${maxSizeMB}MB`);
+        return;
+      }
+
+      await uploadImage(
+        { file, collection },
+        {
+          onSuccess: (data) => {
+            if (data?.url) {
+              onUploaded(data.url);
+              setUploaded(true); // mark as uploaded
+            }
+          },
+        }
+      );
+
+      toast.info("Image uploaded successfully, please save the changes.");
+    };
+
+    if (variant === "button") {
+      return (
+        <div className="flex flex-col items-start">
+          <motion.label
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="border border-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-100 transition cursor-pointer inline-flex items-center justify-center disabled:opacity-50"
+          >
+            {isPending ? "Uploading..." : buttonLabel}
+            <input
+              type="file"
+              title="image"
+              accept={accept}
+              className="hidden"
+              onChange={handleFileChange}
+              disabled={isPending}
+            />
+          </motion.label>
+          {description && (
+            <p className="text-xs text-gray-500 mt-1">{description}</p>
+          )}
+        </div>
+      );
     }
 
-    await uploadImage(
-      { file, collection },
-      {
-        onSuccess: (data) => {
-          if (data?.url) onUploaded(data.url);
-        },
-      }
-    );
-    toast.info("Image uploaded successfully, please save the changes.");
-  };
-  if (variant === "button") {
+    // Default "box" variant
     return (
-      <div className="flex flex-col items-start">
+      <div className="mb-6">
+        <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
+          {labelIcon && <span className="text-gray-400">{labelIcon}</span>}
+          {label}
+        </label>
         <motion.label
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
-          className="border border-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-100 transition cursor-pointer inline-flex items-center justify-center disabled:opacity-50"
+          className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-purple-400 transition"
         >
-          {isPending ? "Uploading..." : buttonLabel}
+          <Upload className="w-10 h-10 text-gray-400 mb-2" />
+          <p className="text-gray-400 text-sm">
+            {isPending ? "Uploading..." : description}
+          </p>
+
           <input
-            type="file"
             title="image"
+            type="file"
             accept={accept}
             className="hidden"
             onChange={handleFileChange}
             disabled={isPending}
           />
         </motion.label>
-        {description && (
-          <p className="text-xs text-gray-500 mt-1">{description}</p>
-        )}
       </div>
     );
   }
+);
 
-  // Default "box" variant
-  return (
-    <div className="mb-6">
-      <label className="mb-1 flex items-center gap-2 text-sm font-medium text-gray-700">
-        {labelIcon && <span className="text-gray-400">{labelIcon}</span>}
-        {label}
-      </label>
-      <motion.label
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.98 }}
-        className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-purple-400 transition"
-      >
-        <Upload className="w-10 h-10 text-gray-400 mb-2" />
-        <p className="text-gray-400 text-sm">
-          {isPending ? "Uploading..." : description}
-        </p>
-
-        <input
-          title="image"
-          type="file"
-          accept={accept}
-          className="hidden"
-          onChange={handleFileChange}
-          disabled={isPending}
-        />
-      </motion.label>
-    </div>
-  );
-};
-
+ImageUploadBox.displayName = "ImageUploadBox";
 export default ImageUploadBox;

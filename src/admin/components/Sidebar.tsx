@@ -8,9 +8,9 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 
-import { Key, Settings, UsersIcon } from "lucide-react";
+import { Key, Settings, User, UsersIcon } from "lucide-react";
 
-import { FaShoppingCart, FaUsers } from "react-icons/fa";
+import { FaRegGem, FaShoppingCart, FaUsers } from "react-icons/fa";
 import { MdApi, MdPayment } from "react-icons/md";
 
 import { useAppContext } from "@/context/useAppContext";
@@ -39,7 +39,7 @@ const sections: MenuSection[] = [
         name: "Notifications",
         to: "/admin/notifications",
         icon: <BellIcon className="w-5 h-5" />,
-      }
+      },
     ],
   },
   {
@@ -66,12 +66,12 @@ const sections: MenuSection[] = [
     title: "Orders & Payments",
     items: [
       {
-        name: "Orders Management",
+        name: "Orders",
         to: "/admin/orders",
         icon: <ShoppingBagIcon className="w-5 h-5" />,
       },
       {
-        name: "Payments & Transactions",
+        name: "Payments",
         to: "/admin/payments",
         icon: <FaShoppingCart className="w-5 h-5" />,
       },
@@ -83,22 +83,22 @@ const sections: MenuSection[] = [
     ],
   },
   {
-    title: "System Settings",
+    title: "Platform Settings",
     items: [
       {
-        name: "API Providers",
-        to: "/admin/api-providers",
+        name: "Subscription Plans",
+        to: "/admin/subscription-plans",
+        icon: <FaRegGem className="w-5 h-5" />,
+      },
+      {
+        name: "Service API Providers",
+        to: "/admin/service-api-providers",
         icon: <MdApi className="w-5 h-5" />,
       },
       {
         name: "Permissions",
         to: "/admin/permissions",
         icon: <Key className="w-5 h-5" />,
-      },
-      {
-        name: "Settings",
-        to: "/admin/settings",
-        icon: <Settings className="w-5 h-5" />,
       },
     ],
   },
@@ -214,14 +214,22 @@ export default function AdminSidebar({
               transition={{ duration: 0.15 }}
               className="absolute bottom-14 left-0 w-full bg-white border border-gray-200 shadow-lg rounded-xl p-2"
             >
-              <Link
-                to="/admin/settings"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-100 transition text-sm"
-              >
-                <Settings className="h-5 w-5 text-gray-500" />
-                Settings
-              </Link>
-
+              <div className="flex flex-col">
+                <Link
+                  to="/admin/account"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-100 transition text-sm"
+                >
+                  <User className="h-5 w-5 text-gray-500" />
+                  Profile
+                </Link>
+                <Link
+                  to="/admin/settings"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-100 transition text-sm"
+                >
+                  <Settings className="h-5 w-5 text-gray-500" />
+                  Settings
+                </Link>
+              </div>
               <button
                 type="button"
                 onClick={onLogout}

@@ -42,7 +42,9 @@ const DeleteDialog: FC<DeleteDialogProps> = ({
           >
             <div className="mb-4">
               {icon ? (
-                <div className="text-red-500">{icon}</div>
+                <div className="w-14 h-14 mx-auto rounded-full bg-red-50 flex items-center justify-center text-red-500 text-xl">
+                  {icon}
+                </div>
               ) : (
                 <div className="w-14 h-14 mx-auto rounded-full bg-red-50 flex items-center justify-center text-red-500 text-xl">
                   !

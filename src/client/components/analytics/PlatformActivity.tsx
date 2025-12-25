@@ -111,7 +111,7 @@ const PlatformActivity: FC<PlatformActivityProps> = ({
             { label: "Last 30 days", value: "Last 30 days" },
             { label: "Last 90 days", value: "Last 90 days" },
           ]}
-          className="w-40"
+          className="w-full"
         />
       </div>
 

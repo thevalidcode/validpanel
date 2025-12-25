@@ -7,3 +7,6 @@ export * from "./models/store";
 export * from "./models/upload-log";
 export * from "./models/payment";
 export * from "./models/notification";
+export * from "./models/role";
+export * from "./models/permission";
+export * from "./models/platform-event";

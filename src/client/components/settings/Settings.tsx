@@ -149,7 +149,7 @@ export default function UserSettings(): JSX.Element {
                 const option = selected as Option<string>;
                 setUserCurrency(option.value as keyof typeof currencyMap);
               }}
-              className="w-44"
+              className="w-full"
               isSearchable
             />
           </div>

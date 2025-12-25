@@ -1,13 +1,9 @@
 import React, { type JSX } from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  Cog6ToothIcon,
-  ShoppingBagIcon,
-  HomeIcon,
-} from "@heroicons/react/24/outline";
+import { ShoppingBagIcon, HomeIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "@/context/useAppContext";
-import { CreditCard, Settings } from "lucide-react";
+import { CreditCard, MailIcon, TagIcon, User } from "lucide-react";
 
 interface MenuItem {
   name: string;
@@ -24,7 +20,8 @@ const menu: MenuItem[] = [
   { name: "Analytics", icon: HomeIcon, to: "/analytics" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
   { name: "Subscription", icon: CreditCard, to: "/subscription" },
-  { name: "Settings", icon: Settings, to: "/settings" },
+  { name: "Pricing", icon: TagIcon, to: "/pricing" },
+  { name: "Contact Us", icon: MailIcon, to: "/contact-us" },
 ];
 
 export default function StoreSidebar({
@@ -120,8 +117,8 @@ export default function StoreSidebar({
                 to="/settings"
                 className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-100 hover:text-primary transition text-sm"
               >
-                <Cog6ToothIcon className="h-5 w-5 text-gray-500" />
-                Settings
+                <User className="h-5 w-5 text-gray-500" />
+                Profile
               </Link>
 
               <button

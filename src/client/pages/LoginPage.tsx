@@ -2,9 +2,9 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
-import type { Err } from "../../types/utility.types";
 import { useUserLogin } from "@/hooks/use-user";
 import { toast } from "sonner";
+import { normalizeApiError } from "@/utils/normalizeApiErrors";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser } = useUserLogin();
@@ -31,15 +31,9 @@ const LoginPage = () => {
     };
     try {
       await loginUser(values);
-    } catch (error) {
-      if ((error as Err)?.status === 500) {
-        toast.error((error as Err)?.message);
-      } else {
-        console.log(error);
-        if ((error as any)?.response?.data?.error) {
-          toast.error((error as any)?.response?.data?.error);
-        }
-      }
+    } catch (error: any) {
+      const errorMsg = normalizeApiError(error, "Failed to login admin");
+      toast.error(errorMsg);
     }
   };
 

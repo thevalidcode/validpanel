@@ -3,6 +3,8 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import { useAdminLogin } from "@/hooks/use-admin";
+import { normalizeApiError } from "@/utils/normalizeApiErrors";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser } = useAdminLogin();
@@ -27,7 +29,12 @@ const LoginPage = () => {
       email: inputs.email,
       password: inputs.password,
     };
-    await loginUser(values);
+    try {
+      await loginUser(values);
+    } catch (error: any) {
+      const errorMsg = normalizeApiError(error, "Failed to login admin");
+      toast.error(errorMsg);
+    }
   };
 
   return (

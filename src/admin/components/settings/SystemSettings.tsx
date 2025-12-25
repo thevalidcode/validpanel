@@ -1,27 +1,35 @@
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+import { motion } from "framer-motion";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
+import CustomCheckbox from "@/components/ui/CustomCheckbox";
+import { useGetSettings, useUpdateSettings } from "@/hooks/use-setting";
 
 interface ThrottleOptions {
   progressiveDelays: boolean;
-  banRepeat: boolean;
-  notifyAdmins: boolean;
-  whitelistIPs: boolean;
+  blockSuspiciousIp: boolean;
+  sendEmailAlerts: boolean;
+  whitelistedIps: boolean;
 }
 
 export default function AdminSettings() {
-  const [siteName, setSiteName] = useState<string>("My Application");
-  const [adminEmail, setAdminEmail] = useState<string>("admin@example.com");
-  const [currency, setCurrency] = useState<string>("USD - US Dollar");
+  const { data: settingsData, isLoading } = useGetSettings();
+  const updateSettingsMutation = useUpdateSettings();
+
+  const [siteName, setSiteName] = useState<string>("");
+  const [adminEmail, setAdminEmail] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("USD");
   const [timezone, setTimezone] = useState<string>("UTC");
-  const [siteDesc, setSiteDesc] = useState<string>(
-    "A modern web application for managing your business operations efficiently."
-  );
+  const [siteDesc, setSiteDesc] = useState<string>("");
   const [language, setLanguage] = useState<string>("English");
   const [dateFormat, setDateFormat] = useState<string>("MM/DD/YYYY");
 
   const [maintenanceEnabled, setMaintenanceEnabled] = useState<boolean>(false);
-  const [maintenanceMsg, setMaintenanceMsg] = useState<string>(
-    "We are currently performing scheduled maintenance. Please check back soon."
-  );
+  const [maintenanceMsg, setMaintenanceMsg] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [allowedIPs, setAllowedIPs] = useState<string>("");
@@ -39,14 +47,88 @@ export default function AdminSettings() {
 
   const [throttleOptions, setThrottleOptions] = useState<ThrottleOptions>({
     progressiveDelays: true,
-    banRepeat: false,
-    notifyAdmins: true,
-    whitelistIPs: false,
+    blockSuspiciousIp: false,
+    sendEmailAlerts: true,
+    whitelistedIps: false,
   });
 
-  const handleSave = (e?: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (settingsData) {
+      setSiteName(settingsData.siteName || "");
+      setAdminEmail(settingsData.adminEmail || "");
+      setCurrency(settingsData.defaultCurrency || "USD");
+      setTimezone(settingsData.timezone || "UTC");
+      setSiteDesc(settingsData.siteDescription || "");
+      setLanguage(settingsData.defaultLanguage || "English");
+      setDateFormat(settingsData.dateFormat || "MM/DD/YYYY");
+
+      setMaintenanceEnabled(settingsData.maintenanceMode === "ENABLED");
+      setMaintenanceMsg(settingsData.maintenanceMsg || "");
+      setStartDate(
+        settingsData.maintenanceStart
+          ? new Date(settingsData.maintenanceStart).toISOString().slice(0, 16)
+          : ""
+      );
+      setEndDate(
+        settingsData.maintenanceEnd
+          ? new Date(settingsData.maintenanceEnd).toISOString().slice(0, 16)
+          : ""
+      );
+      setAllowedIPs(
+        settingsData.allowedIps ? settingsData.allowedIps.join(", ") : ""
+      );
+
+      setRpm(settingsData.requestsPerMinute || 60);
+      setRph(settingsData.requestsPerHour || 1000);
+      setRpd(settingsData.requestsPerDay || 10000);
+
+      setMaxLoginAttempts(settingsData.maxLoginAttempts || 5);
+      setLockoutDuration(settingsData.lockoutDuration || 15);
+
+      setMaxFileSize(settingsData.maxFileSizeMb || 10);
+      setUploadsPerHour(settingsData.uploadsPerHour || 20);
+      setConcurrentUploads(settingsData.concurrentUploads || 3);
+
+      setThrottleOptions({
+        progressiveDelays: settingsData.progressiveDelays || true,
+        blockSuspiciousIp: settingsData.blockSuspiciousIp || false,
+        sendEmailAlerts: settingsData.sendEmailAlerts || true,
+        whitelistedIps: !!settingsData.whitelistedIps?.length,
+      });
+    }
+  }, [settingsData]);
+
+  const handleSave = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
-    alert("Settings saved successfully (demo)");
+    const data = {
+      siteName,
+      adminEmail,
+      defaultCurrency: currency,
+      timezone,
+      siteDescription: siteDesc,
+      defaultLanguage: language,
+      dateFormat,
+      maintenanceMode: maintenanceEnabled ? "ENABLED" : "DISABLED",
+      maintenanceMsg,
+      maintenanceStart: startDate ? new Date(startDate) : null,
+      maintenanceEnd: endDate ? new Date(endDate) : null,
+      allowedIps: allowedIPs
+        ? allowedIPs.split(",").map((ip) => ip.trim())
+        : null,
+      requestsPerMinute: rpm,
+      requestsPerHour: rph,
+      requestsPerDay: rpd,
+      maxLoginAttempts,
+      lockoutDuration,
+      maxFileSizeMb: maxFileSize,
+      uploadsPerHour,
+      concurrentUploads,
+      progressiveDelays: throttleOptions.progressiveDelays,
+      blockSuspiciousIp: throttleOptions.blockSuspiciousIp,
+      sendEmailAlerts: throttleOptions.sendEmailAlerts,
+      whitelistedIps: throttleOptions.whitelistedIps ? [] : null, // assuming empty array if enabled
+    };
+    updateSettingsMutation.mutate(data);
   };
 
   const handleNumberChange = (
@@ -60,15 +142,52 @@ export default function AdminSettings() {
     setThrottleOptions((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const currencyOptions: Option<string>[] = [
+    { label: "USD - US Dollar", value: "USD" },
+    { label: "EUR - Euro", value: "EUR" },
+    { label: "GBP - British Pound", value: "GBP" },
+  ];
+
+  const timezoneOptions: Option<string>[] = [
+    { label: "UTC", value: "UTC" },
+    { label: "UTC+1", value: "UTC+1" },
+    { label: "UTC-5", value: "UTC-5" },
+  ];
+
+  const languageOptions: Option<string>[] = [
+    { label: "English", value: "English" },
+    { label: "French", value: "French" },
+    { label: "Spanish", value: "Spanish" },
+  ];
+
+  const dateFormatOptions: Option<string>[] = [
+    { label: "MM/DD/YYYY", value: "MM/DD/YYYY" },
+    { label: "DD/MM/YYYY", value: "DD/MM/YYYY" },
+  ];
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div>
-      <form onSubmit={handleSave} className="space-y-8 p-6">
-        <section className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="p-6"
+    >
+      <form onSubmit={handleSave} className="space-y-8">
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             General Settings
           </h3>
           <p className="text-sm text-gray-500 mb-6">
-            Configure your application’s general preferences.
+            Configure your application's general preferences.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -102,32 +221,28 @@ export default function AdminSettings() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Default Currency
               </label>
-              <select
-                value={currency}
-                title="currency"
-                onChange={(e) => setCurrency(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              >
-                <option>USD - US Dollar</option>
-                <option>EUR - Euro</option>
-                <option>GBP - British Pound</option>
-              </select>
+              <CustomSelect
+                options={currencyOptions}
+                value={currencyOptions.find((opt) => opt.value === currency)}
+                onChange={(selected) =>
+                  setCurrency((selected as Option<string>).value)
+                }
+                placeholder="Select Currency"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Timezone
               </label>
-              <select
-                value={timezone}
-                title="timezone"
-                onChange={(e) => setTimezone(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              >
-                <option>UTC</option>
-                <option>UTC+1</option>
-                <option>UTC-5</option>
-              </select>
+              <CustomSelect
+                options={timezoneOptions}
+                value={timezoneOptions.find((opt) => opt.value === timezone)}
+                onChange={(selected) =>
+                  setTimezone((selected as Option<string>).value)
+                }
+                placeholder="Select Timezone"
+              />
             </div>
 
             <div className="md:col-span-2">
@@ -147,36 +262,40 @@ export default function AdminSettings() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Default Language
               </label>
-              <select
-                value={language}
-                title="language"
-                onChange={(e) => setLanguage(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              >
-                <option>English</option>
-                <option>French</option>
-                <option>Spanish</option>
-              </select>
+              <CustomSelect
+                options={languageOptions}
+                value={languageOptions.find((opt) => opt.value === language)}
+                onChange={(selected) =>
+                  setLanguage((selected as Option<string>).value)
+                }
+                placeholder="Select Language"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Date Format
               </label>
-              <select
-                title="dateFormat"
-                value={dateFormat}
-                onChange={(e) => setDateFormat(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-600 outline-none"
-              >
-                <option>MM/DD/YYYY</option>
-                <option>DD/MM/YYYY</option>
-              </select>
+              <CustomSelect
+                options={dateFormatOptions}
+                value={dateFormatOptions.find(
+                  (opt) => opt.value === dateFormat
+                )}
+                onChange={(selected) =>
+                  setDateFormat((selected as Option<string>).value)
+                }
+                placeholder="Select Date Format"
+              />
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Maintenance Mode
           </h3>
@@ -184,17 +303,12 @@ export default function AdminSettings() {
             Control when your application goes offline for updates.
           </p>
 
-          <label className="flex items-center gap-2 mb-4">
-            <input
-              type="checkbox"
-              checked={maintenanceEnabled}
-              onChange={() => setMaintenanceEnabled(!maintenanceEnabled)}
-              className="h-4 w-4 text-purple-600 border-gray-300 rounded"
-            />
-            <span className="text-sm text-gray-700 font-medium">
-              Enable maintenance mode
-            </span>
-          </label>
+          <CustomCheckbox
+            checked={maintenanceEnabled}
+            onChange={setMaintenanceEnabled}
+            label="Enable maintenance mode"
+            className="mb-4"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -248,9 +362,14 @@ export default function AdminSettings() {
               />
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Rate Limits & Throttling
           </h3>
@@ -372,31 +491,32 @@ export default function AdminSettings() {
           <div className="mt-6 space-y-2">
             {(Object.keys(throttleOptions) as Array<keyof ThrottleOptions>).map(
               (key) => (
-                <label key={key} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={throttleOptions[key]}
-                    onChange={() => toggleThrottleOption(key)}
-                    className="h-4 w-4 text-purple-600 border-gray-300 rounded"
-                  />
-                  <span className="capitalize text-sm text-gray-700 font-medium">
-                    {key.replace(/([A-Z])/g, " $1")}
-                  </span>
-                </label>
+                <CustomCheckbox
+                  key={key}
+                  checked={throttleOptions[key]}
+                  onChange={() => toggleThrottleOption(key)}
+                  label={key.replace(/([A-Z])/g, " $1")}
+                />
               )
             )}
           </div>
-        </section>
+        </motion.section>
 
-        <div className="flex justify-end">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="flex justify-end"
+        >
           <button
             type="submit"
-            className="bg-purple-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition"
+            disabled={updateSettingsMutation.isPending}
+            className="bg-purple-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition disabled:opacity-50"
           >
-            Save Changes
+            {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
           </button>
-        </div>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }
