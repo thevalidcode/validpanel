@@ -13,7 +13,6 @@ export type OnboardingDraft = {
   logoUrl?: string;
   color?: string;
   subscriptionInterval: SubscriptionPlanInterval;
-  paymentMethod?: string;
   selectedPayment?: PaymentMethod;
   completedSteps: number[];
 };

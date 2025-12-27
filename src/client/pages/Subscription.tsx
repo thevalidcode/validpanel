@@ -68,7 +68,7 @@ export default function SubscriptionPage() {
           />
         )}
 
-        {activeTab === "billing" && <BillingTab />}
+        {subscription && activeTab === "billing" && <BillingTab />}
       </div>
     </Layout>
   );

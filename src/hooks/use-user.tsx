@@ -369,7 +369,6 @@ interface OnboardingSetupStoreProps {
   color: string;
   domain: string;
   name: string;
-  paymentMethod: string;
 }
 
 export function useOnboardingSetupStore() {
