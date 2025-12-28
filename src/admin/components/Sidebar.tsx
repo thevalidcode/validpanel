@@ -11,7 +11,7 @@ import {
 import { Key, Settings, User, UsersIcon } from "lucide-react";
 
 import { FaRegGem, FaShoppingCart, FaUsers } from "react-icons/fa";
-import { MdApi, MdPayment } from "react-icons/md";
+import { MdPayment } from "react-icons/md";
 
 import { useAppContext } from "@/context/useAppContext";
 
@@ -89,11 +89,6 @@ const sections: MenuSection[] = [
         name: "Subscription Plans",
         to: "/admin/subscription-plans",
         icon: <FaRegGem className="w-5 h-5" />,
-      },
-      {
-        name: "Service API Providers",
-        to: "/admin/service-api-providers",
-        icon: <MdApi className="w-5 h-5" />,
       },
       {
         name: "Permissions",
