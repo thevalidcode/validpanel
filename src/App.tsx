@@ -17,6 +17,8 @@ import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 import ForgetPassword from "./client/pages/ForgetPassword";
 import ResetPasswordPage from "./client/pages/ResetPassword";
+import NotFoundPage from "./client/pages/NotFoundPage";
+import ErrorPage from "./client/pages/ErrorPage";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/Step1";
@@ -167,6 +169,10 @@ const App: React.FC = () => {
                 </Suspense>
               }
             />
+
+            {/* Error pages */}
+            <Route path="/error" element={<ErrorPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </AppProvider>

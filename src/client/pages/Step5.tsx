@@ -77,7 +77,7 @@ const Step5: React.FC = () => {
 
   const handlePayNow = async (): Promise<void> => {
     if (isPending) return;
-    if (!draft.selectedPayment) return;
+    if (!selectedMethod) return;
 
     setOnboardingDraft((prev) => ({
       ...prev,
@@ -86,7 +86,7 @@ const Step5: React.FC = () => {
     }));
     const response = await initializePayment({
       currency: userCurrency,
-      platform: draft.selectedPayment,
+      platform: selectedMethod,
       planId: subscriptionPlan.id,
       redirectUrl: window.location.origin + window.location.pathname,
       billingCycle: draft.subscriptionInterval,
