@@ -71,6 +71,20 @@ const Step5: React.FC = () => {
     return <NotFound title="Payment information unavailable" variant="page" />;
   }
 
+  const baseUrl = window.location.origin + window.location.pathname;
+
+  // Extract the step number
+  const stepMatch = baseUrl.match(/step(\d+)/);
+
+  let newUrl = baseUrl;
+
+  if (stepMatch) {
+    const currentStep = parseInt(stepMatch[1], 10); // get number after "step"
+    const nextStep = currentStep + 1;
+    // Replace the old step number with the incremented one
+    newUrl = baseUrl.replace(/step\d+/, `step${nextStep}`);
+  }
+
   const selectedPaymentOption = paymentOptions.find(
     (p) => p.platform === selectedMethod
   );
@@ -88,7 +102,7 @@ const Step5: React.FC = () => {
       currency: userCurrency,
       platform: selectedMethod,
       planId: subscriptionPlan.id,
-      redirectUrl: window.location.origin + window.location.pathname,
+      redirectUrl: newUrl,
       billingCycle: draft.subscriptionInterval,
     });
 
