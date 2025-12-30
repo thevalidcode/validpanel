@@ -93,7 +93,7 @@ const Step5: React.FC = () => {
     });
 
     if (response.url) {
-      navigate(response.url);
+      window.location.href = response.url;
       return;
     }
 

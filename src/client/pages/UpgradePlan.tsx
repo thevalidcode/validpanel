@@ -147,7 +147,12 @@ function UpgradePlan() {
           return;
         }
 
-        navigate(response.url || "/subscription");
+        if (response.url) {
+          window.location.href = response.url;
+          return;
+        }
+        
+        navigate("/subscription");
         return;
       }
 
