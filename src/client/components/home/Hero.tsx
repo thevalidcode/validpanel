@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import MockUpPhone from "../../../assets/images/mockup-phones.svg";
+import MockUpPhone from "../../../assets/images/mockup-phones.png";
 import { Link } from "react-router-dom";
 
 const Hero: FC = () => (
