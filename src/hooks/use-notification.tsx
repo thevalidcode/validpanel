@@ -54,6 +54,9 @@ export function useMarkNotificationAsRead() {
       queryClient.invalidateQueries({
         queryKey: ["notifications", userInfo?.uid],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["notifications-count", userInfo?.uid],
+      });
     },
     onError: (error) => {
       const errorMsg = normalizeApiError(

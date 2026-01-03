@@ -39,11 +39,17 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
                 className="bg-white border-t border-gray-200 hover:bg-gray-50 transition"
               >
                 <td className="px-6 py-4 flex items-center gap-3">
-                  <img
-                    src={store.logoUrl}
-                    alt={store.name}
-                    className="w-10 h-10 rounded-lg object-cover"
-                  />
+                  {store.logoUrl ? (
+                    <img
+                      src={store.logoUrl}
+                      alt={store.name}
+                      className="w-10 h-10 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center w-10 h-10 rounded-lg justify-center text-gray-400 text-xs">
+                      No logo
+                    </div>
+                  )}
                   <div>
                     <div className="font-semibold text-gray-900">
                       {store.name}

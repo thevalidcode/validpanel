@@ -16,6 +16,7 @@ function BillingTab() {
   if (!payments) {
     return <NotFound title="No payment has been made yet." variant="page" />;
   }
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

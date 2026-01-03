@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { Store as StoreIcon } from "lucide-react";
 import type { Store } from "@/types";
 import { StatusBadge } from "@/utils/store.utils";
 
@@ -17,7 +16,9 @@ const AllStoreItem: FC<AllStoreItemProps> = ({ store }) => (
           className="w-10 h-10 object-cover rounded-lg"
         />
       ) : (
-        <StoreIcon className="w-6 h-6 text-white" />
+        <div className="flex items-center w-10 h-10 rounded-lg justify-center text-gray-400 text-xs">
+          No logo
+        </div>
       )}
       <div>
         <p className="font-semibold text-gray-800">{store.name}</p>

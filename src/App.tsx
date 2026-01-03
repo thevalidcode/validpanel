@@ -17,6 +17,8 @@ import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 import ForgetPassword from "./client/pages/ForgetPassword";
 import ResetPasswordPage from "./client/pages/ResetPassword";
+import NotFoundPage from "./client/pages/NotFoundPage";
+import ErrorPage from "./client/pages/ErrorPage";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/Step1";
@@ -25,7 +27,6 @@ import Step3 from "./client/pages/Step3";
 import Step4 from "./client/pages/Step4";
 import Step5 from "./client/pages/Step5";
 import Step6 from "./client/pages/Step6";
-import Step7 from "./client/pages/Step7";
 import CreateStore from "./client/pages/CreateStorePage";
 import SettingsPage from "./client/pages/SettingsPage";
 import AnalyticsPage from "./client/pages/AnalyticsPage";
@@ -89,7 +90,6 @@ const App: React.FC = () => {
             <Route path="/onboarding/step4" element={<Step4 />} />
             <Route path="/onboarding/step5" element={<Step5 />} />
             <Route path="/onboarding/step6" element={<Step6 />} />
-            <Route path="/onboarding/step7" element={<Step7 />} />
             <Route path="/stores/create" element={<CreateStore />} />
             <Route path="/stores" element={<StoresPage />} />
             <Route path="/settings" element={<SettingsPage />} />
@@ -169,6 +169,10 @@ const App: React.FC = () => {
                 </Suspense>
               }
             />
+
+            {/* Error pages */}
+            <Route path="/error" element={<ErrorPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </AppProvider>

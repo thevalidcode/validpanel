@@ -10,22 +10,26 @@ const Steps: FC = () => {
   const steps: StepItem[] = [
     {
       title: "Choose Store Type",
-      desc: "Pick the type of store you want to create. You can start with an online shop or a social media store depending on your needs.",
+      desc: "Select the type of store you want to create. You can start with an online shop or a social media store based on your needs.",
+    },
+    {
+      title: "Choose a Plan",
+      desc: "Select the pricing plan that best fits your business goals.",
     },
     {
       title: "Name Your Store",
-      desc: "Give your store a unique name and customize your store link. This becomes the identity customers see first.",
+      desc: "Give your store a unique name and customize your store link. This is the first identity your customers will see.",
     },
     {
       title: "Add Branding",
-      desc: "Upload your logo, choose your brand colors, and style your store to match your brand identity.",
+      desc: "Upload your logo, choose brand colors, and customize the design to match your brand identity.",
     },
     {
-      title: "Setup Payment",
-      desc: "Connect your preferred payment method so customers can pay you instantly and securely.",
+      title: "Choose Payment Method",
+      desc: "Select the payment method you want to use to pay for your subscription.",
     },
     {
-      title: "Launch",
+      title: "Launch Your Store",
       desc: "Review your setup, publish your store, and start accepting customers immediately.",
     },
   ];
@@ -35,7 +39,7 @@ const Steps: FC = () => {
   return (
     <section className="px-[16px] md:px-[150px] md:pb-40 pb-20 bg-white text-center inter pt-10">
       <h2 className="text-[32px] md:text-[48px] font-bold mb-10 relative">
-        Get Started in <span className="text-[var(--primary)]">5 Simple</span>{" "}
+        Get Started in <span className="text-[var(--primary)]">6 Simple</span>{" "}
         Steps
         <img
           src={Star}

@@ -73,7 +73,6 @@ export function useCreateUser() {
     },
 
     onSuccess: (data) => {
-      toast.success("User created successfully");
       handleSetUserInfo({
         ...data.user,
       });
@@ -369,7 +368,6 @@ interface OnboardingSetupStoreProps {
   color: string;
   domain: string;
   name: string;
-  paymentMethod: string;
 }
 
 export function useOnboardingSetupStore() {

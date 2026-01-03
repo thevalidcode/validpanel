@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import ImageUploadBox from "@/components/ImageUploadBox";
