@@ -44,6 +44,7 @@ import RenewSubscription from "./client/pages/RenewSubscription";
 const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
 const OverviewPage = React.lazy(() => import("./admin/pages/Overview"));
 const AdminOrdersPage = React.lazy(() => import("./admin/pages/OrdersPage"));
+const AdminPGPage = React.lazy(() => import("./admin/pages/PGPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
 const Notifications = React.lazy(() => import("./admin/pages/Notifications"));
 const AdminManagement = React.lazy(
@@ -51,7 +52,7 @@ const AdminManagement = React.lazy(
 );
 const Permissions = React.lazy(() => import("./admin/pages/PermissionsPage"));
 const AdminAccount = React.lazy(() => import("./admin/pages/AdminAccountPage"));
-
+const PaymentsPage = React.lazy(() => import("./admin/pages/PaymentsPage"));
 const App: React.FC = () => {
   return (
     <QueryProvider>
@@ -116,6 +117,22 @@ const App: React.FC = () => {
               element={
                 <Suspense fallback={<Loader />}>
                   <AdminOrdersPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/payments"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <PaymentsPage />
+                </Suspense>
+              }
+            />
+             <Route
+              path="/admin/payment-gateways"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AdminPGPage />
                 </Suspense>
               }
             />

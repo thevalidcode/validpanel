@@ -1,84 +1,113 @@
 import { useState } from "react";
 import OrderCard, { type Order } from "./OrderCard";
 
-const orderTabs = [
-  { name: "All", count: 24, color: "blue" },
-  { name: "Pending", count: 8, color: "orange" },
-  { name: "Processing", count: 6, color: "blue" },
-  { name: "Completed", count: 10, color: "green" },
-  { name: "Failed", count: 10, color: "red" },
-];
+/* -------------------- TYPES -------------------- */
+
 export type NameType =
   | "All"
   | "Pending"
   | "Processing"
   | "Completed"
   | "Failed";
+
 interface OrdersMobileViewProps {
   orders: Order[];
-  activeTab: "All" | "Pending" | "Processing" | "Completed" | "Failed";
-  setActiveTab: (
-    value: "All" | "Pending" | "Processing" | "Completed" | "Failed"
-  ) => void;
+  activeTab: NameType;
+  setActiveTab: (value: NameType) => void;
+  summaryCounts: {
+    total: number;
+    pending: number;
+    completed: number;
+    failed: number;
+  };
+  filters: {
+    status: NameType;
+    orderType: "All" | "Store Order" | "Shop Order";
+    search: string;
+    date: string;
+  };
+  onFiltersChange: (next: Partial<OrdersMobileViewProps["filters"]>) => void;
 }
+
+/* -------------------- COMPONENT -------------------- */
 
 const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
   orders,
   activeTab,
   setActiveTab,
+  summaryCounts,
+  filters,
+  onFiltersChange,
 }) => {
-  const [order, setOrder] = useState("");
-  // const [activeTab, setActiveTab] = useState("All");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const badgeColors: { [key: string]: string } = {
+  const orderTabs = [
+    { name: "All", count: summaryCounts.total, color: "blue" },
+    { name: "Pending", count: summaryCounts.pending, color: "orange" },
+    { name: "Completed", count: summaryCounts.completed, color: "green" },
+    { name: "Failed", count: summaryCounts.failed, color: "red" },
+  ];
+
+  const badgeColors: Record<string, string> = {
     blue: "bg-blue-100 text-blue-600",
     orange: "bg-orange-100 text-orange-600",
     green: "bg-green-100 text-green-600",
     red: "bg-red-100 text-red-600",
   };
 
+  /* -------------------- CLEAR FILTERS -------------------- */
+
+  const clearFilters = () => {
+    onFiltersChange({
+      status: "All",
+      orderType: "All",
+      search: "",
+      date: "",
+    });
+  };
+
   return (
-    <div className="md:hidden w-full space-y-10 px-5 pt-5">
-      <div className="w-full gap-5 flex items-center justify-between">
+    <div className="md:hidden w-full space-y-6 px-5 pt-5">
+      {/* TOP BAR */}
+      <div className="flex gap-3">
         <select
-          title="ststua"
-          value={order}
-          onChange={(e) => setOrder(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 w-full "
+          value={filters.status}
+          onChange={(e) =>
+            onFiltersChange({ status: e.target.value as NameType })
+          }
+          className="border border-gray-300 rounded-lg px-3 py-2 flex-1"
         >
-          <option>All </option>
-          <option>Pending</option>
-          <option>Processing</option>
-          <option>Completed</option>
-          <option>Failed</option>
+          <option value="All">All</option>
+          <option value="Pending">Pending</option>
+          <option value="Processing">Processing</option>
+          <option value="Completed">Completed</option>
+          <option value="Failed">Failed</option>
         </select>
-        <button className="border bg-primary flex items-center justify-center gap-2 text-white hover:bg-primary/90 px-8 py-2 rounded-lg">
-          <img src="/images/filter.svg" alt="filter users" />
-          <span>Filters</span>
+
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="border bg-primary text-white px-4 py-2 rounded-lg"
+        >
+          Filters
         </button>
       </div>
-      <input
-        type="text"
-        placeholder="Search orders, users, services... "
-        // value={search}
-        // onChange={(e) => onSetSearch(e.target.value)}
-        className="w-full border border-gray-300 text-sm pl-6 rounded-lg py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-      />
 
-      <div className="border-b border-gray-200 flex justify-center">
+      {/* STATUS TABS */}
+      <div className="border-b border-gray-200">
         <div className="flex items-center -mb-px space-x-4 overflow-x-auto">
           {orderTabs.map((tab) => (
             <button
               key={tab.name}
               onClick={() => setActiveTab(tab.name as NameType)}
-              className={`flex-shrink-0 pb-2 border-b-2 ${
+              className={`pb-2 border-b-2 ${
                 activeTab === tab.name
                   ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              } focus:outline-none`}
+                  : "border-transparent text-gray-500"
+              }`}
             >
-              <span className="flex items-center gap-2 text-sm font-medium">
-                <span>{tab.name}</span>
+              <span className="flex items-center gap-2 text-sm">
+                {tab.name}
                 <span
                   className={`px-2 py-0.5 rounded-full text-xs ${
                     badgeColors[tab.color]
@@ -92,11 +121,99 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
         </div>
       </div>
 
+      {/* ORDERS */}
       <div className="space-y-4">
         {orders.map((order) => (
           <OrderCard key={order.id} order={order} />
         ))}
       </div>
+
+      {/* FILTER MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end">
+          <div className="bg-white w-full rounded-t-2xl p-5 space-y-4">
+            {/* HEADER */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Filters</h3>
+
+              {/* CLEAR FILTER BADGE */}
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-xs font-medium text-red-600 bg-red-50 px-3 py-1 rounded-full hover:bg-red-100"
+              >
+                Clear filters
+              </button>
+            </div>
+
+            {/* STATUS */}
+            <select
+              value={filters.status}
+              onChange={(e) =>
+                onFiltersChange({ status: e.target.value as NameType })
+              }
+              className="w-full border rounded-lg px-3 py-2"
+            >
+              <option value="All">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="Completed">Completed</option>
+              <option value="Failed">Failed</option>
+            </select>
+
+            {/* ORDER TYPE */}
+            <select
+              value={filters.orderType}
+              onChange={(e) =>
+                onFiltersChange({
+                  orderType: e.target.value as
+                    | "All"
+                    | "Store Order"
+                    | "Shop Order",
+                })
+              }
+              className="w-full border rounded-lg px-3 py-2"
+            >
+              <option value="All">All Orders</option>
+              <option value="Store Order">Store Order</option>
+              <option value="Shop Order">Shop Order</option>
+            </select>
+
+            {/* DATE */}
+            <input
+              type="date"
+              value={filters.date}
+              onChange={(e) => onFiltersChange({ date: e.target.value })}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+
+            {/* SEARCH */}
+            <input
+              type="text"
+              value={filters.search}
+              onChange={(e) => onFiltersChange({ search: e.target.value })}
+              placeholder="Search orders, users, services..."
+              className="w-full border rounded-lg px-3 py-2"
+            />
+
+            {/* ACTIONS */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-full border rounded-lg py-2"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-full bg-primary text-white rounded-lg py-2"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
