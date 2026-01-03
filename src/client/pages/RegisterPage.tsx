@@ -2,7 +2,6 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import Button from "../../components/ui/Button";
 import TextInput from "../../components/ui/TextInput";
 import AuthWrapper from "../components/login/AuthWrapper";
-import type { Err } from "../../types/utility.types";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";
 import { toast } from "sonner";
@@ -38,17 +37,7 @@ const RegisterPage = () => {
         toast.success("Successful, proceed to login");
         navigate("/login");
       }
-    } catch (error) {
-      if ((error as Err)?.status === 500) {
-        toast.error((error as Err)?.message);
-      } else {
-        if ((error as Err)?.response?.data?.error?.fieldErrors?.fullName) {
-          toast.error(
-            (error as Err)?.response?.data?.error?.fieldErrors?.fullName
-          );
-        }
-      }
-    }
+    } catch (error) {}
   };
 
   return (

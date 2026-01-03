@@ -73,7 +73,6 @@ export function useCreateUser() {
     },
 
     onSuccess: (data) => {
-      toast.success("User created successfully");
       handleSetUserInfo({
         ...data.user,
       });
