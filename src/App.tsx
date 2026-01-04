@@ -2,9 +2,9 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { QueryProvider } from "./provider/queryProvider";
-import { Toaster } from "sonner";
 import Loader from "./components/Loader";
 import MaintenanceMode from "@/components/MaintenanceMode";
+import CustomToaster from "@/components/CustomToaster";
 
 // Layouts
 import PublicLayout from "./components/PublicLayout";
@@ -62,7 +62,7 @@ const App: React.FC = () => {
     <QueryProvider>
       <AppProvider>
         {/* Global notifications */}
-        <Toaster position="top-right" richColors />
+        <CustomToaster />
 
         <MaintenanceMode>
           <Router>
