@@ -19,6 +19,18 @@ export function useGetSettings() {
   });
 }
 
+export function useGetUserSettings() {
+  const { api } = useAppContext();
+  return useQuery({
+    queryKey: ["userSettings"],
+    queryFn: async () => {
+      const res = await api.get<{ setting: Record<string, any> }>(`/setting`);
+      if (!res.data) throw new Error("Failed to fetch settings");
+      return res.data.setting;
+    },
+  });
+}
+
 export function useUpdateSettings() {
   const { api } = useAppContext();
   const queryClient = useQueryClient();

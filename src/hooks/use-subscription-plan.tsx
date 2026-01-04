@@ -41,6 +41,9 @@ export function useCreateSubscriptionPlan() {
       queryClient.invalidateQueries({
         queryKey: ["subscriptionPlans"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSubscriptionPlans"],
+      });
     },
     onError: (error: unknown) => {
       const errorMsg = normalizeApiError(
@@ -54,27 +57,134 @@ export function useCreateSubscriptionPlan() {
 
 // get subscriptionPlans
 export function useGetUserSubscriptionPlans() {
-  const { api } = useAppContext();
+  const { api, userInfo } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptionPlans"],
+    queryKey: ["subscriptionPlans", userInfo?.uid],
     queryFn: async () => {
       const res = await api.get<SubscriptionPlan[]>(`/subscription-plans`);
       if (!res.data) throw new Error("Failed to fetch subscriptionPlans");
       return res.data;
     },
+    enabled: !!userInfo?.uid,
   });
 }
 
 // ! get subscriptionPlan by uid for authenticated users
 export function useGetUserSubscriptionPlanByUid(uid: string) {
-  const { api } = useAppContext();
+  const { api, userInfo } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptionPlans", uid],
+    queryKey: ["subscriptionPlans", userInfo?.uid, uid],
     queryFn: async () => {
       const res = await api.get<SubscriptionPlan>(`/subscription-plans/${uid}`);
       if (!res.data) throw new Error("Failed to fetch subscriptionPlan");
       return res.data;
     },
-    enabled: !!uid,
+    enabled: !!uid && !!userInfo?.uid,
+  });
+}
+
+// get all subscriptionPlans (admin route)
+export function useGetAdminSubscriptionPlans() {
+  const { api, adminInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["adminSubscriptionPlans"],
+    queryFn: async () => {
+      const res = await api.get<SubscriptionPlan[]>(
+        `/subscription-plans/admin`
+      );
+      if (!res.data) throw new Error("Failed to fetch subscription plans");
+      return res.data;
+    },
+    enabled: !!adminInfo?.uid,
+  });
+}
+
+// get subscriptionPlan by uid (admin route)
+export function useGetAdminSubscriptionPlanByUid(uid: string) {
+  const { api, adminInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["adminSubscriptionPlans", uid],
+    queryFn: async () => {
+      const res = await api.get<SubscriptionPlan>(
+        `/subscription-plans/admin/${uid}`
+      );
+      if (!res.data) throw new Error("Failed to fetch subscription plan");
+      return res.data;
+    },
+    enabled: !!uid && !!adminInfo?.uid,
+  });
+}
+
+// update subscriptionPlan
+export function useUpdateSubscriptionPlan() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updateSubscriptionPlan"],
+    mutationFn: async (data: {
+      uid: string;
+      updates: Partial<NewSubscriptionPlan>;
+    }) => {
+      const res = await api.patch(
+        `/subscription-plans/admin/${data.uid}`,
+        data.updates
+      );
+      if (!res.data.success) {
+        throw new Error(
+          "Failed to update subscription-plan: No success object returned from server."
+        );
+      }
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Subscription Plan updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["subscriptionPlans"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSubscriptionPlans"],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to update subscription-plan"
+      );
+      toast.error(errorMsg);
+    },
+  });
+}
+
+// delete subscriptionPlan by uid
+export function useDeleteSubscriptionPlan() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["deleteSubscriptionPlan"],
+    mutationFn: async (uid: string) => {
+      const res = await api.delete(`/subscription-plans/admin/${uid}`);
+      if (!res.data.success) {
+        throw new Error(
+          "Failed to delete subscription-plan: No success object returned from server."
+        );
+      }
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Subscription Plan deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["subscriptionPlans"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSubscriptionPlans"],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to delete subscription-plan"
+      );
+      toast.error(errorMsg);
+    },
   });
 }

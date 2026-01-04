@@ -14,7 +14,6 @@ import {
 } from "@/hooks/use-admin";
 import Layout from "../components/Layout";
 import Loader from "@/components/Loader";
-import QuickStats from "../components/permissions/QuickStats";
 
 function PermissionsPage() {
   const [dialogState, setDialogState] = useState<{
@@ -128,7 +127,6 @@ function PermissionsPage() {
 
         {/* Mobile View */}
         <div className="md:hidden">
-            
           <PermissionsMobileView
             permissions={filteredPermissions}
             handleAction={handleAction}
@@ -140,19 +138,6 @@ function PermissionsPage() {
           <PermissionsDesktopView
             permissions={filteredPermissions}
             handleAction={handleAction}
-          />
-        </div>
-        {/* Quick Stats */}
-        <div className="mt-4">
-          <QuickStats
-            title="Quick Stats"
-            stats={[
-              {
-                icon: <Search className="w-5 h-5 text-primary" />,
-                label: "Total Permissions",
-                value: filteredPermissions.length,
-              },
-            ]}
           />
         </div>
 

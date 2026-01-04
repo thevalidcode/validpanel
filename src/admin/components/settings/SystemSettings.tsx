@@ -10,7 +10,9 @@ import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { useGetSettings, useUpdateSettings } from "@/hooks/use-setting";
 import Loader from "@/components/Loader";
-
+import ImageUploadBox from "@/components/ImageUploadBox";
+import { ImageIcon } from "lucide-react";
+import { currency as currencyMap, getCurrencySymbol } from "@/_docs/doc";
 interface ThrottleOptions {
   progressiveDelays: boolean;
   blockSuspiciousIp: boolean;
@@ -23,6 +25,8 @@ export default function AdminSettings() {
 
   const [siteName, setSiteName] = useState<string>("");
   const [adminEmail, setAdminEmail] = useState<string>("");
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [faviconUrl, setFaviconUrl] = useState<string>("");
   const [currency, setCurrency] = useState<string>("USD");
   const [timezone, setTimezone] = useState<string>("UTC");
   const [siteDesc, setSiteDesc] = useState<string>("");
@@ -71,6 +75,8 @@ export default function AdminSettings() {
     if (settingsData) {
       setSiteName(settingsData.siteName || "");
       setAdminEmail(settingsData.adminEmail || "");
+      setLogoUrl(settingsData.logoUrl || "");
+      setFaviconUrl(settingsData.faviconUrl || "");
       setCurrency(settingsData.defaultCurrency || "USD");
       setTimezone(settingsData.timezone || "UTC");
       setSiteDesc(settingsData.siteDescription || "");
@@ -145,6 +151,8 @@ export default function AdminSettings() {
     const data = {
       siteName,
       adminEmail,
+      logoUrl,
+      faviconUrl,
       defaultCurrency: currency,
       timezone,
       siteDescription: siteDesc,
@@ -191,11 +199,12 @@ export default function AdminSettings() {
     setThrottleOptions((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const currencyOptions: Option<string>[] = [
-    { label: "USD - US Dollar", value: "USD" },
-    { label: "EUR - Euro", value: "EUR" },
-    { label: "GBP - British Pound", value: "GBP" },
-  ];
+  const currencyOptions: Option<string>[] = Object.keys(currencyMap).map(
+    (code) => ({
+      label: `${code} (${getCurrencySymbol(code)})`,
+      value: code,
+    })
+  );
 
   const timezoneOptions: Option<string>[] = [
     { label: "UTC", value: "UTC" },
@@ -314,39 +323,107 @@ export default function AdminSettings() {
                   placeholder="Describe your application..."
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Default Language <span className="text-red-500">*</span>
-                </label>
-                <CustomSelect
-                  ref={languageRef}
-                  options={languageOptions}
-                  value={languageOptions.find((opt) => opt.value === language)}
-                  onChange={(selected) =>
-                    setLanguage((selected as Option<string>).value)
-                  }
-                  placeholder="Select Language"
-                  required
+            {/* Branding Section */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h4 className="text-base font-semibold text-gray-900 mb-4">
+                Branding Assets
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ImageUploadBox
+                  label="Site Logo"
+                  labelIcon={<ImageIcon className="w-4 h-4" />}
+                  collection="admins"
+                  onUploaded={(url) => setLogoUrl(url)}
+                  variant="box"
+                  description="Upload your site logo (PNG, JPG up to 5MB)"
+                />
+
+                <ImageUploadBox
+                  label="Favicon"
+                  labelIcon={<ImageIcon className="w-4 h-4" />}
+                  collection="admins"
+                  onUploaded={(url) => setFaviconUrl(url)}
+                  variant="box"
+                  description="Upload your favicon (PNG, ICO up to 2MB)"
+                  maxSizeMB={2}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date Format <span className="text-red-500">*</span>
-                </label>
-                <CustomSelect
-                  ref={dateFormatRef}
-                  options={dateFormatOptions}
-                  value={dateFormatOptions.find(
-                    (opt) => opt.value === dateFormat
-                  )}
-                  onChange={(selected) =>
-                    setDateFormat((selected as Option<string>).value)
-                  }
-                  placeholder="Select Date Format"
-                  required
-                />
+              {/* Preview Section */}
+              {(logoUrl || faviconUrl) && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-3">
+                    Preview
+                  </p>
+                  <div className="flex gap-6 items-start">
+                    {logoUrl && (
+                      <div className="flex flex-col gap-2">
+                        <span className="text-xs text-gray-500">Logo</span>
+                        <img
+                          src={logoUrl}
+                          alt="Site Logo"
+                          className="h-12 object-contain bg-white p-2 border border-gray-200 rounded"
+                        />
+                      </div>
+                    )}
+                    {faviconUrl && (
+                      <div className="flex flex-col gap-2">
+                        <span className="text-xs text-gray-500">Favicon</span>
+                        <img
+                          src={faviconUrl}
+                          alt="Favicon"
+                          className="h-8 w-8 object-contain bg-white p-1 border border-gray-200 rounded"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Language & Format Settings */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h4 className="text-base font-semibold text-gray-900 mb-4">
+                Localization
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Default Language <span className="text-red-500">*</span>
+                  </label>
+                  <CustomSelect
+                    ref={languageRef}
+                    options={languageOptions}
+                    value={languageOptions.find(
+                      (opt) => opt.value === language
+                    )}
+                    onChange={(selected) =>
+                      setLanguage((selected as Option<string>).value)
+                    }
+                    placeholder="Select Language"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date Format <span className="text-red-500">*</span>
+                  </label>
+                  <CustomSelect
+                    ref={dateFormatRef}
+                    options={dateFormatOptions}
+                    value={dateFormatOptions.find(
+                      (opt) => opt.value === dateFormat
+                    )}
+                    onChange={(selected) =>
+                      setDateFormat((selected as Option<string>).value)
+                    }
+                    placeholder="Select Date Format"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>

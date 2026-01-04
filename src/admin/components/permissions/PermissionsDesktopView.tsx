@@ -4,6 +4,8 @@ import { paginate } from "@/utils/paginate";
 import type { Permission } from "@/types";
 import { getPermissionIcon } from "./PermissionIcon";
 import PermissionActionButtons from "./PermissionActionButtons";
+import QuickStats from "./QuickStats";
+import { Search } from "lucide-react";
 
 interface PermissionsDesktopViewProps {
   permissions: Permission[];
@@ -24,9 +26,9 @@ export default function PermissionsDesktopView({
   );
 
   return (
-    <div>
+    <div className="flex gap-4 flex-col lg:flex-row">
       {/* Permissions Table */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-2">
         <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
           <table className="min-w-full text-sm">
             <thead>
@@ -52,9 +54,7 @@ export default function PermissionsDesktopView({
                       <span className="font-semibold">
                         {permission.name.replace(/_/g, " ")}
                       </span>
-                      <span className="text-gray-500 text-xs">
-                        Permission
-                      </span>
+                      <span className="text-gray-500 text-xs">Permission</span>
                     </div>
                   </td>
                   <td className="p-3">
@@ -79,6 +79,16 @@ export default function PermissionsDesktopView({
           }}
         />
       </div>
+      <QuickStats
+        title="Quick Stats"
+        stats={[
+          {
+            icon: <Search className="w-5 h-5 text-primary" />,
+            label: "Total Permissions",
+            value: permissions.length,
+          },
+        ]}
+      />
     </div>
   );
 }

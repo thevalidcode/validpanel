@@ -29,7 +29,7 @@ export interface SubscriptionPlan {
   id: number;
   uid: string;
   name: string;
-  gracePeriod:"",
+  gracePeriod: number | null;
   price: string;
   currency: CurrencyCode;
   description: string | null;

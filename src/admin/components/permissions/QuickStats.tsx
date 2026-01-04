@@ -13,7 +13,7 @@ interface QuickStatsProps {
 
 export default function QuickStats({ title, stats }: QuickStatsProps) {
   return (
-    <div className="rounded-lg bg-white border border-gray-200">
+    <div className="rounded-lg bg-white border border-gray-200 flex-1">
       <div className="p-6 flex flex-col border-b rounded-t-lg border-gray-200">
         <h2 className="text-xl font-semibold inter">{title}</h2>
       </div>

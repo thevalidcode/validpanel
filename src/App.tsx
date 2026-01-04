@@ -4,6 +4,7 @@ import { AppProvider } from "./context/AppContext";
 import { QueryProvider } from "./provider/queryProvider";
 import { Toaster } from "sonner";
 import Loader from "./components/Loader";
+import MaintenanceMode from "@/components/MaintenanceMode";
 
 // Layouts
 import PublicLayout from "./components/PublicLayout";
@@ -52,6 +53,9 @@ const AdminManagement = React.lazy(
 );
 const Permissions = React.lazy(() => import("./admin/pages/PermissionsPage"));
 const AdminAccount = React.lazy(() => import("./admin/pages/AdminAccountPage"));
+const SubscriptionPlansPage = React.lazy(
+  () => import("./admin/pages/SubscriptionPlansPage")
+);
 
 const App: React.FC = () => {
   return (
@@ -60,121 +64,135 @@ const App: React.FC = () => {
         {/* Global notifications */}
         <Toaster position="top-right" richColors />
 
-        <Router>
-          <Routes>
-            {/* Public & client routes with Dashboard layout */}
-            <Route path="/" element={<PublicLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path="faq" element={<FAQPage />} />
-              <Route path="pricing" element={<PricingPage />} />
-              <Route path="contact-us" element={<ContactUs />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
-              <Route path="forgot-password" element={<ForgetPassword />} />
-              <Route path="reset-password" element={<ResetPasswordPage />} />
-              <Route path="admin/login" element={<AdminLogin />} />
+        <MaintenanceMode>
+          <Router>
+            <Routes>
+              {/* Public & client routes with Dashboard layout */}
+              <Route path="/" element={<PublicLayout />}>
+                <Route index element={<HomePage />} />
+                <Route path="faq" element={<FAQPage />} />
+                <Route path="pricing" element={<PricingPage />} />
+                <Route path="contact-us" element={<ContactUs />} />
+                <Route path="login" element={<LoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
+                <Route path="forgot-password" element={<ForgetPassword />} />
+                <Route path="reset-password" element={<ResetPasswordPage />} />
+                <Route path="admin/login" element={<AdminLogin />} />
+                <Route
+                  path="admin/forgot-password"
+                  element={<AdminForgotPassword />}
+                />{" "}
+                <Route
+                  path="admin/reset-password"
+                  element={<AdminResetPassword />}
+                />
+              </Route>
+
+              {/* Onboarding & store creation (no layout) */}
+              <Route path="/onboarding/step1" element={<Step1 />} />
+              <Route path="/onboarding/step2" element={<Step2 />} />
+              <Route path="/onboarding/step3" element={<Step3 />} />
+              <Route path="/onboarding/step4" element={<Step4 />} />
+              <Route path="/onboarding/step5" element={<Step5 />} />
+              <Route path="/onboarding/step6" element={<Step6 />} />
+              <Route path="/stores/create" element={<CreateStore />} />
+              <Route path="/stores" element={<StoresPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/subscription" element={<Subscription />} />
               <Route
-                path="admin/forgot-password"
-                element={<AdminForgotPassword />}
-              />{" "}
-              <Route
-                path="admin/reset-password"
-                element={<AdminResetPassword />}
+                path="/subscription/renew"
+                element={<RenewSubscription />}
               />
-            </Route>
+              <Route
+                path="/subscription/upgrade-plan/:id"
+                element={<UpgradePlan />}
+              />
 
-            {/* Onboarding & store creation (no layout) */}
-            <Route path="/onboarding/step1" element={<Step1 />} />
-            <Route path="/onboarding/step2" element={<Step2 />} />
-            <Route path="/onboarding/step3" element={<Step3 />} />
-            <Route path="/onboarding/step4" element={<Step4 />} />
-            <Route path="/onboarding/step5" element={<Step5 />} />
-            <Route path="/onboarding/step6" element={<Step6 />} />
-            <Route path="/stores/create" element={<CreateStore />} />
-            <Route path="/stores" element={<StoresPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/subscription" element={<Subscription />} />
-            <Route path="/subscription/renew" element={<RenewSubscription />} />
-            <Route
-              path="/subscription/upgrade-plan/:id"
-              element={<UpgradePlan />}
-            />
+              {/* Admin routes with Suspense for lazy loading */}
+              <Route
+                path="/admin/stores"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminStoresPage />
+                  </Suspense>
+                }
+              />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route
+                path="/admin/orders"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminOrdersPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/overview"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <OverviewPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <UsersPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/notifications"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Notifications />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/admin-management"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminManagement />
+                  </Suspense>
+                }
+              />
 
-            {/* Admin routes with Suspense for lazy loading */}
-            <Route
-              path="/admin/stores"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminStoresPage />
-                </Suspense>
-              }
-            />
-            <Route path="/admin/settings" element={<AdminSettings />} />
-            <Route
-              path="/admin/orders"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminOrdersPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/overview"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <OverviewPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UsersPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/notifications"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <Notifications />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/admin-management"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminManagement />
-                </Suspense>
-              }
-            />
+              <Route
+                path="/admin/permissions"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Permissions />
+                  </Suspense>
+                }
+              />
 
-            <Route
-              path="/admin/permissions"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <Permissions />
-                </Suspense>
-              }
-            />
+              <Route
+                path="/admin/account"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminAccount />
+                  </Suspense>
+                }
+              />
 
-            <Route
-              path="/admin/account"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminAccount />
-                </Suspense>
-              }
-            />
+              <Route
+                path="/admin/subscription-plans"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <SubscriptionPlansPage />
+                  </Suspense>
+                }
+              />
 
-            {/* Error pages */}
-            <Route path="/error" element={<ErrorPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Router>
+              {/* Error pages */}
+              <Route path="/error" element={<ErrorPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Router>
+        </MaintenanceMode>
       </AppProvider>
     </QueryProvider>
   );
