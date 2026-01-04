@@ -1,149 +1,240 @@
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Search, Plus } from "lucide-react";
 import Layout from "@/admin/components/Layout";
+import Loader from "@/components/Loader";
+import NotFound from "@/components/NotFound";
+import EditPGDialog from "@/admin/components/payment-gateway/EditPGDialog";
+import PGDesktopView from "@/admin/components/payment-gateway/PGDesktopView";
+import PGMobileView from "@/admin/components/payment-gateway/PGMobileView";
+import DeleteDialog from "@/components/DeleteDialog";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
+import type { PaymentGateway, PaymentGatewayStatus } from "@/types";
+import {
+  useGetAdminPaymentGateways,
+  useCreatePaymentGateway,
+  useUpdatePaymentGateway,
+  useDeletePaymentGateway,
+} from "@/hooks/use-payment-gateway";
 
-import PGMobileView from "../components/payment_gateway/PGMobileView";
-import PGDesktopView from "../components/payment_gateway/PGDesktopView";
-
-import type { PGFiltersState } from "../components/payment_gateway/PGFilters";
-import type { PGTableRow } from "../components/payment_gateway/RecentPGTable";
-import type { PG } from "../components/payment_gateway/PGCard";
-
-/* -------------------- MOCK DATA -------------------- */
-
-const PG_DATA: PG[] = [
-  {
-    id: 1,
-    uid: "PAY-2024-001",
-    name: "Paystack",
-    description: "Credit Cards, Bank Transfer",
-    logo: "/images/paystack.png",
-    fee: "1.5% + ₦100",
-    status: "ACTIVE",
-    lastUpdated: "Jan 15, 2024",
-  },
-  {
-    id: 2,
-    uid: "PAY-2024-002",
-    name: "Flutterwave",
-    description: "Cards, USSD, Mobile Money",
-    logo: "/images/flutterwave.png",
-    fee: "1.4% + ₦50",
-    status: "SANDBOX",
-    lastUpdated: "Jan 14, 2024",
-  },
-  {
-    id: 3,
-    uid: "PAY-2024-003",
-    name: "Stripe",
-    description: "International Cards",
-    logo: "/images/stripe.png",
-    fee: "2.9% + $0.30",
-    status: "INACTIVE",
-    lastUpdated: "Jan 10, 2024",
-  },
+const STATUS_OPTIONS: Option<PaymentGatewayStatus | "All">[] = [
+  { label: "All Status", value: "All" },
+  { label: "Active", value: "ACTIVE" },
+  { label: "Disabled", value: "DISABLED" },
 ];
 
-const PAGE_SIZE = 8;
-
-/* -------------------- PAGE -------------------- */
+const PAGE_SIZE = 10;
 
 const PGPage = () => {
-  /* -------------------- STATE -------------------- */
-
-  const [filters, setFilters] = useState<PGFiltersState>({
-    status: "All",
-    search: "",
-  });
-
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    PaymentGatewayStatus | "All"
+  >("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [dialogMode, setDialogMode] = useState<"create" | "edit" | null>(null);
+  const [editTarget, setEditTarget] = useState<PaymentGateway | undefined>();
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  /* -------------------- FILTER HANDLER -------------------- */
+  // Hooks
+  const { data: gateways, isLoading } = useGetAdminPaymentGateways();
+  const { mutateAsync: createPG, isPending: isCreatePending } =
+    useCreatePaymentGateway();
+  const { mutateAsync: updatePG, isPending: isUpdatePending } =
+    useUpdatePaymentGateway();
+  const { mutateAsync: deletePG, isPending: isDeletePending } =
+    useDeletePaymentGateway();
 
-  const updateFilters = (next: Partial<PGFiltersState>) => {
-    setCurrentPage(1);
-    setFilters((prev) => ({ ...prev, ...next }));
+  // Filter
+  const filteredGateways = useMemo(() => {
+    if (!gateways) return [];
+    return gateways.filter((pg) => {
+      const matchesSearch =
+        pg.name.toLowerCase().includes(search.toLowerCase()) ||
+        pg.description?.toLowerCase().includes(search.toLowerCase()) ||
+        pg.platform.toLowerCase().includes(search.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "All" || pg.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [gateways, search, statusFilter]);
+
+  // Pagination
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredGateways.length / PAGE_SIZE)
+  );
+  const paginatedGateways = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredGateways.slice(start, start + PAGE_SIZE);
+  }, [filteredGateways, currentPage]);
+
+  // Handlers
+  const handleCreate = async (data: any) => {
+    try {
+      await createPG(data);
+      setDialogMode(null);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  /* -------------------- FILTERING -------------------- */
+  const handleUpdate = async (data: any) => {
+    try {
+      await updatePG(data);
+      setDialogMode(null);
+      setEditTarget(undefined);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const filteredPG = useMemo(() => {
-    return PG_DATA.filter((pg) => {
-      if (filters.status !== "All" && pg.status !== filters.status) {
-        return false;
-      }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deletePG(deleteTarget);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      if (filters.search.trim()) {
-        const q = filters.search.toLowerCase();
-        const text = `${pg.name} ${pg.description} ${pg.uid}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
+  const handleEdit = (pg: PaymentGateway) => {
+    setEditTarget(pg);
+    setDialogMode("edit");
+  };
 
-      return true;
-    });
-  }, [filters]);
-
-  /* -------------------- SUMMARY COUNTS -------------------- */
-
-  const summaryCounts = useMemo(() => {
-    const total = filteredPG.length;
-    const active = filteredPG.filter((pg) => pg.status === "ACTIVE").length;
-    const inactive = filteredPG.filter((pg) => pg.status === "INACTIVE").length;
-
-    return {
-      total,
-      active,
-      inactive,
-      successRate: total ? `${Math.round((active / total) * 100)}%` : "0%",
-    };
-  }, [filteredPG]);
-
-  /* -------------------- PAGINATION -------------------- */
-
-  const totalPages = Math.max(1, Math.ceil(filteredPG.length / PAGE_SIZE));
-
-  const paginatedPG = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return filteredPG.slice(start, start + PAGE_SIZE);
-  }, [filteredPG, currentPage]);
-
-  /* -------------------- DESKTOP TABLE ADAPTER -------------------- */
-
-  const tableRows: PGTableRow[] = useMemo(() => {
-    return paginatedPG.map((pg) => ({
-      id: pg.id,
-      name: pg.name,
-      providerUrl: pg.uid,
-      logo: pg.logo,
-      type: pg.description,
-      fee: pg.fee,
-      status: pg.status,
-      lastUpdated: pg.lastUpdated,
-    }));
-  }, [paginatedPG]);
-
-  /* -------------------- RENDER -------------------- */
+  if (isLoading) return <Loader />;
 
   return (
     <Layout
       title="Payment Gateways"
       description="Manage and configure all payment gateways."
     >
-      {/* MOBILE */}
-      <PGMobileView
-        pgs={paginatedPG}
-        filters={filters}
-        onFiltersChange={updateFilters}
+      <div className="py-5 px-6 w-full">
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200 mb-6"
+        >
+          <div className="flex-1 relative flex items-center gap-3">
+            <div className="flex gap-4 flex-2">
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type="text"
+                placeholder="Search by name, platform..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm"
+              />
+            </div>
+            <div className="sm:w-40">
+              <CustomSelect
+                options={STATUS_OPTIONS}
+                value={STATUS_OPTIONS.find((s) => s.value === statusFilter)}
+                onChange={(option) => {
+                  if (Array.isArray(option)) return;
+                  const selectedStatus = option.value;
+                  if (
+                    selectedStatus !== "All" &&
+                    (selectedStatus === "ACTIVE" ||
+                      selectedStatus === "DISABLED")
+                  ) {
+                    setStatusFilter(selectedStatus);
+                    setCurrentPage(1);
+                  } else if (selectedStatus === "All") {
+                    setStatusFilter("All");
+                    setCurrentPage(1);
+                  }
+                }}
+                placeholder="Filter by status"
+              />
+            </div>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setDialogMode("create")}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#6a18d9] transition font-medium"
+          >
+            <Plus size={18} />
+            Add Gateway
+          </motion.button>
+        </motion.div>
+
+        {/* Mobile View */}
+        {paginatedGateways.length > 0 ? (
+          <>
+            <div className="block md:hidden">
+              <PGMobileView
+                gateways={paginatedGateways}
+                onEdit={handleEdit}
+                onDelete={(uid) => setDeleteTarget(uid)}
+              />
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden md:block">
+              <PGDesktopView
+                gateways={paginatedGateways}
+                onEdit={handleEdit}
+                onDelete={(uid) => setDeleteTarget(uid)}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          </>
+        ) : (
+          <NotFound title="No payment gateways found." className="mt-8" />
+        )}
+      </div>
+
+      {/* Dialogs */}
+      <EditPGDialog
+        open={!!dialogMode}
+        mode={dialogMode || "create"}
+        initialValues={
+          editTarget
+            ? {
+                uid: editTarget.uid,
+                platform: editTarget.platform,
+                name: editTarget.name,
+                image: editTarget.image,
+                min: editTarget.min,
+                max: editTarget.max,
+                secretKey: "",
+                description: editTarget.description || "",
+                content: editTarget.content || "",
+                status: editTarget.status || "ACTIVE",
+              }
+            : undefined
+        }
+        isLoading={isCreatePending || isUpdatePending}
+        onSubmit={dialogMode === "create" ? handleCreate : handleUpdate}
+        onCancel={() => {
+          setDialogMode(null);
+          setEditTarget(undefined);
+        }}
       />
 
-      {/* DESKTOP */}
-      <PGDesktopView
-        pgs={tableRows}
-        filters={filters}
-        onFiltersChange={updateFilters}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        summaryCounts={summaryCounts}
+      <DeleteDialog
+        open={!!deleteTarget}
+        title="Delete Payment Gateway"
+        description="This payment gateway will be permanently deleted. This action cannot be undone."
+        isLoading={isDeletePending}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
       />
     </Layout>
   );

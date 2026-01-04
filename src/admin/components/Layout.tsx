@@ -34,10 +34,8 @@ function Layout({
   useEffect(() => {
     if (isAuthLoading) return;
     if (!adminInfo) {
-    if (adminInfo){
       navigate("/admin/login");
       return;
-      }
     }
   }, [isAuthLoading, adminInfo, navigate]);
 

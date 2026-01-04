@@ -60,6 +60,7 @@ const DEFAULT_FEATURES: SubscriptionPlanFeatures = {
   staff_accounts: 1,
   custom_templates: false,
   order_syncing_for_social_media_store: false,
+  service_syncing_for_social_media_store: false,
 };
 
 const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({

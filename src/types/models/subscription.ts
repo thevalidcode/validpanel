@@ -2,6 +2,7 @@ import type {
   SubscriptionPlan,
   SubscriptionPlanInterval,
 } from "./subscription-plan";
+import type { User } from "./user";
 
 export type SubscriptionStatus =
   | "ACTIVE"
@@ -17,5 +18,6 @@ export interface Subscription {
   startedAt: string;
   billingCycle: SubscriptionPlanInterval;
   expiresAt: string;
+  user: User;
   plan: SubscriptionPlan;
 }

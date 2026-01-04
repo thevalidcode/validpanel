@@ -3,11 +3,8 @@ import { FaShoppingCart } from "react-icons/fa";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 
 import OrderFilters, { type OrderFiltersState } from "./OrderFilters";
-import OrderSummaryCard, {
-  type OrderSummaryCardProps,
-} from "./OrderSummaryCard";
-import RecentOrdersTable, { type RecentOrder } from "./RecentOrdersTable";
-
+import OrderSummaryCard from "./OrderSummaryCard";
+import RecentOrdersTable, { type RecentOrder } from "./RecentOrdersTable"
 /* -------------------- SUMMARY CARDS (STATIC FOR NOW) -------------------- */
 
 /* -------------------- PROPS -------------------- */

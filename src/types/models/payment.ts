@@ -1,5 +1,6 @@
 import type { PaymentMethod } from "./payment-gateway";
 import type { SubscriptionPlan } from "./subscription-plan";
+import type { User } from "./user";
 
 export type PaymentStatus = "SUCCESS" | "PENDING" | "FAILED";
 
@@ -14,5 +15,7 @@ export type Payment = {
   currency: string;
   amount: string;
   userId: number;
+  user: User;
+
   plan: SubscriptionPlan;
 };

@@ -6,6 +6,8 @@ export * from "./models/payment-gateway";
 export * from "./models/store";
 export * from "./models/upload-log";
 export * from "./models/payment";
+export * from "./models/transaction";
+export * from "./models/order";
 export * from "./models/notification";
 export * from "./models/role";
 export * from "./models/permission";

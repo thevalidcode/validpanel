@@ -4,6 +4,7 @@ import type {
   PaymentMethod,
   Subscription,
   SubscriptionPlanInterval,
+  SubscriptionStatus,
 } from "@/types";
 import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -190,6 +191,74 @@ export function useDowngradeUserPlan() {
     },
     onError: (error) => {
       const errorMsg = normalizeApiError(error, "Failed to downgrade plan");
+      toast.error(errorMsg);
+    },
+  });
+}
+
+// ============================================
+// ADMIN SUBSCRIPTION HOOKS
+// ============================================
+
+// Get all subscriptions for admin
+export function useGetAdminSubscriptions() {
+  const { api, adminInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["adminSubscriptions"],
+    queryFn: async () => {
+      const res = await api.get<Subscription[]>(`/subscriptions/admin`);
+      if (!res.data) throw new Error("Failed to fetch subscriptions");
+      return res.data;
+    },
+    enabled: !!adminInfo?.uid,
+  });
+}
+
+// Get admin subscription by uid
+export function useGetAdminSubscriptionByUid(uid: string) {
+  const { api } = useAppContext();
+  return useQuery({
+    queryKey: ["adminSubscriptions", uid],
+    queryFn: async () => {
+      const res = await api.get<Subscription>(`/subscriptions/admin/${uid}`);
+      if (!res.data) throw new Error("Failed to fetch subscription");
+      return res.data;
+    },
+    enabled: !!uid,
+  });
+}
+
+interface UpdateSubscriptionData {
+  uid: string;
+  status: SubscriptionStatus;
+}
+
+export function useUpdateSubscription() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updateSubscription"],
+    mutationFn: async (data: UpdateSubscriptionData) => {
+      const res = await api.patch<{ success: string }>(`/subscriptions`, data);
+      if (!res.data.success) {
+        throw new Error(
+          "Failed to update subscription: No success response from server."
+        );
+      }
+      return res.data;
+    },
+
+    onSuccess: () => {
+      toast.success("Subscription updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["adminSubscriptions"],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to update subscription"
+      );
       toast.error(errorMsg);
     },
   });

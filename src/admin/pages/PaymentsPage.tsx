@@ -1,86 +1,68 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import Layout from "@/admin/components/Layout";
-
-import PaymentsDesktopView from "../components/payments/PaymentsDesktopView";
-import PaymentsMobileView from "../components/payments/PaymentsMobileView";
-
-import type { MobilePayment } from "../components/payments/PaymentsMobileView";
-import type { PaymentRow } from "../components/payments/PaymentsTable";
-
-/* ---------------- MOCK DATA ---------------- */
-
-const desktopPaymentsData: PaymentRow[] = [
-  {
-    transactionId: "TXN-001",
-    user: {
-      name: "Sarah Johnson",
-      avatar: "/images/desktop-3.png",
-    },
-    amount: "$49.99",
-    status: "Completed",
-    gateway: "Stripe",
-    date: "2024-01-15 10:30",
-  },
-  {
-    transactionId: "TXN-002",
-    user: {
-      name: "James Lim",
-      avatar: "/images/desktop-3.png",
-    },
-    amount: "$89.99",
-    status: "Processing",
-    gateway: "PayPal",
-    date: "2024-01-15 09:15",
-  },
-];
-
-const mobilePaymentsData: MobilePayment[] = [
-  {
-    id: "TXN-001",
-    user: {
-      name: "John Smith",
-      avatar: "/images/mobile-2.png",
-      plan: "Premium Subscription",
-    },
-    method: "Bank Transfer",
-    amount: "$49.99",
-    status: "Pending",
-  },
-];
-
-/* ---------------- COMPONENT ---------------- */
+import PaymentTabs from "@/admin/components/payments/PaymentTabs";
+import PaymentsSection from "@/admin/components/payments/PaymentsSection";
+import TransactionsSection from "@/admin/components/payments/TransactionsSection";
+import SubscriptionsSection from "@/admin/components/payments/SubscriptionsSection";
 
 const PaymentsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState<"All" | "Completed" | "Processing" | "Failed">("All");
 
-  const filteredDesktopPayments = useMemo(() => {
-    return desktopPaymentsData.filter((p) => {
-      const matchesSearch =
-        p.transactionId.toLowerCase().includes(search.toLowerCase()) ||
-        p.user.name.toLowerCase().includes(search.toLowerCase());
+  // Get tab from URL or default to "payments"
+  const activeTab = useMemo(() => {
+    return searchParams.get("tab") || "payments";
+  }, [searchParams]);
 
-      const matchesStatus =
-        status === "All" ? true : p.status === status;
+  // Handle tab change and update URL
+  const handleTabChange = (tab: string) => {
+    setSearchParams({ tab }, { replace: true });
+  };
 
-      return matchesSearch && matchesStatus;
-    });
-  }, [search, status]);
+  // Handle search change
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+  };
 
   return (
     <Layout
       title="Payments & Transactions"
       description="Monitor payments, subscriptions, and transaction history."
     >
-      <PaymentsMobileView payments={mobilePaymentsData} />
+      <div className="py-5 px-6 w-full">
+        {/* Tabs */}
+        <PaymentTabs activeTab={activeTab} onChange={handleTabChange} />
 
-      <PaymentsDesktopView
-        payments={filteredDesktopPayments}
-        search={search}
-        status={status}
-        onSearchChange={setSearch}
-        onStatusChange={setStatus}
-      />
+        {/* Tab Content */}
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+        >
+          {activeTab === "payments" && (
+            <PaymentsSection
+              search={search}
+              onSearchChange={handleSearchChange}
+            />
+          )}
+          {activeTab === "transactions" && (
+            <TransactionsSection
+              search={search}
+              onSearchChange={handleSearchChange}
+            />
+          )}
+          {activeTab === "subscriptions" && (
+            <SubscriptionsSection
+              search={search}
+              onSearchChange={handleSearchChange}
+            />
+          )}
+        </motion.div>
+      </div>
     </Layout>
   );
 };

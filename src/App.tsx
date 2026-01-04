@@ -54,14 +54,11 @@ const AdminManagement = React.lazy(
 );
 const Permissions = React.lazy(() => import("./admin/pages/PermissionsPage"));
 const AdminAccount = React.lazy(() => import("./admin/pages/AdminAccountPage"));
-<<<<<<< HEAD
 const SubscriptionPlansPage = React.lazy(
   () => import("./admin/pages/SubscriptionPlansPage")
 );
-
-=======
 const PaymentsPage = React.lazy(() => import("./admin/pages/PaymentsPage"));
->>>>>>> feature/Amazing12tj
+
 const App: React.FC = () => {
   return (
     <QueryProvider>
@@ -164,8 +161,6 @@ const App: React.FC = () => {
                   </Suspense>
                 }
               />
-
-<<<<<<< HEAD
               <Route
                 path="/admin/permissions"
                 element={
@@ -174,75 +169,22 @@ const App: React.FC = () => {
                   </Suspense>
                 }
               />
-=======
-            {/* Admin routes with Suspense for lazy loading */}
-            <Route
-              path="/admin/stores"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminStoresPage />
-                </Suspense>
-              }
-            />
-            <Route path="/admin/settings" element={<AdminSettings />} />
-            <Route
-              path="/admin/orders"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminOrdersPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/payments"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <PaymentsPage />
-                </Suspense>
-              }
-            />
-             <Route
-              path="/admin/payment-gateways"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminPGPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/overview"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <OverviewPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UsersPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/notifications"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <Notifications />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/admin/admin-management"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AdminManagement />
-                </Suspense>
-              }
-            />
->>>>>>> feature/Amazing12tj
-
+              <Route
+                path="/admin/payments"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <PaymentsPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/payment-gateways"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminPGPage />
+                  </Suspense>
+                }
+              />
               <Route
                 path="/admin/account"
                 element={

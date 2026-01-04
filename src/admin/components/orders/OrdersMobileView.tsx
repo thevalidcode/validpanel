@@ -1,5 +1,7 @@
 import { useState } from "react";
 import OrderCard, { type Order } from "./OrderCard";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
+import { Pagination } from "@/components/ui/Pagination";
 
 /* -------------------- TYPES -------------------- */
 
@@ -40,6 +42,8 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
   onFiltersChange,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   const orderTabs = [
     { name: "All", count: summaryCounts.total, color: "blue" },
@@ -53,6 +57,30 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
     orange: "bg-orange-100 text-orange-600",
     green: "bg-green-100 text-green-600",
     red: "bg-red-100 text-red-600",
+  };
+
+  const statusOptions: Option<NameType>[] = [
+    { label: "All", value: "All" },
+    { label: "Pending", value: "Pending" },
+    { label: "Processing", value: "Processing" },
+    { label: "Completed", value: "Completed" },
+    { label: "Failed", value: "Failed" },
+  ];
+
+  const orderTypeOptions: Option<"All" | "Store Order" | "Shop Order">[] = [
+    { label: "All Orders", value: "All" },
+    { label: "Store Order", value: "Store Order" },
+    { label: "Shop Order", value: "Shop Order" },
+  ];
+
+  // Pagination
+  const paginatedOrders = orders.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   /* -------------------- CLEAR FILTERS -------------------- */
@@ -70,19 +98,18 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
     <div className="md:hidden w-full space-y-6 px-5 pt-5">
       {/* TOP BAR */}
       <div className="flex gap-3">
-        <select
-          value={filters.status}
-          onChange={(e) =>
-            onFiltersChange({ status: e.target.value as NameType })
-          }
-          className="border border-gray-300 rounded-lg px-3 py-2 flex-1"
-        >
-          <option value="All">All</option>
-          <option value="Pending">Pending</option>
-          <option value="Processing">Processing</option>
-          <option value="Completed">Completed</option>
-          <option value="Failed">Failed</option>
-        </select>
+        <div className="flex-1">
+          <CustomSelect
+            options={statusOptions}
+            value={statusOptions.find((s) => s.value === filters.status)}
+            onChange={(option) => {
+              if (Array.isArray(option)) return;
+              onFiltersChange({ status: option.value });
+              setCurrentPage(1);
+            }}
+            placeholder="Filter status"
+          />
+        </div>
 
         <button
           type="button"
@@ -123,10 +150,20 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
 
       {/* ORDERS */}
       <div className="space-y-4">
-        {orders.map((order) => (
+        {paginatedOrders.map((order) => (
           <OrderCard key={order.id} order={order} />
         ))}
       </div>
+
+      {/* PAGINATION */}
+      {orders.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={orders.length}
+          itemsPerPage={PAGE_SIZE}
+          onPageChange={handlePageChange}
+        />
+      )}
 
       {/* FILTER MODAL */}
       {isModalOpen && (
@@ -147,43 +184,33 @@ const OrdersMobileView: React.FC<OrdersMobileViewProps> = ({
             </div>
 
             {/* STATUS */}
-            <select
-              value={filters.status}
-              onChange={(e) =>
-                onFiltersChange({ status: e.target.value as NameType })
-              }
-              className="w-full border rounded-lg px-3 py-2"
-            >
-              <option value="All">All Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="Completed">Completed</option>
-              <option value="Failed">Failed</option>
-            </select>
+            <CustomSelect
+              options={statusOptions}
+              value={statusOptions.find((s) => s.value === filters.status)}
+              onChange={(option) => {
+                if (Array.isArray(option)) return;
+                onFiltersChange({ status: option.value });
+              }}
+              placeholder="Select status"
+            />
 
             {/* ORDER TYPE */}
-            <select
-              value={filters.orderType}
-              onChange={(e) =>
-                onFiltersChange({
-                  orderType: e.target.value as
-                    | "All"
-                    | "Store Order"
-                    | "Shop Order",
-                })
-              }
-              className="w-full border rounded-lg px-3 py-2"
-            >
-              <option value="All">All Orders</option>
-              <option value="Store Order">Store Order</option>
-              <option value="Shop Order">Shop Order</option>
-            </select>
+            <CustomSelect
+              options={orderTypeOptions}
+              value={orderTypeOptions.find((o) => o.value === filters.orderType)}
+              onChange={(option) => {
+                if (Array.isArray(option)) return;
+                onFiltersChange({ orderType: option.value });
+              }}
+              placeholder="Select order type"
+            />
 
             {/* DATE */}
             <input
               type="date"
               value={filters.date}
               onChange={(e) => onFiltersChange({ date: e.target.value })}
+              placeholder="Select date"
               className="w-full border rounded-lg px-3 py-2"
             />
 

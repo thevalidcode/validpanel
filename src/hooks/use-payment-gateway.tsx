@@ -1,8 +1,8 @@
 "use client";
 import { useAppContext } from "@/context/useAppContext";
 import type { PaymentGateway, PaymentMethod } from "@/types";
+import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 // Custom hook for paymentGateway-related queries and mutations
 
@@ -14,6 +14,7 @@ export interface NewPaymentGateway {
   max: string;
   secretKey?: string;
   description?: string;
+  content: string | null;
 }
 
 export function useCreatePaymentGateway() {
@@ -38,23 +39,10 @@ export function useCreatePaymentGateway() {
       });
     },
     onError: (error: unknown) => {
-      // Enhanced error extraction to handle various backend formats
-      let errorMsg = "An unexpected error occurred";
-      if (error instanceof AxiosError) {
-        // Try to extract error from common backend formats
-        const data = error.response?.data;
-        if (typeof data === "string") {
-          errorMsg = data;
-        } else if (data?.error) {
-          errorMsg = data.error;
-        } else if (data?.message) {
-          errorMsg = data.message;
-        } else {
-          errorMsg = "Failed to create paymentGateway";
-        }
-      } else if (error instanceof Error) {
-        errorMsg = error.message;
-      }
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to create payment-gateway"
+      );
       toast.error(errorMsg);
     },
   });
@@ -84,5 +72,120 @@ export function useGetUserPaymentGatewayByUid(uid: string) {
       return res.data;
     },
     enabled: !!uid,
+  });
+}
+
+// get admin paymentGateways
+export function useGetAdminPaymentGateways() {
+  const { api, adminInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["adminPaymentGateways"],
+    queryFn: async () => {
+      const res = await api.get<PaymentGateway[]>(`/payment-gateways/admin`);
+      if (!res.data) throw new Error("Failed to fetch payment-gateways");
+      return res.data;
+    },
+    enabled: !!adminInfo?.uid,
+  });
+}
+
+// get admin paymentGateway by uid
+export function useGetAdminPaymentGatewayByUid(uid: string) {
+  const { api, adminInfo } = useAppContext();
+  return useQuery({
+    queryKey: ["adminPaymentGateways", uid],
+    queryFn: async () => {
+      const res = await api.get<PaymentGateway>(
+        `/payment-gateways/admin/${uid}`
+      );
+      if (!res.data) throw new Error("Failed to fetch payment-gateway");
+      return res.data;
+    },
+    enabled: !!uid && !!adminInfo?.uid,
+  });
+}
+
+export interface UpdatePaymentGateway {
+  uid: string;
+  platform: PaymentMethod;
+  name: string;
+  image: string;
+  min: string;
+  max: string;
+  secretKey?: string;
+  description?: string;
+  content?: string | null;
+}
+
+export function useUpdatePaymentGateway() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updatePaymentGateway"],
+    mutationFn: async (updateData: UpdatePaymentGateway) => {
+      const res = await api.patch<{ success: string; signature: string }>(
+        `/payment-gateways`,
+        updateData
+      );
+      if (!res.data.success) {
+        throw new Error(
+          "Failed to update payment-gateway: No success response from server."
+        );
+      }
+      return res.data;
+    },
+
+    onSuccess: () => {
+      toast.success("Payment Gateway updated successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["adminPaymentGateways"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["paymentGateways"],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to update payment-gateway"
+      );
+      toast.error(errorMsg);
+    },
+  });
+}
+
+export function useDeletePaymentGateway() {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["deletePaymentGateway"],
+    mutationFn: async (uid: string) => {
+      const res = await api.delete<{ success: string }>(`/payment-gateways`, {
+        data: { uid },
+      });
+      if (!res.data.success) {
+        throw new Error(
+          "Failed to delete payment-gateway: No success response from server."
+        );
+      }
+      return res.data;
+    },
+
+    onSuccess: () => {
+      toast.success("Payment Gateway deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["adminPaymentGateways"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["paymentGateways"],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to delete payment-gateway"
+      );
+      toast.error(errorMsg);
+    },
   });
 }

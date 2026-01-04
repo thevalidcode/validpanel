@@ -20,6 +20,8 @@ export type SubscriptionPlanFeatures = {
   staff_accounts?: number;
   custom_templates?: boolean;
   order_syncing_for_social_media_store?: boolean;
+  service_syncing_for_social_media_store?: boolean;
+  [key: string]: any;
 };
 
 export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE";
