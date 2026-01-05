@@ -43,24 +43,24 @@ interface EditSubscriptionPlanDialogProps {
 const DEFAULT_FEATURES: SubscriptionPlanFeatures = {
   stores: 1,
   products: 50,
-  analytics: false,
-  custom_branding: false,
-  priority_support: false,
-  store_analytics: false,
-  unlimited_products: false,
-  hide_banner: false,
-  api_access: false,
-  custom_domain: false,
-  ai_features: false,
-  customer_emails: false,
-  free_ssl: false,
-  available_templates: 5,
-  payment_gateways: 1,
-  default_template: true,
   staff_accounts: 1,
+  payment_gateways: 1,
+  available_templates: 5,
+  analytics: false,
+  api_access: false,
+  ai_features: false,
+  priority_support: false,
+  custom_branding: false,
+  custom_domain: false,
+  free_ssl: false,
+  hide_platform_banner: false,
   custom_templates: false,
-  order_syncing_for_social_media_store: false,
-  service_syncing_for_social_media_store: false,
+  unlimited_products: false,
+  social_store_order_sync: false,
+  social_store_service_sync: false,
+  store_email_notifications: false,
+  store_custom_emails: false,
+  store_newsletters: false,
 };
 
 const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
@@ -340,7 +340,12 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
               <JsonEditor
                 label="Features (JSON)"
                 value={form.features}
-                onChange={(features) => setForm((p) => ({ ...p, features }))}
+                onChange={(features) =>
+                  setForm((p) => ({
+                    ...p,
+                    features: features as SubscriptionPlanFeatures,
+                  }))
+                }
               />
             </div>
 

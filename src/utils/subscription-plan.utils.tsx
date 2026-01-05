@@ -4,52 +4,61 @@ type FeatureFormatter = (
   value: any,
   features: SubscriptionPlanFeatures
 ) => string | null;
-
 const FEATURE_MAP: Record<keyof SubscriptionPlanFeatures, FeatureFormatter> = {
-  stores: (value) => `Launch up to ${value} stores`,
+  stores: (value: number) => `Launch up to ${value} stores`,
 
-  products: (value) =>
+  products: (value: number | null) =>
     value === null ? null : `Upload up to ${value} products per store`,
 
-  unlimited_products: (value) =>
+  unlimited_products: (value: boolean) =>
     value ? "Unlimited products per store" : null,
 
-  available_templates: (value) =>
+  available_templates: (value: number) =>
     `Access ${value} professionally designed templates`,
 
-  payment_gateways: (value) => `Use up to ${value} payment gateways`,
+  payment_gateways: (value: number) => `Use up to ${value} payment gateways`,
 
-  staff_accounts: (value) =>
+  staff_accounts: (value: number) =>
     value > 0 ? `Add up to ${value} staff accounts` : null,
 
-  analytics: (value) => (value ? "Basic analytics dashboard" : null),
+  analytics: (value: boolean) => (value ? "Basic analytics dashboard" : null),
 
-  store_analytics: (value) => (value ? "Advanced store analytics" : null),
+  api_access: (value: boolean) =>
+    value ? "API access for integrations" : null,
 
-  api_access: (value) => (value ? "API access for integrations" : null),
+  ai_features: (value: boolean) =>
+    value ? "AI-powered automation features" : null,
 
-  ai_features: (value) => (value ? "AI-powered automation features" : null),
+  priority_support: (value: boolean) =>
+    value ? "Priority customer support" : null,
 
-  priority_support: (value) => (value ? "Priority customer support" : null),
-
-  customer_emails: (value) =>
+  store_email_notifications: (value: boolean) =>
     value ? "Automated customer email notifications" : null,
 
-  free_ssl: (value) => (value ? "Free SSL security on all stores" : null),
+  store_custom_emails: (value: boolean) =>
+    value ? "Custom email templates" : null,
 
-  custom_domain: (value) => (value ? "Connect a custom domain" : null),
+  store_newsletters: (value: boolean) =>
+    value ? "Newsletter management" : null,
 
-  custom_branding: (value) => (value ? "Custom branding" : null),
+  free_ssl: (value: boolean) =>
+    value ? "Free SSL security on all stores" : null,
 
-  hide_banner: (value) => (value ? "Hide platform promotional banners" : null),
+  custom_domain: (value: boolean) => (value ? "Connect a custom domain" : null),
 
-  default_template: (value) =>
-    value ? "Default starter template included" : null,
+  custom_branding: (value: boolean) => (value ? "Custom branding" : null),
 
-  custom_templates: (value) => (value ? "Upload custom store templates" : null),
+  hide_platform_banner: (value: boolean) =>
+    value ? "Hide platform promotional banners" : null,
 
-  order_syncing_for_social_media_store: (value) =>
+  custom_templates: (value: boolean) =>
+    value ? "Upload custom store templates" : null,
+
+  social_store_order_sync: (value: boolean) =>
     value ? "Order syncing for social media stores" : null,
+
+  social_store_service_sync: (value: boolean) =>
+    value ? "Service syncing for social media stores" : null,
 };
 
 export function formatPlanFeatures(

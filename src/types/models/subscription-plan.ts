@@ -1,27 +1,26 @@
 import type { CurrencyCode } from "@/lib/currencyConverter";
 
 export type SubscriptionPlanFeatures = {
-  stores?: number;
-  products?: number | null;
-  analytics?: boolean;
-  custom_branding?: boolean;
-  priority_support?: boolean;
-  store_analytics?: boolean;
-  unlimited_products?: boolean;
-  hide_banner?: boolean;
-  api_access?: boolean;
-  custom_domain?: boolean;
-  ai_features?: boolean;
-  customer_emails?: boolean;
-  free_ssl?: boolean;
-  available_templates?: number;
-  payment_gateways?: number;
-  default_template?: boolean;
-  staff_accounts?: number;
-  custom_templates?: boolean;
-  order_syncing_for_social_media_store?: boolean;
-  service_syncing_for_social_media_store?: boolean;
-  [key: string]: any;
+  stores: number;
+  products: number | null;
+  staff_accounts: number;
+  payment_gateways: number;
+  available_templates: number;
+  analytics: boolean;
+  api_access: boolean;
+  ai_features: boolean;
+  priority_support: boolean;
+  custom_branding: boolean;
+  custom_domain: boolean;
+  free_ssl: boolean;
+  hide_platform_banner: boolean;
+  custom_templates: boolean;
+  unlimited_products: boolean;
+  social_store_order_sync: boolean;
+  social_store_service_sync: boolean;
+  store_email_notifications: boolean;
+  store_custom_emails: boolean;
+  store_newsletters: boolean;
 };
 
 export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE";
