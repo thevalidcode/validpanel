@@ -4,6 +4,7 @@ import PricingFeatures from "./PricingFeatures";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/context/useAppContext";
 import { useCurrencyConverter } from "@/lib/currencyConverter";
+import Decimal from "decimal.js";
 
 interface PricingPlanCardProps {
   plan: SubscriptionPlan;
@@ -30,12 +31,12 @@ function PricingPlanCard({
   const isUpgrade =
     !!currentSubscription &&
     currentSubscription.status === "ACTIVE" &&
-    currentSubscription.plan.price < plan.price;
+    new Decimal(currentSubscription.plan.price).lessThan(plan.price);
 
   const isDowngrade =
     !!currentSubscription &&
     currentSubscription.status === "ACTIVE" &&
-    currentSubscription.plan.price > plan.price;
+    new Decimal(currentSubscription.plan.price).greaterThan(plan.price);
 
   const getPrice = (plan: SubscriptionPlan): string => {
     const base = Number(plan.price);
