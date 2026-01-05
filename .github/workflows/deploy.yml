@@ -36,4 +36,4 @@ jobs:
             npm run build -- --mode production
 
             cp -r dist/* "$DEPLOY_DIR"/
-            echo "Deployment completed."
+            echo "Deployment completed.🎉"
