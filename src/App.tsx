@@ -58,6 +58,12 @@ const SubscriptionPlansPage = React.lazy(
   () => import("./admin/pages/SubscriptionPlansPage")
 );
 const PaymentsPage = React.lazy(() => import("./admin/pages/PaymentsPage"));
+const ContactMessagesPage = React.lazy(
+  () => import("./admin/pages/ContactMessagesPage")
+);
+const ContactMessageDetailPage = React.lazy(
+  () => import("./admin/pages/ContactMessageDetailPage")
+);
 
 const App: React.FC = () => {
   return (
@@ -199,6 +205,22 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<Loader />}>
                     <SubscriptionPlansPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/contact-messages"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <ContactMessagesPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/contact-messages/:uid"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <ContactMessageDetailPage />
                   </Suspense>
                 }
               />

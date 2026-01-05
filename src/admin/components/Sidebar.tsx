@@ -6,6 +6,7 @@ import {
   HomeIcon,
   BellIcon,
   ShoppingBagIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 
 import { Key, Settings, User, UsersIcon } from "lucide-react";
@@ -94,6 +95,16 @@ const sections: MenuSection[] = [
         name: "Permissions",
         to: "/admin/permissions",
         icon: <Key className="w-5 h-5" />,
+      },
+    ],
+  },
+  {
+    title: "Customer Support",
+    items: [
+      {
+        name: "Contact Messages",
+        to: "/admin/contact-messages",
+        icon: <EnvelopeIcon className="w-5 h-5" />,
       },
     ],
   },
