@@ -126,19 +126,7 @@ function UpgradePlan() {
   const isManualGateway = selectedGateway?.platform === "MANUAL";
   const annualDiscount = (selectedPlan.discountForAnnually || 0) > 0;
 
-  const baseUrl = window.location.origin + window.location.pathname;
-
-  // Extract the step number
-  const stepMatch = baseUrl.match(/step(\d+)/);
-
-  let newUrl = baseUrl;
-
-  if (stepMatch) {
-    const currentStep = parseInt(stepMatch[1], 10); // get number after "step"
-    const nextStep = currentStep + 1;
-    // Replace the old step number with the incremented one
-    newUrl = baseUrl.replace(/step\d+/, `step${nextStep}`);
-  }
+  const newUrl = `${window.location.origin}/subscription?tab=plans`;
 
   const handleProceedToPayment = async () => {
     if (!selectedGateway) return;
@@ -166,7 +154,7 @@ function UpgradePlan() {
           return;
         }
 
-        navigate("/subscription");
+        navigate("/subscription?tab=plans");
         return;
       }
 
@@ -179,7 +167,7 @@ function UpgradePlan() {
           planId: selectedPlan.id,
         });
 
-        navigate("/subscription");
+        navigate("/subscription?tab=plans");
         return;
       }
 
@@ -188,16 +176,16 @@ function UpgradePlan() {
         planId: selectedPlan.id,
         billingCycle,
         platform: selectedGateway.platform,
-        redirectUrl: window.location.origin + window.location.pathname,
+        redirectUrl: newUrl,
         currency: userCurrency,
       });
 
-      if (selectedGateway.platform === "MANUAL") {
-        navigate("/subscription");
+      if (response.url) {
+        window.location.href = response.url;
         return;
       }
 
-      navigate(response.url || "/subscription");
+      navigate("/subscription?tab=plans");
     } catch (error) {
       console.error("Subscription action failed:", error);
     }
