@@ -1,11 +1,35 @@
-import { type FC, type FormEvent } from "react";
+import { type FC, type FormEvent, useState } from "react";
 import type { ContactFormProps } from "../../../types/ContactUs.types";
+import { useSendContactMessage } from "@/hooks/use-contact";
 
 const ContactForm: FC<ContactFormProps> = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const { mutateAsync: sendMessage, isPending } = useSendContactMessage();
+
   const submitMessage = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-    } catch (error) {}
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !email.trim() ||
+      !message.trim()
+    ) {
+      return;
+    }
+    await sendMessage({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      message: message.trim(),
+    });
+    // Clear form on success
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setMessage("");
   };
   return (
     <div className="container mx-auto mt-16 mb-32 px-4 grid md:grid-cols-2 gap-8 items-top">
@@ -29,12 +53,16 @@ const ContactForm: FC<ContactFormProps> = () => {
             type="text"
             required
             placeholder="First Name*"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             className="w-1/2 border-0 bg-gray-50 p-2 rounded outline-primary"
           />
           <input
             type="text"
             required
             placeholder="Last Name*"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             className="w-1/2 border-0 bg-gray-50 p-2 rounded outline-primary"
           />
         </div>
@@ -42,19 +70,24 @@ const ContactForm: FC<ContactFormProps> = () => {
           type="email"
           required
           placeholder="Enter your e-mail*"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full border-0 bg-gray-50 p-2 rounded mb-2 outline-primary"
         />
         <textarea
           placeholder="Type your message*"
           required
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className="w-full border-0 bg-gray-50 p-2 rounded mb-4 outline-primary"
           rows={10}
         ></textarea>
         <button
           type="submit"
-          className="merriweather w-full bg-purple-900 text-white p-2 rounded-full font-semibold hover:bg-purple-700"
+          disabled={isPending}
+          className="merriweather w-full bg-purple-900 text-white p-2 rounded-full font-semibold hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          SEND MESSAGE NOW
+          {isPending ? "SENDING..." : "SEND MESSAGE NOW"}
         </button>
       </form>
     </div>
