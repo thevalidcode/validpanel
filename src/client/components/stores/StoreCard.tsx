@@ -102,7 +102,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
         <button
           type="button"
           onClick={() =>
-            window.open(`https://${store.uid}/control-panel/login`, "_blank")
+            window.open(`https://${store.uid}/admin/auth/signin`, "_blank")
           }
           className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
         >
