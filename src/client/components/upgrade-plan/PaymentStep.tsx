@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Lock, AlertCircle, ShieldCheck } from "lucide-react";
+import {  Lock, AlertCircle, ShieldCheck } from "lucide-react";
 import type { PaymentGateway, SubscriptionPlan } from "@/types";
 
 interface PaymentStepProps {
@@ -51,40 +51,38 @@ function PaymentStep({
         {paymentGateways
           .filter((gateway) => gateway.status === "ACTIVE")
           .map((gateway) => (
-            <motion.div
-              key={gateway.uid}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              onClick={() => setSelectedGateway(gateway)}
-              className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                selectedGateway?.uid === gateway.uid
-                  ? "border-primary bg-primary/5"
-                  : "border-gray-200 hover:border-primary/30"
-              }`}
+            <label
+              key={gateway.id}
+              className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition
+                    ${
+                      selectedGateway?.uid === gateway.uid
+                        ? "border-purple-600 shadow-md"
+                        : "border-gray-200 hover:border-purple-300"
+                    }`}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="poppins font-semibold text-gray-900">
-                    {gateway.name}
-                  </p>
-                  <p className="inter text-xs text-gray-600">
-                    {gateway.description}
-                  </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100">
+                  <img
+                    src={gateway.image}
+                    alt={gateway.name}
+                    className="w-6 h-6"
+                  />
                 </div>
-
-                <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedGateway?.uid === gateway.uid
-                      ? "border-primary bg-primary"
-                      : "border-gray-300"
-                  }`}
-                >
-                  {selectedGateway?.uid === gateway.uid && (
-                    <Check className="w-3 h-3 text-white" />
-                  )}
+                <div>
+                  <h4 className="font-semibold text-gray-800">
+                    {gateway.name}
+                  </h4>
+                  <p className="text-sm text-gray-500">{gateway.description}</p>
                 </div>
               </div>
-            </motion.div>
+              <input
+                type="radio"
+                name="payment"
+                className="accent-purple-600"
+                checked={selectedGateway?.uid === gateway.uid}
+                onChange={() => setSelectedGateway(gateway)}
+              />
+            </label>
           ))}
       </div>
 
