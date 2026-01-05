@@ -32,7 +32,7 @@ jobs:
               git checkout main
             fi
 
-            npm ci --omit=dev
+            npm ci
             npm run build -- --mode production
 
             cp -r dist/* "$DEPLOY_DIR"/
