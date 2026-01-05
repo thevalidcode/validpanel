@@ -7,31 +7,11 @@ on:
 
 jobs:
   deploy:
-    name: Upload & Run Remote Commands
+    name: Build on VPS & sync dist only
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🛠️ Install deps & build
-        run: |
-          npm ci
-          npm run build
-
-      - name: 📤 Upload project (excluding src/)
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 2022
-          source: "dist/**"
-          target: "core-platform/frontend"
-          strip_components: 1
-          overwrite: true
-
-      - name: 🧠 Run post-deploy commands
+      - name: 🧠 Build on VPS and deploy dist only
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -39,4 +19,21 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 2022
           script: |
-            cd core-platform/frontend
+            REPO_DIR=core-platform/frontend-src
+            DEPLOY_DIR=core-platform/frontend
+
+            mkdir -p "$REPO_DIR"
+            cd "$REPO_DIR"
+
+            if [ -d .git ]; then
+              git pull origin main
+            else
+              git clone https://github.com/thevalidcode/validpanel.git .
+              git checkout main
+            fi
+
+            npm ci --omit=dev
+            npm run build -- --mode production
+
+            cp -r dist/* "$DEPLOY_DIR"/
+            echo "Deployment completed."
