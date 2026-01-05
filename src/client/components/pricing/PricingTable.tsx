@@ -21,7 +21,8 @@ function PricingTable() {
 
     return allFeatureKeys.map((key) => {
       const row: Record<string, string | boolean> = {
-        feature: formatPlanFeatures({ [key]: "_" })[0] || key,
+        feature:
+          formatPlanFeatures({ [key as string]: "_" })[0] || (key as string),
       };
       subscriptionPlans.forEach((plan) => {
         const value = plan.features[key];

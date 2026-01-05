@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Loader from "@/components/Loader";
-import { useContactMessage } from "@/hooks/use-contact-messages";
+import { useContactMessage } from "@/hooks/use-contact";
 import ContactMessageDetail from "@/admin/components/contact/ContactMessageDetail";
+import Layout from "../components/Layout";
+import NotFound from "@/components/NotFound";
 
 export default function ContactMessageDetailPage() {
   const { uid } = useParams<{ uid: string }>();
@@ -20,39 +22,41 @@ export default function ContactMessageDetailPage() {
 
   if (!message) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="bg-white rounded-lg shadow-md p-8 text-center"
+      <Layout
+        title="Messages"
+        description="Manage customer inquiries and contact submissions."
       >
-        <p className="text-gray-500 mb-4">Message not found</p>
-        <button
-          onClick={() => navigate("/admin/contact-messages")}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Back to Messages
-        </button>
-      </motion.div>
+        <div className="py-5 px-6 w-full">
+          <NotFound title="No message found." className="mt-5" />
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+    <Layout
+      title="Contact Messages"
+      description="Manage customer inquiries and contact submissions."
     >
-      <ContactMessageDetail
-        uid={message.uid}
-        firstName={message.firstName}
-        lastName={message.lastName}
-        email={message.email}
-        message={message.message}
-        status={message.status}
-        createdAt={message.createdAt}
-        updatedAt={message.updatedAt}
-        onBack={() => navigate("/admin/contact-messages")}
-      />
-    </motion.div>
+      <div className="py-5 px-6 w-full">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ContactMessageDetail
+            uid={message.uid}
+            firstName={message.firstName}
+            lastName={message.lastName}
+            email={message.email}
+            message={message.message}
+            status={message.status}
+            createdAt={message.createdAt}
+            updatedAt={message.updatedAt}
+            onBack={() => navigate("/admin/contact-messages")}
+          />
+        </motion.div>
+      </div>
+    </Layout>
   );
 }

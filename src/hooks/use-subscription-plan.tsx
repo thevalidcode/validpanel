@@ -57,29 +57,28 @@ export function useCreateSubscriptionPlan() {
 
 // get subscriptionPlans
 export function useGetUserSubscriptionPlans() {
-  const { api, userInfo } = useAppContext();
+  const { api } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptionPlans", userInfo?.uid],
+    queryKey: ["subscriptionPlans"],
     queryFn: async () => {
       const res = await api.get<SubscriptionPlan[]>(`/subscription-plans`);
       if (!res.data) throw new Error("Failed to fetch subscriptionPlans");
       return res.data;
     },
-    enabled: !!userInfo?.uid,
   });
 }
 
 // ! get subscriptionPlan by uid for authenticated users
 export function useGetUserSubscriptionPlanByUid(uid: string) {
-  const { api, userInfo } = useAppContext();
+  const { api } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptionPlans", userInfo?.uid, uid],
+    queryKey: ["subscriptionPlans", uid],
     queryFn: async () => {
       const res = await api.get<SubscriptionPlan>(`/subscription-plans/${uid}`);
       if (!res.data) throw new Error("Failed to fetch subscriptionPlan");
       return res.data;
     },
-    enabled: !!uid && !!userInfo?.uid,
+    enabled: !!uid,
   });
 }
 

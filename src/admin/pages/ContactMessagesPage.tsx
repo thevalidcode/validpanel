@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import { Search } from "lucide-react";
+import Layout from "@/admin/components/Layout";
 import Loader from "@/components/Loader";
-import { useContactMessages, useDeleteContactMessage } from "@/hooks/use-contact-messages";
-import ContactMessagesList from "@/admin/components/contact/ContactMessagesList";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
+import NotFound from "@/components/NotFound";
+import {
+  useContactMessages,
+  useDeleteContactMessage,
+} from "@/hooks/use-contact";
+import ContactMessagesMobileView from "@/admin/components/contact/ContactMessagesMobileView";
+import ContactMessagesDesktopView from "@/admin/components/contact/ContactMessagesDesktopView";
 import DeleteDialog from "@/components/DeleteDialog";
+import type { ContactMessage, ContactMessageStatus } from "@/types";
 
 export default function ContactMessagesPage() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<
+    "All" | ContactMessageStatus
+  >("All");
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedMessageForDelete, setSelectedMessageForDelete] = useState<{
     uid: string;
@@ -19,11 +30,46 @@ export default function ContactMessagesPage() {
   const { mutateAsync: deleteMessage, isPending: isDeleting } =
     useDeleteContactMessage();
 
+  const statusOptions: Option<"All" | ContactMessageStatus>[] = [
+    { label: "All Status", value: "All" },
+    { label: "Pending", value: "PENDING" },
+    { label: "Replied", value: "REPLIED" },
+    { label: "Resolved", value: "RESOLVED" },
+  ];
+
+  const filteredMessages = useMemo(() => {
+    let filtered = (messages || []) as ContactMessage[];
+
+    // Filter by status
+    if (selectedStatus !== "All") {
+      filtered = filtered.filter(
+        (m: ContactMessage) => m.status === selectedStatus
+      );
+    }
+
+    // Search by name or email
+    if (search.trim()) {
+      const query = search.toLowerCase();
+      filtered = filtered.filter(
+        (m: ContactMessage) =>
+          m.firstName.toLowerCase().includes(query) ||
+          m.lastName.toLowerCase().includes(query) ||
+          m.email.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [messages, search, selectedStatus]);
+
   const handleViewDetail = (uid: string) => {
     navigate(`/admin/contact-messages/${uid}`);
   };
 
-  const handleDeleteClick = (uid: string, firstName: string, lastName: string) => {
+  const handleDeleteClick = (
+    uid: string,
+    firstName: string,
+    lastName: string
+  ) => {
     setSelectedMessageForDelete({
       uid,
       senderName: `${firstName} ${lastName}`,
@@ -38,47 +84,78 @@ export default function ContactMessagesPage() {
     setSelectedMessageForDelete(null);
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <MessageSquare className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Contact Messages</h1>
-            <p className="text-gray-600">
-              Manage customer inquiries and contact submissions
-            </p>
-          </div>
-        </div>
-      </div>
+  if (isLoading) {
+    return <Loader />;
+  }
 
-      {/* Content */}
-      {isLoading ? (
-        <div className="bg-white rounded-lg shadow-md p-12 flex justify-center">
-          <Loader />
+  return (
+    <Layout
+      title="Contact Messages"
+      description="Manage customer inquiries and contact submissions."
+    >
+      <div className="py-5 px-6 w-full">
+        {/* Filters */}
+        <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200">
+          <div className="md:w-[75%] w-full flex flex-wrap md:flex-nowrap gap-2 items-center">
+            <div className="relative w-full md:w-[60%]">
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-lg pr-3 pl-12 py-2 focus:ring-2 focus:ring-primary"
+              />
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+            </div>
+
+            <CustomSelect
+              options={statusOptions}
+              value={statusOptions.find((opt) => opt.value === selectedStatus)}
+              placeholder="Status"
+              onChange={(selected) => {
+                setSelectedStatus(
+                  (selected as Option<"All" | ContactMessageStatus>).value
+                );
+              }}
+              className="flex-1"
+            />
+          </div>
         </div>
-      ) : (
-        <ContactMessagesList
-          messages={messages}
-          isLoading={false}
-          onViewDetail={handleViewDetail}
-          onDelete={(uid) => {
-            const message = messages?.find((m) => m.uid === uid);
-            if (message) {
-              handleDeleteClick(uid, message.firstName, message.lastName);
-            }
-          }}
-          isDeleting={isDeleting}
-        />
-      )}
+
+        {/* Messages List */}
+        {filteredMessages.length ? (
+          <div className="mt-5">
+            <div className="md:hidden w-full">
+              <ContactMessagesMobileView
+                messages={filteredMessages}
+                onViewDetail={handleViewDetail}
+                onDelete={(uid) => {
+                  const message = filteredMessages.find((m) => m.uid === uid);
+                  if (message) {
+                    handleDeleteClick(uid, message.firstName, message.lastName);
+                  }
+                }}
+                isDeleting={isDeleting}
+              />
+            </div>
+            <div className="hidden md:block">
+              <ContactMessagesDesktopView
+                messages={filteredMessages}
+                onViewDetail={handleViewDetail}
+                onDelete={(uid) => {
+                  const message = filteredMessages.find((m) => m.uid === uid);
+                  if (message) {
+                    handleDeleteClick(uid, message.firstName, message.lastName);
+                  }
+                }}
+                isDeleting={isDeleting}
+              />
+            </div>
+          </div>
+        ) : (
+          <NotFound title="No messages found." className="mt-5" />
+        )}
+      </div>
 
       {/* Delete Modal */}
       <DeleteDialog
@@ -94,6 +171,6 @@ export default function ContactMessagesPage() {
           setSelectedMessageForDelete(null);
         }}
       />
-    </motion.div>
+    </Layout>
   );
 }

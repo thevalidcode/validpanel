@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
 import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 import type { ContactMessageStatus } from "@/types";
-import { useDeleteContactMessage, useUpdateContactStatus } from "@/hooks/use-contact-messages";
+import {
+  useDeleteContactMessage,
+  useUpdateContactStatus,
+} from "@/hooks/use-contact";
 import ContactStatusBadge from "./ContactStatusBadge";
 import DeleteDialog from "@/components/DeleteDialog";
 
@@ -42,7 +45,9 @@ export default function ContactMessageDetail({
   const { mutateAsync: deleteMessage, isPending: isDeleting } =
     useDeleteContactMessage();
 
-  const handleStatusChange = async (option: Option<ContactMessageStatus> | Option<ContactMessageStatus>[]) => {
+  const handleStatusChange = async (
+    option: Option<ContactMessageStatus> | Option<ContactMessageStatus>[]
+  ) => {
     if (Array.isArray(option)) return;
     await updateStatus({ uid, data: { status: option.value } });
   };
@@ -95,7 +100,7 @@ export default function ContactMessageDetail({
           <div className="flex gap-2 sm:mt-6">
             <a
               href={`mailto:${email}`}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium text-center"
+              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition text-sm font-medium text-center"
             >
               Reply via Email
             </a>

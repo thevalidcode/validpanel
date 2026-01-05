@@ -13,7 +13,9 @@ const STATUS_COLORS: Record<
   RESOLVED: { bg: "bg-green-100", text: "text-green-700" },
 };
 
-export default function ContactStatusBadge({ status }: ContactStatusBadgeProps) {
+export default function ContactStatusBadge({
+  status,
+}: ContactStatusBadgeProps) {
   const colors = STATUS_COLORS[status];
 
   return (
