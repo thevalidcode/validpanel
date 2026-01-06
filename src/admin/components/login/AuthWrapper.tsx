@@ -66,7 +66,7 @@ const AuthWrapper: FC<Props> = ({
 
   const handleGoogleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(
+    window.location.replace(
       `https://auth.validpanel.com/api/auth/core/google?redirect=https://${domain}/admin/${type}`
     );
   };
