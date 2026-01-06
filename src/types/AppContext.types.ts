@@ -14,6 +14,7 @@ export type AppContextType = {
   userCurrency: CurrencyCode;
   isAuthLoading: boolean;
   isRatesLoading: boolean;
+  domain: string;
 
   setUserCurrency: (currency: string) => void;
   handleSetUserInfo: (user: User | null) => void;

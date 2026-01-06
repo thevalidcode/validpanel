@@ -3,9 +3,12 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import { useAdminLogin } from "@/hooks/use-admin";
+import { useVerifySessionCode } from "@/hooks/use-auth";
 
 const LoginPage = () => {
-  const { mutateAsync: loginUser } = useAdminLogin();
+  const { mutateAsync: loginUser, isPending } = useAdminLogin();
+  const { mutate: verifySessionCode, isPending: isVerifyingSession } =
+    useVerifySessionCode("ADMIN");
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -32,7 +35,11 @@ const LoginPage = () => {
   };
 
   return (
-    <AuthWrapper pageTitle="Welcome back" type="login">
+    <AuthWrapper
+      pageTitle="Welcome back"
+      type="login"
+      verifySessionCode={verifySessionCode}
+    >
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col gap-4 w-full">
           <TextInput
@@ -54,7 +61,7 @@ const LoginPage = () => {
             onChange={handleInputs}
           />
           <Button styles="text-white text-xs bg-primary" type="submit">
-            SIGN IN
+            {isPending || isVerifyingSession ? "Signing In..." : "Sign In"}
           </Button>
         </div>
       </form>

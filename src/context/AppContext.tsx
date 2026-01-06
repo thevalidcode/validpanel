@@ -13,12 +13,22 @@ import type { Admin, User } from "@/types";
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+const getDomain = () => {
+  const currentUrl = window.location.href.replace(/^https?:\/\//, "");
+  let domain = currentUrl.split("/")[0];
+  if (domain.startsWith("www.")) {
+    domain = domain.slice(4);
+  }
+  return domain;
+};
+
 const AppProvider = ({ children }: AppProviderProps) => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [rates, setRates] = useState<CurrencyRates | {}>({});
   const [adminInfo, setAdminInfo] = useState<Admin | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [userCurrency, setUserCurrencyState] = useState<CurrencyCode>("USD");
+  const domain = getDomain();
 
   // Load user/admin from IndexedDB on mount
   useEffect(() => {
@@ -108,6 +118,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
         setUserCurrency,
         handleSetUserInfo,
         handleSetAdminInfo,
+        domain,
         api,
       }}
     >

@@ -1,5 +1,5 @@
-import { useEffect, type FC, type ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, type FC, type ReactNode } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import productImage from "../../../assets/images/product.png";
 import storeImage from "../../../assets/images/chat.png";
 import salesImage from "../../../assets/images/sales.png";
@@ -41,11 +41,20 @@ interface Props {
   children: ReactNode;
   pageTitle: string;
   type: "register" | "login" | "forgot-password";
+  verifySessionCode: (args: { sessionCode: string }) => void;
 }
 
-const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
+const AuthWrapper: FC<Props> = ({
+  children,
+  pageTitle,
+  type,
+  verifySessionCode,
+}) => {
   const navigate = useNavigate();
-  const { isAuthLoading, adminInfo } = useAppContext();
+  const { isAuthLoading, adminInfo, domain } = useAppContext();
+  const [searchParams] = useSearchParams();
+  const lastSessionCodeRef = useRef<string | null>(null);
+  const sessionCodeFromQuery = searchParams.get("session_code");
 
   useEffect(() => {
     if (isAuthLoading) return;
@@ -54,6 +63,27 @@ const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
       return;
     }
   }, [adminInfo, isAuthLoading, navigate, type]);
+
+  const handleGoogleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate(
+      `https://auth.validpanel.com/api/auth/core/google?redirect=https://${domain}/admin/${type}`
+    );
+  };
+
+  useEffect(() => {
+    if (!sessionCodeFromQuery) return;
+
+    const normalizedCode = sessionCodeFromQuery.trim();
+    if (lastSessionCodeRef.current === normalizedCode) return;
+
+    const uuidV4Regex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidV4Regex.test(normalizedCode)) return;
+
+    lastSessionCodeRef.current = normalizedCode;
+    verifySessionCode({ sessionCode: normalizedCode });
+  }, [sessionCodeFromQuery, verifySessionCode]);
 
   if (isAuthLoading) {
     return <Loader />;
@@ -67,7 +97,11 @@ const AuthWrapper: FC<Props> = ({ children, pageTitle, type }) => {
         {/* Google only for login/register */}
         {type !== "forgot-password" && (
           <>
-            <Button isgoogle="true" styles="w-[353px]">
+            <Button
+              isgoogle="true"
+              styles="w-[353px]"
+              onClick={handleGoogleLogin}
+            >
               SIGN {type === "register" ? "UP" : "IN"} VIA GOOGLE
             </Button>
             <Horizontals />
