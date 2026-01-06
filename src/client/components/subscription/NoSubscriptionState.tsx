@@ -12,7 +12,7 @@ export default function NoSubscriptionState({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white border border-gray-200 rounded-2xl p-8 text-center"
+      className="bg-white border border-gray-200 rounded-2xl p-8 text-center mb-4"
     >
       <h2 className="poppins text-2xl font-bold text-gray-900 mb-3">
         You do not have an active subscription

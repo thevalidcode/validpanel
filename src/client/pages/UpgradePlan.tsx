@@ -2,11 +2,7 @@ import Layout from "../components/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import type {
-  PaymentGateway,
-  SubscriptionPlan,
-  SubscriptionPlanInterval,
-} from "@/types";
+import type { PaymentGateway, SubscriptionPlan } from "@/types";
 import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
 import NotFound from "@/components/NotFound";
 import Loader from "@/components/Loader";
@@ -34,8 +30,7 @@ function UpgradePlan() {
   const [selectedGateway, setSelectedGateway] = useState<PaymentGateway | null>(
     null
   );
-  const [billingCycle, setBillingCycle] =
-    useState<SubscriptionPlanInterval>("MONTHLY");
+  const [isAnnual, setIsAnnual] = useState<boolean>(false);
   const navigate = useNavigate();
   const { userCurrency } = useAppContext();
   const { data: subscriptionPlans, isLoading } = useGetUserSubscriptionPlans();
@@ -74,37 +69,39 @@ function UpgradePlan() {
 
   if (!selectedPlan) return null;
 
+  const getMonths = () => (isAnnual ? 12 : 1);
+
+  const getBasePrice = () => new Decimal(selectedPlan.price).mul(getMonths());
+
+  const getDiscountAmount = () => {
+    const rate = isAnnual ? selectedPlan.discountForAnnually || 0 : 0;
+    if (!rate) return "0.00";
+
+    const base = getBasePrice();
+    return base.mul(new Decimal(rate)).div(100).toFixed(2);
+  };
+
+  // Returns amount due before tax for the selected plan/cycle, considering upgrades/downgrades
   const getDiscountedPrice = () => {
-    const newPlanPrice = new Decimal(selectedPlan.price);
+    const base = getBasePrice();
+    const discount = new Decimal(getDiscountAmount());
+    let due = base.minus(discount);
 
-    // 1. No active subscription → full price (new purchase)
+    // No active subscription → pay full (after discount)
     if (!userSubscription) {
-      if (billingCycle === "YEARLY") {
-        const annualBase = newPlanPrice.mul(12);
-        const discount = new Decimal(selectedPlan.discountForAnnually || 0);
-        return annualBase.minus(annualBase.mul(discount.div(100))).toFixed(2);
-      }
-
-      return newPlanPrice.toFixed(2);
+      return due.toFixed(2);
     }
 
-    const currentPlanPrice = new Decimal(userSubscription.plan.price);
+    // Compare against current plan cost for the same cycle to decide upgrade/downgrade delta
+    const currentBase = new Decimal(userSubscription.plan.price).mul(
+      getMonths()
+    );
 
-    // 2. Downgrade → no charge
-    if (newPlanPrice.lte(currentPlanPrice)) {
-      return "0.00";
-    }
+    // Downgrade or equal → no payment required now
+    if (due.lte(currentBase)) return "0.00";
 
-    // 3. Upgrade → charge difference
-    let effectiveNewPrice = newPlanPrice;
-
-    if (billingCycle === "YEARLY") {
-      const annualBase = newPlanPrice.mul(12);
-      const discount = new Decimal(selectedPlan.discountForAnnually || 0);
-      effectiveNewPrice = annualBase.minus(annualBase.mul(discount.div(100)));
-    }
-
-    return effectiveNewPrice.minus(currentPlanPrice).toFixed(2);
+    // Upgrade → pay the difference
+    return due.minus(currentBase).toFixed(2);
   };
 
   const calculateTax = (amount: string) => {
@@ -138,7 +135,7 @@ function UpgradePlan() {
       if (!hasSubscription) {
         const response = await startSubscription({
           planId: selectedPlan.id,
-          billingCycle,
+          billingCycle: isAnnual ? "YEARLY" : "MONTHLY",
           platform: selectedGateway.platform,
           redirectUrl: newUrl,
           currency: userCurrency,
@@ -174,7 +171,7 @@ function UpgradePlan() {
       // 3. Upgrade → payment flow
       const response = await upgradePlan({
         planId: selectedPlan.id,
-        billingCycle,
+        billingCycle: isAnnual ? "YEARLY" : "MONTHLY",
         platform: selectedGateway.platform,
         redirectUrl: newUrl,
         currency: userCurrency,
@@ -210,10 +207,10 @@ function UpgradePlan() {
                   selectedPlan={selectedPlan}
                   setCurrentStep={setCurrentStep}
                   getDiscountedPrice={getDiscountedPrice}
-                  setBillingCycle={setBillingCycle}
+                  setIsAnnual={setIsAnnual}
                   annualDiscount={annualDiscount}
                   userCurrency={userCurrency}
-                  billingCycle={billingCycle}
+                  isAnnual={isAnnual}
                 />
               ) : (
                 /* STEP 2: PAYMENT METHOD */
@@ -237,7 +234,7 @@ function UpgradePlan() {
           {/* ORDER SUMMARY */}
           <OrderSummary
             selectedPlan={selectedPlan}
-            billingCycle={billingCycle}
+            isAnnual={isAnnual}
             calculateTax={calculateTax}
             calculateTotal={calculateTotal}
             getDiscountedPrice={getDiscountedPrice}

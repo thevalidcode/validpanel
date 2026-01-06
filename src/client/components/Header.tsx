@@ -63,7 +63,7 @@ const Header = ({
         {/* Profile */}
         <div className="flex items-center gap-2 max-w-[180px] overflow-hidden">
           <img
-            src={userInfo?.image || "Sarah.png"}
+            src={userInfo?.image ?? "/Sarah.png"}
             alt="profile"
             className="w-10 h-10 rounded-full object-cover"
           />
@@ -72,7 +72,7 @@ const Header = ({
               {userInfo?.fullName}
             </p>
             <p className="tracking-wide uppercase text-xs text-gray-500 truncate">
-              {subscription?.plan.name || "Free Plan"}
+              {subscription?.plan.name ?? "Free Plan"}
             </p>
           </div>
         </div>

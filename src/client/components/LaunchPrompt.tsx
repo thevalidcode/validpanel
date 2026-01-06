@@ -1,4 +1,5 @@
 import { GoArrowUpRight } from "react-icons/go";
+import { Link } from "react-router-dom";
 
 export default function LaunchPrompt() {
   return (
@@ -11,9 +12,12 @@ export default function LaunchPrompt() {
           Create your shop or social store in minutes. No technical skills
           needed.
         </p>
-        <button className="bg-[var(--primary)] px-8 py-3 rounded-full btn-custom cursor-pointer inline-flex items-center gap-2">
+        <Link
+          to="/register"
+          className="bg-[var(--primary)] px-8 py-3 rounded-full btn-custom cursor-pointer inline-flex items-center gap-2 hover:bg-[var(--primary-dark)] transition"
+        >
           Get Started <GoArrowUpRight />{" "}
-        </button>
+        </Link>
       </div>
     </div>
   );

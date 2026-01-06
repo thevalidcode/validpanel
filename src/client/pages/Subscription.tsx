@@ -11,12 +11,14 @@ import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
 import NotFound from "@/components/NotFound";
 import { CreditCard } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useGetUserPayments } from "@/hooks/use-payment";
 
 export default function SubscriptionPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "overview";
 
   const { data: subscription, isLoading } = useGetUserActiveSubscription();
+  const { data: payments, isLoading: isPaymentLoading } = useGetUserPayments();
   const { data: subscriptionPlans, isLoading: isSubscriptionPlanLoading } =
     useGetUserSubscriptionPlans();
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ export default function SubscriptionPage() {
     setSearchParams({ tab });
   };
 
-  if (isLoading || isSubscriptionPlanLoading) {
+  if (isLoading || isSubscriptionPlanLoading || isPaymentLoading) {
     return <Loader />;
   }
 
@@ -68,7 +70,13 @@ export default function SubscriptionPage() {
           />
         )}
 
-        {subscription && activeTab === "billing" && <BillingTab />}
+        {(subscription || (payments && payments.length > 0)) &&
+          activeTab === "billing" && (
+            <BillingTab
+              payments={payments || []}
+              isLoading={isPaymentLoading}
+            />
+          )}
       </div>
     </Layout>
   );

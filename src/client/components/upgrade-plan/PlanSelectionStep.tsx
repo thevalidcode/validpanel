@@ -1,17 +1,19 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import PricingFeatures from "../pricing/PricingFeatures";
-import type { SubscriptionPlan, SubscriptionPlanInterval } from "@/types";
+import type { SubscriptionPlan } from "@/types";
 import {
   useCurrencyConverter,
   type CurrencyCode,
 } from "@/lib/currencyConverter";
 import { useNavigate } from "react-router-dom";
+import Decimal from "decimal.js";
+import PricingToggle from "../pricing/PricingToggle";
 
 interface PlanSelectionStepProps {
   selectedPlan: SubscriptionPlan;
-  billingCycle: SubscriptionPlanInterval;
-  setBillingCycle: (v: SubscriptionPlanInterval) => void;
+  isAnnual: boolean;
+  setIsAnnual: (v: boolean) => void;
   annualDiscount: boolean;
   userCurrency: CurrencyCode;
   getDiscountedPrice: () => string;
@@ -20,8 +22,8 @@ interface PlanSelectionStepProps {
 
 function PlanSelectionStep({
   selectedPlan,
-  billingCycle,
-  setBillingCycle,
+  isAnnual,
+  setIsAnnual,
   annualDiscount,
   userCurrency,
   getDiscountedPrice,
@@ -29,6 +31,51 @@ function PlanSelectionStep({
 }: PlanSelectionStepProps) {
   const convert = useCurrencyConverter();
   const navigate = useNavigate();
+
+  const months = isAnnual ? 12 : 1;
+  const discountRate = isAnnual ? selectedPlan.discountForAnnually || 0 : 0;
+
+  const basePrice = new Decimal(selectedPlan.price).mul(months).toFixed(2);
+  const discountAmount = discountRate
+    ? new Decimal(basePrice).mul(new Decimal(discountRate)).div(100).toFixed(2)
+    : "0.00";
+
+  const discountedTotal = new Decimal(basePrice)
+    .minus(new Decimal(discountAmount))
+    .toFixed(2);
+  const payableToday = getDiscountedPrice();
+
+  const displayBase = convert(
+    selectedPlan.currency,
+    userCurrency,
+    basePrice,
+    true,
+    false
+  ).formatted;
+
+  const displayDiscount = convert(
+    selectedPlan.currency,
+    userCurrency,
+    discountAmount,
+    true,
+    false
+  ).formatted;
+
+  const displayDiscounted = convert(
+    selectedPlan.currency,
+    userCurrency,
+    discountedTotal,
+    true,
+    false
+  ).formatted;
+
+  const displayPayable = convert(
+    selectedPlan.currency,
+    userCurrency,
+    payableToday,
+    true,
+    false
+  ).formatted;
   return (
     <motion.div
       key="step1"
@@ -42,43 +89,10 @@ function PlanSelectionStep({
       </h2>
 
       {/* BILLING CYCLE SWITCH */}
-      <div className="relative w-fit bg-gray-100 rounded-2xl p-1 mb-6 shadow-inner">
-        <motion.div
-          layout
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="absolute top-1 bottom-1 w-1/2 rounded-xl bg-white shadow-lg"
-          style={{
-            left: billingCycle === "MONTHLY" ? "4px" : "calc(48%)",
-          }}
-        />
-
-        <div className="relative z-10 flex">
-          <button
-            onClick={() => setBillingCycle("MONTHLY")}
-            className={`w-24 py-2 text-sm font-semibold ${
-              billingCycle === "MONTHLY"
-                ? "text-primary"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Monthly
-          </button>
-
-          <button
-            onClick={() => setBillingCycle("YEARLY")}
-            className={`w-24 py-2 text-sm font-semibold ${
-              billingCycle === "YEARLY"
-                ? "text-primary"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Annual
-          </button>
-        </div>
-      </div>
+      <PricingToggle isAnnual={isAnnual} setIsAnnual={setIsAnnual} />
 
       {/* DISCOUNT BANNER */}
-      {billingCycle === "YEARLY" && annualDiscount && (
+      {isAnnual && annualDiscount && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -90,7 +104,7 @@ function PlanSelectionStep({
             </div>
             <div>
               <p className="text-sm font-semibold text-primary">
-                Get {selectedPlan.discountForAnnually} percent off when billed
+                Get {selectedPlan.discountForAnnually}% off when billed
                 annually.
               </p>
               <p className="text-xs text-primary/70 mt-1">
@@ -103,28 +117,61 @@ function PlanSelectionStep({
 
       {/* PLAN CARD */}
       <div className="rounded-xl border border-gray-300 bg-gray-50 p-6 mb-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-1">
-          {selectedPlan.name}
-        </h3>
-        <p className="text-xs uppercase text-gray-500 tracking-wide mb-4">
-          {selectedPlan.description}
-        </p>
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-1">
+              {selectedPlan.name}
+            </h3>
+            <p className="text-xs uppercase text-gray-500 tracking-wide">
+              {selectedPlan.description}
+            </p>
+          </div>
+          {annualDiscount && isAnnual && (
+            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-3 py-1 rounded-full">
+              Save {selectedPlan.discountForAnnually}%
+            </span>
+          )}
+        </div>
 
-        <div className="text-right mb-4">
-          <p className="poppins text-3xl font-bold text-gray-900">
-            {
-              convert(
-                selectedPlan.currency,
-                userCurrency,
-                getDiscountedPrice(),
-                true,
-                false
-              ).formatted
-            }
-          </p>
-          <p className="text-xs text-gray-500 uppercase">
-            {billingCycle === "YEARLY" ? "per year" : "per month"}
-          </p>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="inter text-sm text-gray-600">Plan price</span>
+            <span className="poppins font-semibold text-gray-900">
+              {displayBase}
+            </span>
+          </div>
+
+          {discountRate > 0 && (
+            <div className="flex items-center justify-between mb-2">
+              <span className="inter text-sm text-gray-600">
+                Annual discount
+              </span>
+              <span className="poppins font-semibold text-green-700">
+                - {displayDiscount}
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between border-t border-dashed border-gray-200 pt-3 mt-2">
+            <span className="inter text-sm text-gray-600">Subtotal</span>
+            <span className="poppins font-semibold text-gray-900">
+              {displayDiscounted}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between mt-3">
+            <div>
+              <p className="text-xs text-gray-500 uppercase">
+                Due today (before tax)
+              </p>
+              <p className="text-[11px] text-gray-400">
+                Upgrade differences are applied automatically
+              </p>
+            </div>
+            <p className="poppins text-3xl font-bold text-primary">
+              {displayPayable}
+            </p>
+          </div>
         </div>
 
         <PricingFeatures plan={selectedPlan} />

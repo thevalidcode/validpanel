@@ -1,13 +1,40 @@
+import { useState } from "react";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
-import { useGetUserPayments } from "@/hooks/use-payment";
-import type { PaymentStatus } from "@/types";
+import type { Payment, PaymentStatus } from "@/types";
 import { formatDate, getPaymentStatusIcon } from "@/utils/subscription.utils";
-import { motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { downloadInvoice, canDownloadInvoice } from "@/utils/invoice.utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, FileText, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
-function BillingTab() {
-  const { data: payments, isLoading } = useGetUserPayments();
+function BillingTab({
+  payments,
+  isLoading,
+}: {
+  payments: Payment[];
+  isLoading: boolean;
+}) {
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownloadInvoice = async (payment: Payment) => {
+    if (!canDownloadInvoice(payment.status)) {
+      toast.error("Invoices are only available for successful payments.");
+      return;
+    }
+
+    try {
+      setDownloadingId(payment.uid);
+      await downloadInvoice(payment);
+
+      toast.success("Your invoice has been downloaded successfully.");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to generate invoice. Please try again.");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -16,7 +43,7 @@ function BillingTab() {
   if (!payments) {
     return <NotFound title="No payment has been made yet." variant="page" />;
   }
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -87,16 +114,52 @@ function BillingTab() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span className="inter text-sm font-medium">
-                        Download
-                      </span>
-                    </motion.button>
+                    {canDownloadInvoice(payment.status) ? (
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleDownloadInvoice(payment)}
+                        disabled={downloadingId === payment.uid}
+                        className="relative px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-primary/90 hover:shadow-lg disabled:opacity-75 disabled:cursor-not-allowed transition-all duration-200"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <AnimatePresence mode="wait">
+                            {downloadingId === payment.uid ? (
+                              <motion.div
+                                key="loading"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                className="flex items-center space-x-2"
+                              >
+                                <Loader2 className="w-4 h-4 text-white animate-spin" />
+                                <span className="inter text-sm font-semibold text-white">
+                                  Generating...
+                                </span>
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="default"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                className="flex items-center space-x-2"
+                              >
+                                <Download className="w-4 h-4 text-white" />
+                                <span className="inter text-sm font-semibold text-white">
+                                  Invoice
+                                </span>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </motion.button>
+                    ) : (
+                      <div className="flex items-center space-x-2 text-gray-400">
+                        <FileText className="w-4 h-4" />
+                        <span className="inter text-sm">Not Available</span>
+                      </div>
+                    )}
                   </td>
                 </motion.tr>
               ))}

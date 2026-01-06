@@ -1,3 +1,4 @@
+import type { CurrencyCode } from "@/lib/currencyConverter";
 import type { PaymentMethod } from "./payment-gateway";
 import type { SubscriptionPlan } from "./subscription-plan";
 import type { User } from "./user";
@@ -12,10 +13,9 @@ export type Payment = {
   status: PaymentStatus;
   createdAt: Date;
   chargedAmount: string;
-  currency: string;
+  currency: CurrencyCode;
   amount: string;
   userId: number;
   user: User;
-
   plan: SubscriptionPlan;
 };

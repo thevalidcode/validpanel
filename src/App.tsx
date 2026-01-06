@@ -5,6 +5,7 @@ import { QueryProvider } from "./provider/queryProvider";
 import Loader from "./components/Loader";
 import MaintenanceMode from "@/components/MaintenanceMode";
 import CustomToaster from "@/components/CustomToaster";
+import ScrollToTop from "@/utils/ScrollToTop";
 
 // Layouts
 import PublicLayout from "./components/PublicLayout";
@@ -74,6 +75,7 @@ const App: React.FC = () => {
 
         <MaintenanceMode>
           <Router>
+            <ScrollToTop />
             <Routes>
               {/* Public & client routes with Dashboard layout */}
               <Route path="/" element={<PublicLayout />}>
