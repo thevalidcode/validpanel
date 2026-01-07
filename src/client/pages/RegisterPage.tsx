@@ -51,7 +51,7 @@ const RegisterPage = () => {
       pageTitle="Create an account"
       type="register"
       verifySessionCode={verifySessionCode}
-      isGoogleDisabled={true}
+      isGoogleDisabled={isPending}
     >
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 w-full">
         <div className="grid grid-cols-2 gap-5">
