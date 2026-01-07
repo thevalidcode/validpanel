@@ -42,11 +42,13 @@ interface Props {
   pageTitle: string;
   type: "register" | "login" | "forgot-password";
   verifySessionCode: (args: { sessionCode: string }) => void;
+  isGoogleDisabled?: boolean;
 }
 
 const AuthWrapper: FC<Props> = ({
   children,
   pageTitle,
+  isGoogleDisabled = false,
   type,
   verifySessionCode,
 }) => {
@@ -100,6 +102,7 @@ const AuthWrapper: FC<Props> = ({
             <Button
               isgoogle="true"
               styles="w-[353px]"
+              disabled={isGoogleDisabled}
               onClick={handleGoogleLogin}
             >
               SIGN {type === "register" ? "UP" : "IN"} VIA GOOGLE

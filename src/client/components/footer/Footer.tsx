@@ -27,6 +27,12 @@ const Footer: FC = () => (
           <li>
             <Link to="/contact-us">Contact</Link>
           </li>
+          <li>
+            <Link to="/terms-of-service">Terms of Service</Link>
+          </li>
+          <li>
+            <Link to="/privacy-policy">Privacy Policy</Link>
+          </li>
         </ul>
       </div>
       <FooterNewsletter />

@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import Button from "../../components/ui/Button";
 import TextInput from "../../components/ui/TextInput";
+import CustomCheckbox from "../../components/ui/CustomCheckbox";
 import AuthWrapper from "../components/login/AuthWrapper";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";
@@ -19,6 +20,8 @@ const RegisterPage = () => {
     email: "",
     password: "",
   });
+
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleInputs = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
@@ -48,6 +51,7 @@ const RegisterPage = () => {
       pageTitle="Create an account"
       type="register"
       verifySessionCode={verifySessionCode}
+      isGoogleDisabled={true}
     >
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 w-full">
         <div className="grid grid-cols-2 gap-5">
@@ -88,7 +92,40 @@ const RegisterPage = () => {
           value={inputs.password}
           onChange={handleInputs}
         />
-        <Button styles="text-white text-xs bg-primary" type="submit">
+        <CustomCheckbox
+          checked={acceptTerms}
+          onChange={setAcceptTerms}
+          name="acceptTerms"
+          id="accept-terms"
+          label={
+            <span className="text-sm text-gray-600">
+              I agree to the{" "}
+              <a
+                href="/terms-of-service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 underline"
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 underline"
+              >
+                Privacy Policy
+              </a>
+            </span>
+          }
+          className="mt-2"
+        />
+        <Button
+          styles="text-white text-xs bg-primary"
+          type="submit"
+          disabled={!acceptTerms}
+        >
           {isPending || isVerifyingSession ? "Signing Up..." : "Sign Up"}
         </Button>
       </form>

@@ -21,6 +21,8 @@ import ForgetPassword from "./client/pages/ForgetPassword";
 import ResetPasswordPage from "./client/pages/ResetPassword";
 import NotFoundPage from "./client/pages/NotFoundPage";
 import ErrorPage from "./client/pages/ErrorPage";
+import TermsOfService from "./client/pages/TermsOfService";
+import PrivacyPolicy from "./client/pages/PrivacyPolicy";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/Step1";
@@ -82,6 +84,8 @@ const App: React.FC = () => {
                 <Route index element={<HomePage />} />
                 <Route path="faq" element={<FAQPage />} />
                 <Route path="pricing" element={<PricingPage />} />
+                <Route path="terms-of-service" element={<TermsOfService />} />
+                <Route path="privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="contact-us" element={<ContactUs />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />

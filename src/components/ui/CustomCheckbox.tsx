@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import type { ReactNode } from "react";
 
 interface CustomCheckboxProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  label?: string;
+  label?: ReactNode;
   disabled?: boolean;
   className?: string;
   size?: "sm" | "md";
+  name?: string;
+  id?: string;
 }
 
 const sizeMap = {
@@ -30,20 +33,27 @@ const CustomCheckbox = ({
   disabled = false,
   className = "",
   size = "md",
+  name,
+  id,
 }: CustomCheckboxProps) => {
   const styles = sizeMap[size];
-
-  const toggle = () => {
-    if (!disabled) onChange(!checked);
-  };
 
   return (
     <label
       className={`inline-flex items-center gap-2 cursor-pointer select-none ${className}
         ${disabled ? "opacity-60 cursor-not-allowed" : ""}
       `}
-      onClick={toggle}
     >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
+        name={name}
+        id={id}
+        required
+        className="sr-only"
+      />
       <div
         className={`relative flex items-center justify-center rounded-md border transition
           ${styles.box}
@@ -66,7 +76,12 @@ const CustomCheckbox = ({
         </motion.div>
       </div>
 
-      {label && <span className={`text-gray-700 ${styles.text}`}>{label}</span>}
+      {label &&
+        (typeof label === "string" ? (
+          <span className={`text-gray-700 ${styles.text}`}>{label}</span>
+        ) : (
+          label
+        ))}
     </label>
   );
 };

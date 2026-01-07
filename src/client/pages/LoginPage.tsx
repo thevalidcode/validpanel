@@ -38,6 +38,7 @@ const LoginPage = () => {
       pageTitle="Welcome back"
       type="login"
       verifySessionCode={verifySessionCode}
+      isGoogleDisabled={isVerifyingSession}
     >
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col gap-4 w-full">

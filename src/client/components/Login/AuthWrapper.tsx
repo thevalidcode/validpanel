@@ -41,6 +41,7 @@ interface Props {
   pageTitle: string;
   type: "register" | "login" | "forgot-password";
   verifySessionCode: (args: { sessionCode: string }) => void;
+  isGoogleDisabled?: boolean;
 }
 
 const AuthWrapper: FC<Props> = ({
@@ -48,6 +49,7 @@ const AuthWrapper: FC<Props> = ({
   pageTitle,
   type,
   verifySessionCode,
+  isGoogleDisabled = false,
 }) => {
   const navigate = useNavigate();
   const { isAuthLoading, userInfo, domain } = useAppContext();
@@ -84,7 +86,7 @@ const AuthWrapper: FC<Props> = ({
   }, [sessionCodeFromQuery, verifySessionCode]);
 
   return (
-    <main className="lg:h-screen items-center py-20 justify-center w-full radial_background_primary text-black flex flex-col lg:flex-row">
+    <main className="lg:h-screen items-center py-20 justify-center w-full radial_background_primary flex flex-col lg:flex-row">
       <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center sm:px-10 lg:px-16 xl:px-[108px]">
         <MainTitle pryTitle={pageTitle} />
 
@@ -93,6 +95,7 @@ const AuthWrapper: FC<Props> = ({
           <>
             <Button
               isgoogle="true"
+              disabled={isGoogleDisabled}
               styles="w-[353px]"
               onClick={handleGoogleLogin}
             >
