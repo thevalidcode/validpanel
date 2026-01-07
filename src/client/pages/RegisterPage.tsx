@@ -6,13 +6,13 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";
 import { toast } from "sonner";
-import { useVerifySessionCode } from "@/hooks/use-auth";
+import { useVerifySessionCode } from "@/hooks/use-user";
 
 const RegisterPage = () => {
   const { mutateAsync: createUser, isPending } = useCreateUser();
   const navigate = useNavigate();
   const { mutate: verifySessionCode, isPending: isVerifyingSession } =
-    useVerifySessionCode("USER");
+    useVerifySessionCode();
 
   const [inputs, setInputs] = useState({
     firstName: "",

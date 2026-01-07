@@ -3,12 +3,12 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import { useAdminLogin } from "@/hooks/use-admin";
-import { useVerifySessionCode } from "@/hooks/use-auth";
+import { useVerifySessionCode } from "@/hooks/use-admin";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser, isPending } = useAdminLogin();
   const { mutate: verifySessionCode, isPending: isVerifyingSession } =
-    useVerifySessionCode("ADMIN");
+    useVerifySessionCode();
 
   const [inputs, setInputs] = useState({
     email: "",

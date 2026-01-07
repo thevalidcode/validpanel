@@ -3,12 +3,12 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import { useUserLogin } from "@/hooks/use-user";
-import { useVerifySessionCode } from "@/hooks/use-auth";
+import { useVerifySessionCode } from "@/hooks/use-user";
 
 const LoginPage = () => {
   const { mutateAsync: loginUser, isPending } = useUserLogin();
   const { mutate: verifySessionCode, isPending: isVerifyingSession } =
-    useVerifySessionCode("USER");
+    useVerifySessionCode();
 
   const [inputs, setInputs] = useState({
     email: "",

@@ -519,3 +519,35 @@ export function useDeletePermission() {
     },
   });
 }
+
+interface VerifySessionCodeProps {
+  sessionCode: string;
+}
+
+export function useVerifySessionCode() {
+  const { handleSetAdminInfo, api } = useAppContext();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async (data: VerifySessionCodeProps) => {
+      const res = await api.post<{ admin: Admin }>(
+        `/admins/verify-session`,
+        { ...data },
+        {
+          withCredentials: true,
+        }
+      );
+      if (!res.data.admin) throw new Error("Failed to verify session");
+      return res.data.admin;
+    },
+    onSuccess: (data) => {
+      toast.success("Admin authenticated successfully");
+
+      handleSetAdminInfo(data);
+      navigate("/admin/overview");
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(error, "Failed to verify session");
+      toast.error(errorMsg);
+    },
+  });
+}

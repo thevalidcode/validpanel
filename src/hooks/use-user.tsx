@@ -393,3 +393,34 @@ export function useOnboardingSetupStore() {
     },
   });
 }
+
+interface VerifySessionCodeProps {
+  sessionCode: string;
+}
+
+export function useVerifySessionCode() {
+  const { handleSetUserInfo, api } = useAppContext();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async (data: VerifySessionCodeProps) => {
+      const res = await api.post<{ user: User }>(
+        `/users/verify-session`,
+        { ...data },
+        {
+          withCredentials: true,
+        }
+      );
+      if (!res.data.user) throw new Error("Failed to verify session");
+      return res.data.user;
+    },
+    onSuccess: (data) => {
+      toast.success("User authenticated successfully");
+      handleSetUserInfo(data);
+      navigate("/analytics");
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(error, "Failed to verify session");
+      toast.error(errorMsg);
+    },
+  });
+}
