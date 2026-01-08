@@ -89,7 +89,7 @@ export default function StoreSidebar({
           className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-gray-700 hover:bg-purple-100 hover:text-primary transition"
         >
           <img
-            src={userInfo?.image ?? "/Sarah.png"}
+            src={userInfo?.image || "/Sarah.png"}
             alt="User"
             className="h-9 w-9 rounded-full object-cover"
           />

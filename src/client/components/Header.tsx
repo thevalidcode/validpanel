@@ -63,7 +63,7 @@ const Header = ({
         {/* Profile */}
         <div className="flex items-center gap-2 max-w-[180px] overflow-hidden">
           <img
-            src={userInfo?.image ?? "/Sarah.png"}
+            src={userInfo?.image || "/Sarah.png"}
             alt="profile"
             className="w-10 h-10 rounded-full object-cover"
           />
