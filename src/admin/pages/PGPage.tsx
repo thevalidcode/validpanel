@@ -34,6 +34,7 @@ const PGPage = () => {
   const [dialogMode, setDialogMode] = useState<"create" | "edit" | null>(null);
   const [editTarget, setEditTarget] = useState<PaymentGateway | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string>("");
 
   // Hooks
   const { data: gateways, isLoading } = useGetAdminPaymentGateways();
@@ -73,8 +74,9 @@ const PGPage = () => {
   // Handlers
   const handleCreate = async (data: any) => {
     try {
-      await createPG(data);
+      const result = await createPG(data);
       setDialogMode(null);
+      setSignature(result.signature);
       setCurrentPage(1);
     } catch (err) {
       console.error(err);
@@ -83,8 +85,9 @@ const PGPage = () => {
 
   const handleUpdate = async (data: any) => {
     try {
-      await updatePG(data);
+      const result = await updatePG(data);
       setDialogMode(null);
+      setSignature(result.signature);
       setEditTarget(undefined);
     } catch (err) {
       console.error(err);
@@ -221,11 +224,13 @@ const PGPage = () => {
             : undefined
         }
         isLoading={isCreatePending || isUpdatePending}
+        signature={signature}
         onSubmit={dialogMode === "create" ? handleCreate : handleUpdate}
         onCancel={() => {
           setDialogMode(null);
           setEditTarget(undefined);
         }}
+        onSignatureClose={() => setSignature("")}
       />
 
       <DeleteDialog

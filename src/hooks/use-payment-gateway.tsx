@@ -23,7 +23,10 @@ export function useCreatePaymentGateway() {
   return useMutation({
     mutationKey: ["createPaymentGateway"],
     mutationFn: async (newPaymentGateway: NewPaymentGateway) => {
-      const res = await api.post(`/payment-gateways`, newPaymentGateway);
+      const res = await api.post<{ success: string; signature: string }>(
+        `/payment-gateways`,
+        newPaymentGateway
+      );
       if (!res.data.success) {
         throw new Error(
           "Failed to create payment-gateway: No success object returned from server."
