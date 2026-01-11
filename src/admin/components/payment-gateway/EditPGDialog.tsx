@@ -436,10 +436,10 @@ export default function EditPGDialog({
                   <input
                     disabled
                     title="webhook"
-                    value={`${
+                    value={`api.${
                       window.location.origin
-                    }/core-platform/backend/webhooks/${form.platform.toLowerCase()}`}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                    }/v1/webhooks/${form.platform.toLowerCase()}`}
+                    className="mt-1 w-full disabled:bg-gray-200 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
                   />
                 </Field>
               </div>
