@@ -4,7 +4,7 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
-import { useResetPassword } from "@/hooks/use-user";
+import { useResetPassword, useVerifySessionCode } from "@/hooks/use-user";
 import { toast } from "sonner";
 
 const ResetPasswordPage = () => {
@@ -13,6 +13,7 @@ const ResetPasswordPage = () => {
   const email = params.get("email");
 
   const { mutateAsync: resetPassword } = useResetPassword();
+  const { mutateAsync: verifySessionCode } = useVerifySessionCode();
   const [inputs, setInputs] = useState({
     email: email || "",
     password: "",
@@ -73,7 +74,11 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <AuthWrapper pageTitle="Create New Password" type="forgot-password">
+    <AuthWrapper
+      pageTitle="Create New Password"
+      type="forgot-password"
+      verifySessionCode={verifySessionCode}
+    >
       <form onSubmit={handleSubmit} className="w-full mt-4">
         <p className="text-sm mb-4 text-gray-700 text-center">
           Enter your new password below to complete the reset process.

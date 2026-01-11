@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
-import { formatPlanFeatures } from "@/utils/subscription-plan.utils"; // your helper
+import { getFeatureLabel } from "@/utils/subscription-plan.utils";
 import type { SubscriptionPlanFeatures } from "@/types";
 
 function PricingTable() {
@@ -21,8 +21,7 @@ function PricingTable() {
 
     return allFeatureKeys.map((key) => {
       const row: Record<string, string | boolean> = {
-        feature:
-          formatPlanFeatures({ [key as string]: "_" })[0] || (key as string),
+        feature: getFeatureLabel(key),
       };
       subscriptionPlans.forEach((plan) => {
         const value = plan.features[key];

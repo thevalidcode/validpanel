@@ -3,11 +3,12 @@ import AuthWrapper from "../components/login/AuthWrapper";
 import TextInput from "../../components/ui/TextInput";
 import Button from "../../components/ui/Button";
 import type { Err } from "../../types/utility.types";
-import { useForgotPassword } from "@/hooks/use-admin";
+import { useForgotPassword, useVerifySessionCode } from "@/hooks/use-admin";
 import { toast } from "sonner";
 
 const ForgotPasswordPage = () => {
   const { mutateAsync: requestReset } = useForgotPassword();
+  const { mutateAsync: verifySessionCode } = useVerifySessionCode();
 
   const [email, setEmail] = useState("");
 
@@ -26,7 +27,11 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <AuthWrapper pageTitle="Reset Password" type="forgot-password">
+    <AuthWrapper
+      pageTitle="Reset Password"
+      type="forgot-password"
+      verifySessionCode={verifySessionCode}
+    >
       <form onSubmit={handleSubmit} className="w-full mt-4">
         <p className="text-sm mb-4 text-gray-700 text-center">
           Enter your email and we’ll send you a secure link to reset your

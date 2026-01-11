@@ -71,3 +71,30 @@ export function formatPlanFeatures(
     })
     .filter((v): v is string => Boolean(v));
 }
+
+const FEATURE_LABELS: Record<keyof SubscriptionPlanFeatures, string> = {
+  stores: "Stores",
+  products: "Products/Services per store",
+  unlimited_products: "Unlimited products/services",
+  available_templates: "Available templates",
+  payment_gateways: "Payment gateways",
+  staff_accounts: "Staff accounts",
+  analytics: "Analytics",
+  api_access: "API access",
+  ai_features: "AI features",
+  priority_support: "Priority support",
+  store_email_notifications: "Store email notifications",
+  store_custom_emails: "Store custom emails",
+  store_newsletters: "Store newsletters",
+  free_ssl: "Free SSL",
+  custom_domain: "Custom domain",
+  custom_branding: "Custom branding",
+  hide_platform_banner: "Hide platform banner",
+  custom_templates: "Custom templates",
+  social_store_order_sync: "Social store order sync",
+  social_store_service_sync: "Social store service sync",
+};
+
+export function getFeatureLabel(key: keyof SubscriptionPlanFeatures): string {
+  return FEATURE_LABELS[key] ?? (key as string);
+}

@@ -26,6 +26,9 @@ function RenewSubscription() {
 
   const { data: userSubscription, isLoading: isSubscriptionLoading } =
     useGetUserActiveSubscription();
+  const [isAnnual, _] = useState<boolean>(
+    userSubscription?.billingCycle === "YEARLY"
+  );
 
   const { data: paymentGateways, isLoading: isGatewaysLoading } =
     useGetUserPaymentGateways();
@@ -129,7 +132,7 @@ function RenewSubscription() {
           {/* SUMMARY */}
           <OrderSummary
             selectedPlan={plan}
-            billingCycle={billingCycle}
+            isAnnual={isAnnual}
             calculateTax={calculateTax}
             calculateTotal={calculateTotal}
             getDiscountedPrice={getBasePrice}

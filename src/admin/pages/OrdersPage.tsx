@@ -19,7 +19,7 @@ const ORDER_STATUS_OPTIONS: Option<OrderStatus | "All">[] = [
 
 const STORE_TYPE_OPTIONS: Option<StoreType | "All">[] = [
   { label: "All Types", value: "All" },
-  { label: "Social Media", value: "SOCIAL" },
+  { label: "Social Media Store", value: "SOCIAL" },
   { label: "Shop", value: "SHOP" },
   { label: "Digital", value: "DIGITAL" },
 ];
@@ -130,10 +130,10 @@ const OrdersPage = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="border border-gray-200 rounded-lg overflow-hidden"
+                className="border border-gray-200 rounded-lg overflow-hidden bg-white"
               >
                 <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+                  <thead className=" border-b border-gray-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide">
                         Order ID
@@ -170,19 +170,26 @@ const OrdersPage = () => {
                           </p>
                         </td>
                         <td className="px-6 py-4">
-                          <div>
-                            <p className="font-medium text-gray-900">
-                              {order.customer.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {order.customer.email}
-                            </p>
+                          <div className="flex gap-2 items-center">
+                            <img
+                              src={order.customer.image || "/Sarah.png"}
+                              alt={order.customer.name}
+                              className="w-8 h-8 rounded-full"
+                            />
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                {order.customer.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {order.customer.email}
+                              </p>
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm text-gray-700">
                             {order.storeType === "SOCIAL"
-                              ? "Social Media"
+                              ? "Social Media Store"
                               : order.storeType === "SHOP"
                               ? "Shop"
                               : "Digital"}
@@ -237,9 +244,16 @@ const OrdersPage = () => {
                       {order.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {order.customer.email}
-                  </p>
+                  <div className="flex gap-2 items-center">
+                    <img
+                      src={order.customer.image || "/Sarah.png"}
+                      alt={order.customer.name}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <p className="text-sm text-gray-600">
+                      {order.customer.email}
+                    </p>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <p className="text-gray-500">Amount</p>
@@ -251,7 +265,7 @@ const OrdersPage = () => {
                       <p className="text-gray-500">Type</p>
                       <p className="font-medium text-gray-900">
                         {order.storeType === "SOCIAL"
-                          ? "Social"
+                          ? "Social Media Store"
                           : order.storeType === "SHOP"
                           ? "Shop"
                           : "Digital"}
