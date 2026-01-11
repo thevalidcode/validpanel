@@ -50,7 +50,7 @@ const PrivacyPolicy = () => {
           use, and protect your information.
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          Last updated: January 7, 2026
+          Last updated: January 11, 2026
         </p>
       </motion.div>
 

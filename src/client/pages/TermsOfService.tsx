@@ -49,7 +49,7 @@ const TermsOfService = () => {
           Please read these terms carefully before using Valid Panel's services.
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          Last updated: January 7, 2026
+          Last updated: January 11, 2026
         </p>
       </motion.div>
 
