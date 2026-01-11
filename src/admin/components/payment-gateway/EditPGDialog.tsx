@@ -428,6 +428,20 @@ export default function EditPGDialog({
                     onUploaded={(url) => setForm((p) => ({ ...p, image: url }))}
                   />
                 </div>
+
+                <Field
+                  label="Webhook Url"
+                  icon={<CreditCard className="w-4 h-4" />}
+                >
+                  <input
+                    disabled
+                    title="webhook"
+                    value={`${
+                      window.location.origin
+                    }/core-platform/backend/webhooks/${form.platform.toLowerCase()}`}
+                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                  />
+                </Field>
               </div>
 
               {/* Footer */}
