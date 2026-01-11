@@ -9,6 +9,7 @@ import { createContext, useState, useMemo, useEffect } from "react";
 import { get, set } from "idb-keyval";
 import type { CurrencyCode } from "@/lib/currencyConverter";
 import type { Admin, User } from "@/types";
+import { timezoneToCurrency } from "@/_docs/doc";
 
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -68,13 +69,43 @@ const AppProvider = ({ children }: AppProviderProps) => {
     saveAuthInfo();
   }, [userInfo, adminInfo]);
 
-  // Sync currency with localStorage
+  // Sync currency with localStorage and auto-detect from locale
   useEffect(() => {
     const savedCurrency = localStorage.getItem("userCurrency");
-    if (savedCurrency)
+    if (savedCurrency && savedCurrency.trim() !== "") {
       setUserCurrencyState(savedCurrency.toUpperCase() as CurrencyCode);
-    else localStorage.setItem("userCurrency", "USD");
+    } else {
+      // Auto-detect currency from user's locale
+      const detectedCurrency = detectUserCurrency();
+      setUserCurrencyState(detectedCurrency);
+      localStorage.setItem("userCurrency", detectedCurrency);
+    }
   }, []);
+
+  // Function to detect user's currency from locale
+  const detectUserCurrency = (): CurrencyCode => {
+    try {
+      // Use timezone for more accurate currency detection
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      if (timezoneToCurrency[timeZone]) {
+        return timezoneToCurrency[timeZone];
+      }
+
+      // Fallback: try to extract region from timezone
+      const region = timeZone.split("/")[0];
+      if (region === "America") return "USD";
+      if (region === "Europe") return "EUR";
+      if (region === "Asia") return "USD";
+      if (region === "Africa") return "NGN";
+
+      // Final fallback to USD
+      return "USD";
+    } catch (error) {
+      console.error("Failed to detect currency:", error);
+      return "USD";
+    }
+  };
 
   const setUserCurrency = (currency: string) => {
     const upper = currency.toUpperCase() as CurrencyCode;

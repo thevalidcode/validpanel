@@ -14,6 +14,7 @@ import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
 import PricingToggle from "../components/pricing/PricingToggle";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useAppContext } from "@/context/useAppContext";
 import { useCurrencyConverter } from "@/lib/currencyConverter";
 
@@ -160,9 +161,10 @@ const Step2: React.FC = () => {
         </>
       }
     >
-      {/* Billing Toggle */}
-      <div className="flex justify-center mb-10">
+      {/* Billing Toggle and Currency Switcher */}
+      <div className="flex flex-col items-center gap-6 mb-10">
         <PricingToggle isAnnual={isAnnual} setIsAnnual={setIsAnnual} />
+        <CurrencySwitcher />
       </div>
 
       {/* Plans */}
