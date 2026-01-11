@@ -17,6 +17,7 @@ import CustomSelect, {
   type Option,
 } from "@/components/ui/CustomSelect";
 import type { PaymentGatewayStatus, PaymentMethod } from "@/types";
+import { useAppContext } from "@/context/useAppContext";
 
 interface EditPGDialogProps {
   open: boolean;
@@ -75,6 +76,7 @@ export default function EditPGDialog({
 }: EditPGDialogProps) {
   const platformSelectRef = useRef<CustomSelectRef>(null);
   const statusSelectRef = useRef<CustomSelectRef>(null);
+  const { domain } = useAppContext();
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState<FormState>({
     platform: initialValues?.platform ?? "",
@@ -436,10 +438,8 @@ export default function EditPGDialog({
                   <input
                     disabled
                     title="webhook"
-                    value={`api.${
-                      window.location.origin
-                    }/v1/webhooks/${form.platform.toLowerCase()}`}
-                    className="mt-1 w-full disabled:bg-gray-200 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                    value={`https://api.${domain}/v1/webhooks/${form.platform.toLowerCase()}`}
+                    className="mt-1 w-full disabled:bg-gray-100 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
                   />
                 </Field>
               </div>
