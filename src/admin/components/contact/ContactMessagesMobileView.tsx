@@ -48,8 +48,6 @@ export default function ContactMessagesMobileView({
               </div>
             </div>
 
-            <p className="text-sm text-gray-600 line-clamp-2">{msg.message}</p>
-
             <div className="flex items-center justify-between pt-2">
               <div className="flex items-center gap-2">
                 <p className="text-xs text-gray-500">

@@ -36,7 +36,6 @@ export default function ContactMessagesDesktopView({
             <tr className="text-left text-gray-600 bg-gray-50 border-b border-gray-200">
               <th className="p-4 font-semibold">Name</th>
               <th className="p-4 font-semibold">Email</th>
-              <th className="p-4 font-semibold">Message</th>
               <th className="p-4 font-semibold">Status</th>
               <th className="p-4 font-semibold">Received</th>
               <th className="p-4 font-semibold text-right">Actions</th>
@@ -63,9 +62,6 @@ export default function ContactMessagesDesktopView({
                   </div>
                 </td>
                 <td className="p-4 text-gray-600">{msg.email}</td>
-                <td className="p-4 text-gray-600 max-w-xs">
-                  <span className="line-clamp-1">{msg.message}</span>
-                </td>
                 <td className="p-4">
                   <ContactStatusBadge status={msg.status} />
                 </td>
