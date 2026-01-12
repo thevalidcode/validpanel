@@ -11,6 +11,7 @@ const STATUS_COLORS: Record<
   PENDING: { bg: "bg-yellow-100", text: "text-yellow-700" },
   REPLIED: { bg: "bg-blue-100", text: "text-blue-700" },
   RESOLVED: { bg: "bg-green-100", text: "text-green-700" },
+  CLOSED: { bg: "bg-gray-100", text: "text-gray-700" },
 };
 
 export default function ContactStatusBadge({

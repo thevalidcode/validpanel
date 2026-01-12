@@ -2,7 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "@/context/useAppContext";
 import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { toast } from "sonner";
-import type { ContactMessage, UpdateContactStatusPayload } from "@/types";
+import type {
+  ContactMessage,
+  ContactReply,
+  UpdateContactStatusPayload,
+  SendContactReplyPayload,
+} from "@/types";
 
 export interface CreateContactMessage {
   firstName: string;
@@ -11,6 +16,7 @@ export interface CreateContactMessage {
   message: string;
 }
 
+// Public: Send contact message
 export function useSendContactMessage() {
   const { api } = useAppContext();
 
@@ -36,6 +42,7 @@ export function useSendContactMessage() {
   });
 }
 
+// Admin: Get all contact messages with reply count
 export function useContactMessages() {
   const { api, adminInfo } = useAppContext();
 
@@ -50,6 +57,7 @@ export function useContactMessages() {
   });
 }
 
+// Admin: Get single contact message with all replies
 export function useContactMessage(uid: string) {
   const { api, adminInfo } = useAppContext();
 
@@ -64,6 +72,7 @@ export function useContactMessage(uid: string) {
   });
 }
 
+// Admin: Update contact message status
 export function useUpdateContactStatus() {
   const { api } = useAppContext();
   const queryClient = useQueryClient();
@@ -100,6 +109,7 @@ export function useUpdateContactStatus() {
   });
 }
 
+// Admin: Delete contact message
 export function useDeleteContactMessage() {
   const { api } = useAppContext();
   const queryClient = useQueryClient();
@@ -118,6 +128,80 @@ export function useDeleteContactMessage() {
       const errorMsg = normalizeApiError(
         error,
         "Failed to delete message. Please try again."
+      );
+      toast.error(errorMsg);
+    },
+  });
+}
+
+// Admin: Send reply to contact message
+export function useSendContactReply(uid: string) {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: SendContactReplyPayload) => {
+      const res = await api.post(`/contact/admin/${uid}/reply`, data);
+      if (!res.data) throw new Error("Failed to send reply");
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Reply sent successfully");
+      queryClient.invalidateQueries({ queryKey: ["contactMessage", uid] });
+      queryClient.invalidateQueries({ queryKey: ["contactReplies", uid] });
+      queryClient.invalidateQueries({ queryKey: ["contactMessages"] });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to send reply. Please try again."
+      );
+      toast.error(errorMsg);
+    },
+  });
+}
+
+// Admin: Get all replies for a contact message
+export function useContactReplies(uid: string) {
+  const { api, adminInfo } = useAppContext();
+
+  return useQuery({
+    queryKey: ["contactReplies", uid],
+    queryFn: async () => {
+      const res = await api.get<ContactReply[]>(
+        `/contact/admin/${uid}/replies`
+      );
+      if (!res.data) throw new Error("Failed to fetch replies");
+      return res.data;
+    },
+    enabled: !!adminInfo && !!uid,
+  });
+}
+
+// Admin: Delete a reply
+export function useDeleteContactReply(messageUid: string) {
+  const { api } = useAppContext();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (replyUid: string) => {
+      const res = await api.delete(`/contact/admin/replies/${replyUid}`);
+      if (!res.data) throw new Error("Failed to delete reply");
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Reply deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["contactMessage", messageUid],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["contactReplies", messageUid],
+      });
+    },
+    onError: (error: unknown) => {
+      const errorMsg = normalizeApiError(
+        error,
+        "Failed to delete reply. Please try again."
       );
       toast.error(errorMsg);
     },
