@@ -449,6 +449,7 @@ export default function AdminSettings() {
               checked={maintenanceEnabled}
               onChange={setMaintenanceEnabled}
               label="Enable maintenance mode"
+              required={false}
               className="mb-6"
             />
 

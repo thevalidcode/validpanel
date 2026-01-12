@@ -7,6 +7,7 @@ interface CustomCheckboxProps {
   onChange: (checked: boolean) => void;
   label?: ReactNode;
   disabled?: boolean;
+  required?: boolean;
   className?: string;
   size?: "sm" | "md";
   name?: string;
@@ -31,6 +32,7 @@ const CustomCheckbox = ({
   onChange,
   label,
   disabled = false,
+  required = true,
   className = "",
   size = "md",
   name,
@@ -51,7 +53,7 @@ const CustomCheckbox = ({
         disabled={disabled}
         name={name}
         id={id}
-        required
+        required={required}
         className="sr-only"
       />
       <div
