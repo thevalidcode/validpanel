@@ -1,6 +1,6 @@
 import type { StoreType } from "./store";
 
-export type OrderStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED" | "FAILED";
+export type OrderStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELED" | "FAILED";
 
 export interface NormalizedOrder {
   id: string; // unique across all stores

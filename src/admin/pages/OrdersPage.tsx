@@ -13,7 +13,7 @@ const ORDER_STATUS_OPTIONS: Option<OrderStatus | "All">[] = [
   { label: "Pending", value: "PENDING" },
   { label: "Processing", value: "PROCESSING" },
   { label: "Completed", value: "COMPLETED" },
-  { label: "Cancelled", value: "CANCELLED" },
+  { label: "Canceled", value: "CANCELED" },
   { label: "Failed", value: "FAILED" },
 ];
 
@@ -30,8 +30,12 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   PENDING: { bg: "bg-yellow-100", text: "text-yellow-700" },
   PROCESSING: { bg: "bg-blue-100", text: "text-blue-700" },
   COMPLETED: { bg: "bg-emerald-100", text: "text-emerald-700" },
-  CANCELLED: { bg: "bg-gray-100", text: "text-gray-700" },
+  CANCELED: { bg: "bg-gray-100", text: "text-gray-700" },
   FAILED: { bg: "bg-red-100", text: "text-red-700" },
+};
+
+const getStatusColor = (status: string) => {
+  return STATUS_COLORS[status] || { bg: "bg-gray-100", text: "text-gray-700" };
 };
 
 const OrdersPage = () => {
@@ -203,8 +207,8 @@ const OrdersPage = () => {
                         <td className="px-6 py-4">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              STATUS_COLORS[order.status].bg
-                            } ${STATUS_COLORS[order.status].text}`}
+                              getStatusColor(order.status).bg
+                            } ${getStatusColor(order.status).text}`}
                           >
                             {order.status}
                           </span>
@@ -238,8 +242,8 @@ const OrdersPage = () => {
                     </div>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        STATUS_COLORS[order.status].bg
-                      } ${STATUS_COLORS[order.status].text}`}
+                        getStatusColor(order.status).bg
+                      } ${getStatusColor(order.status).text}`}
                     >
                       {order.status}
                     </span>
