@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Loader from "@/components/Loader";
 import { getOnboardingDraft } from "@/utils/onboarding.utils";
+import PlatformTour from "@/components/PlatformTour";
+import { useGetUserByUid, useMarkTourAsSeen } from "@/hooks/use-user";
 
 function Layout({
   children,
@@ -25,8 +27,11 @@ function Layout({
     return saved ? JSON.parse(saved) : true; // desktop remembers state
   });
 
-  const { userInfo, isAuthLoading } = useAppContext();
+  const [showTour, setShowTour] = useState(false);
+  const { userInfo, isAuthLoading, handleSetUserInfo } = useAppContext();
   const navigate = useNavigate();
+  const { mutateAsync: markTourAsSeen } = useMarkTourAsSeen();
+  const { data: userData } = useGetUserByUid(userInfo?.uid || "");
 
   useEffect(() => {
     if (isMobile) localStorage.setItem("sidebarOpen", JSON.stringify(false));
@@ -43,8 +48,16 @@ function Layout({
       return;
     }
 
-    // Onboarding already completed
+    // Onboarding already completed - check if user needs to see tour
     if (userInfo.onboardingStep === "COMPLETE") {
+      // Show tour if user just completed onboarding and hasn't seen it yet
+      if (!userInfo.hasSeenTour) {
+        // Small delay to ensure user has landed properly
+        const timer = setTimeout(() => {
+          setShowTour(true);
+        }, 500);
+        return () => clearTimeout(timer);
+      }
       return;
     }
 
@@ -60,6 +73,29 @@ function Layout({
     // No draft or no completed steps
     navigate("/onboarding/step1");
   }, [isAuthLoading, userInfo, navigate]);
+
+  useEffect(() => {
+    if (userData) {
+      // Merge with userData overriding userInfo fields
+      handleSetUserInfo({
+        ...userInfo,
+        ...userData,
+      });
+    }
+  }, [userData]);
+
+  const handleTourComplete = async () => {
+    setShowTour(false);
+    try {
+      await markTourAsSeen();
+    } catch (error) {
+      console.error("Failed to mark tour as complete:", error);
+    }
+  };
+
+  const handleTourClose = () => {
+    setShowTour(false);
+  };
 
   if (isAuthLoading) {
     return <Loader />;
@@ -131,6 +167,13 @@ function Layout({
         )}
         {children}
       </div>
+
+      {/* Platform Tour */}
+      <PlatformTour
+        isOpen={showTour}
+        onClose={handleTourClose}
+        onComplete={handleTourComplete}
+      />
     </div>
   );
 }

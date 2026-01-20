@@ -3,7 +3,7 @@ import MockUpPhone from "../../../assets/images/mockup-phones.png";
 import { Link } from "react-router-dom";
 
 const Hero: FC = () => (
-  <section className="bg-white px-[16px] md:px-[150px] py-25 md:py-5 flex flex-col md:flex-row justify-center items-center h-screen">
+  <section className="bg-white px-[16px] md:px-[150px] py-25 mt-10 sm:mt-0 md:py-5 flex flex-col md:flex-row justify-center items-center h-screen">
     <div className="flex-[1] flex flex-col gap-6">
       <h1 className="text-[36px] md:text-[48px] font-bold leading-tight">
         Start Selling <br className="block md:hidden" />

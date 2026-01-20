@@ -23,19 +23,31 @@ function PricingPlanCard({
   const { userCurrency } = useAppContext();
   const convert = useCurrencyConverter();
 
+  // Check if this is the user's current plan with matching billing cycle
   const isSubscribed =
     !!currentSubscription &&
     currentSubscription.status === "ACTIVE" &&
-    currentSubscription.plan.uid === plan.uid;
+    currentSubscription.plan.uid === plan.uid &&
+    currentSubscription.billingCycle === (isAnnual ? "YEARLY" : "MONTHLY");
+
+  // Check if this is an upgrade to annual on the same plan
+  const isSamePlanUpgradeToAnnual =
+    !!currentSubscription &&
+    currentSubscription.status === "ACTIVE" &&
+    currentSubscription.plan.uid === plan.uid &&
+    currentSubscription.billingCycle === "MONTHLY" &&
+    isAnnual;
 
   const isUpgrade =
     !!currentSubscription &&
     currentSubscription.status === "ACTIVE" &&
-    new Decimal(currentSubscription.plan.price).lessThan(plan.price);
+    (isSamePlanUpgradeToAnnual ||
+      new Decimal(currentSubscription.plan.price).lessThan(plan.price));
 
   const isDowngrade =
     !!currentSubscription &&
     currentSubscription.status === "ACTIVE" &&
+    !isSamePlanUpgradeToAnnual &&
     new Decimal(currentSubscription.plan.price).greaterThan(plan.price);
 
   const getPrice = (plan: SubscriptionPlan): string => {

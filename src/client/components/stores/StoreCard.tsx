@@ -90,62 +90,68 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
       <hr className="my-4 border-gray-100" />
 
       {/* Actions */}
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => window.open(`https://${store.uid}`, "_blank")}
-          className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
-        >
-          <EyeIcon className="w-4 h-4" /> View
-        </button>
-
-        <button
-          type="button"
-          onClick={() =>
-            window.open(`https://${store.uid}/admin/auth/signin`, "_blank")
-          }
-          className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
-        >
-          <EyeIcon className="w-4 h-4" /> Admin
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setShowEdit(true)}
-          className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md"
-        >
-          <PencilSquareIcon className="w-4 h-4" /> Edit
-        </button>
-
-        {store.status == "ACTIVE" && (
+      {store.status !== "PENDING" ? (
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => setTargetStatus("DISABLED")}
-            className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-md"
+            onClick={() => window.open(`https://${store.uid}`, "_blank")}
+            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
           >
-            <PauseIcon className="w-4 h-4" /> Pause
+            <EyeIcon className="w-4 h-4" /> View
           </button>
-        )}
 
-        {store.status === "DISABLED" && (
           <button
             type="button"
-            onClick={() => setTargetStatus("ACTIVE")}
-            className="flex items-center gap-1 bg-green-100 text-green-700 text-sm px-3 py-1 rounded-md"
+            onClick={() =>
+              window.open(`https://${store.uid}/admin/auth/signin`, "_blank")
+            }
+            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
           >
-            <PlayIcon className="w-4 h-4" /> Resume
+            <EyeIcon className="w-4 h-4" /> Manage Store
           </button>
-        )}
 
-        <button
-          title="delete"
-          type="button"
-          onClick={() => setShowDelete(true)}
-          className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-md"
-        >
-          <TrashIcon className="w-4 h-4" />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() => setShowEdit(true)}
+            className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md"
+          >
+            <PencilSquareIcon className="w-4 h-4" /> Edit
+          </button>
+
+          {store.status == "ACTIVE" && (
+            <button
+              type="button"
+              onClick={() => setTargetStatus("DISABLED")}
+              className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-md"
+            >
+              <PauseIcon className="w-4 h-4" /> Pause
+            </button>
+          )}
+
+          {store.status === "DISABLED" && (
+            <button
+              type="button"
+              onClick={() => setTargetStatus("ACTIVE")}
+              className="flex items-center gap-1 bg-green-100 text-green-700 text-sm px-3 py-1 rounded-md"
+            >
+              <PlayIcon className="w-4 h-4" /> Resume
+            </button>
+          )}
+
+          <button
+            title="delete"
+            type="button"
+            onClick={() => setShowDelete(true)}
+            className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-md"
+          >
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-500">
+          You'll have to wait for the store to be approved before managing and accessing it.
+        </p>
+      )}
 
       {/* Delete */}
       <DeleteDialog

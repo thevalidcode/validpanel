@@ -66,7 +66,7 @@ export function useCreateUser() {
         // Log the response for debugging
         console.error("User creation failed. Response:", res.data);
         throw new Error(
-          "Failed to create user: No user object returned from server."
+          "Failed to create user: No user object returned from server.",
         );
       }
       return res.data;
@@ -101,7 +101,7 @@ export function useUserLogin() {
 
       if (!res.data) {
         throw new Error(
-          "Failed to login user: No response data received from server."
+          "Failed to login user: No response data received from server.",
         );
       }
       return res.data;
@@ -117,6 +117,20 @@ export function useUserLogin() {
       const errorMsg = normalizeApiError(error, "Failed to login user");
       toast.error(errorMsg);
     },
+  });
+}
+
+// ! get user by uid`
+export function useGetUserByUid(uid: string) {
+  const { api } = useAppContext();
+  return useQuery({
+    queryKey: ["user", uid],
+    queryFn: async () => {
+      const res = await api.get<{ user: User }>(`/users/${uid}`);
+      if (!res.data) throw new Error("Failed to fetch user");
+      return res.data.user;
+    },
+    enabled: !!uid,
   });
 }
 
@@ -155,19 +169,6 @@ export function useGetUserAnalytics() {
       return res.data as UserAnalyticsResponse;
     },
     enabled: !!userInfo,
-  });
-}
-
-// ! get user by id`
-export function useGetUserById(id: string) {
-  const { api } = useAppContext();
-  return useQuery({
-    queryKey: ["user", id],
-    queryFn: async () => {
-      const res = await api.get(`/users/${id}`);
-      if (!res.data) throw new Error("Failed to fetch user");
-      return res.data;
-    },
   });
 }
 
@@ -408,7 +409,7 @@ export function useVerifySessionCode() {
         { ...data },
         {
           withCredentials: true,
-        }
+        },
       );
       if (!res.data.user) throw new Error("Failed to verify session");
       return res.data.user;
@@ -420,6 +421,32 @@ export function useVerifySessionCode() {
     },
     onError: (error: unknown) => {
       const errorMsg = normalizeApiError(error, "Failed to verify session");
+      toast.error(errorMsg);
+    },
+  });
+}
+
+export function useMarkTourAsSeen() {
+  const { api, userInfo, handleSetUserInfo } = useAppContext();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await api.patch("/users/tour/complete");
+      return data;
+    },
+    onSuccess: () => {
+      // Update local user context
+      if (userInfo) {
+        handleSetUserInfo({
+          ...userInfo,
+          hasSeenTour: true,
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ["user", userInfo?.uid] });
+    },
+    onError: (error) => {
+      const errorMsg = normalizeApiError(error, "Failed to mark tour as seen");
       toast.error(errorMsg);
     },
   });

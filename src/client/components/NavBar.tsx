@@ -33,7 +33,9 @@ const Navbar: FC = () => {
               alt="ValidPanel Logo"
               className="h-15 w-40 object-cover md:block hidden"
             />
-            <p className="font-bold text-primary md:hidden block">ValidPanel</p>
+            <p className="font-bold text-2xl text-primary md:hidden block">
+              ValidPanel
+            </p>
           </Link>
 
           {/* Desktop Nav */}
@@ -123,7 +125,7 @@ const Navbar: FC = () => {
                   alt="ValidPanel Logo"
                   className="h-15 w-40 object-cover md:block hidden"
                 />
-                <p className="font-bold text-primary md:hidden block">
+                <p className="font-bold text-2xl text-primary md:hidden block">
                   ValidPanel
                 </p>
               </Link>

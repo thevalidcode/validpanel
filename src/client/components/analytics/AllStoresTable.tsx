@@ -67,16 +67,22 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
                   <StatusBadge status={store.status} />
                 </td>
                 <td className="px-6 py-4">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      window.open(`https://${store.uid}`, "_blank")
-                    }
-                    title="View Store"
-                    className="text-purple-600 hover:text-purple-800 transition"
-                  >
-                    <Eye size={20} />
-                  </button>
+                  {store.status !== "PENDING" ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        window.open(`https://${store.uid}`, "_blank")
+                      }
+                      title="View Store"
+                      className="text-purple-600 hover:text-purple-800 transition"
+                    >
+                      <Eye size={20} />
+                    </button>
+                  ) : (
+                    <span className="text-xs text-gray-400 italic">
+                      No actions available
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

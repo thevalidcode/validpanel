@@ -8,21 +8,21 @@ const Testimonials: FC = () => {
     {
       name: "Daniel U.",
       quote:
-        "ValidPanel made it super easy to start selling data online. I had my store up in 10 minutes!",
+        "Valid Panel made it super easy to start selling social media streaming services online. I had my store up in 20 seconds!",
       image: "https://i.pravatar.cc/150?img=1",
       rating: 5,
     },
     {
       name: "Blessing A.",
       quote:
-        "No coding needed, no stress. Just pick a product, set your price, and start earning!",
+        "No coding needed, no stress. Just pick a store, select your plan, and start earning!",
       image: "https://i.pravatar.cc/150?img=5",
       rating: 4,
     },
     {
       name: "Tolu K.",
       quote:
-        "I now run my ebook store fully on ValidPanel — looks professional and payments are instant!",
+        "I now run my e-commerce store fully on Valid Panel — looks professional and payments are instant!",
       image: "https://i.pravatar.cc/150?img=9",
       rating: 5,
     },

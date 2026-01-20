@@ -12,6 +12,7 @@ export type User = {
   fullName: string;
   image: string | null;
   onboardingStep: OnboardingStep;
+  hasSeenTour: boolean;
   apiKey: string;
   status: UserStatus;
   balance: string;
