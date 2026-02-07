@@ -4,23 +4,22 @@ import FooterSocialLink from "./FooterSocialLink";
 
 const FooterSocial: FC = () => (
   <div>
-    <h5 className="font-semibold mb-4 mt-2">Social Media</h5>
-    <div className="flex space-x-4 px-2">
-      {/* Replace # with real social link before production */}
+    <h5 className="font-semibold mb-3 text-white text-sm">Connect With Us</h5>
+    <div className="flex space-x-3">
       <FooterSocialLink
-        icon={<FaFacebook size={24} />}
+        icon={<FaFacebook size={18} />}
         socialLink="https://facebook.com/validpanel"
       />
       <FooterSocialLink
-        icon={<FaTwitter size={24} />}
+        icon={<FaTwitter size={18} />}
         socialLink="https://x.com/validpanel"
       />
       <FooterSocialLink
-        icon={<FaLinkedin size={24} />}
+        icon={<FaLinkedin size={18} />}
         socialLink="https://linkedin.com/company/validpanel"
       />
       <FooterSocialLink
-        icon={<FaInstagram size={24} />}
+        icon={<FaInstagram size={18} />}
         socialLink="https://instagram.com/validpanel"
       />
     </div>

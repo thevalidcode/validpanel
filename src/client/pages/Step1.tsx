@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ShoppingBag, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import {
   getOnboardingDraft,
   setOnboardingDraft,
@@ -24,12 +23,6 @@ const StepOne: React.FC = () => {
 
   const handleNext = (): void => {
     if (!selected) return;
-
-    // Check if SHOP is selected
-    if (selected === "SHOP") {
-      toast.error("Shop is not available yet, please use a social media store for now");
-      return;
-    }
 
     setOnboardingDraft((prev) => ({
       ...prev,

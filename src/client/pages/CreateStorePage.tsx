@@ -1,7 +1,6 @@
 import React, { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import Layout from "../components/Layout";
 import { useCreateStore, useGetUserStores } from "@/hooks/use-store";
 import type { StoreType } from "@/types";
@@ -58,12 +57,6 @@ const CreateStoreForm: React.FC = () => {
   }
   const handleCreate = async (): Promise<void> => {
     if (!storeName.trim() || !domain.trim()) return; // required field validation
-
-    // Check if SHOP is selected
-    if (storeType === "SHOP") {
-      toast.error("Shop is not available yet, please use a social media store for now");
-      return;
-    }
 
     const parsedDomain = useCustomDomain ? domain : domain + ".validpanel.com";
     await createStore({

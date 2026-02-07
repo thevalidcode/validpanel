@@ -11,7 +11,7 @@ export default function PricingPage() {
 
   return (
     <div>
-      <div className="md:flex px-[20px] py-20 md:items-end md:justify-between md:mx-auto md:w-full md:max-w-6xl">
+      <div className="md:flex px-[20px] py-24 md:items-end md:justify-between md:mx-auto md:w-full md:max-w-6xl">
         <PricingHero />
         <div className="flex flex-col gap-6 items-end">
           <PricingToggle isAnnual={isAnnual} setIsAnnual={setIsAnnual} />

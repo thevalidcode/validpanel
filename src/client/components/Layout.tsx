@@ -44,7 +44,7 @@ function Layout({
 
     // Not logged in
     if (!userInfo) {
-      navigate("/");
+      navigate("/login");
       return;
     }
 
