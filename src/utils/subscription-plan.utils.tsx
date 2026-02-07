@@ -2,7 +2,7 @@ import type { SubscriptionPlanFeatures } from "@/types";
 
 type FeatureFormatter = (
   value: any,
-  features: SubscriptionPlanFeatures
+  features: SubscriptionPlanFeatures,
 ) => string | null;
 const FEATURE_MAP: Record<keyof SubscriptionPlanFeatures, FeatureFormatter> = {
   stores: (value: number) => `Launch up to ${value} stores`,
@@ -59,10 +59,16 @@ const FEATURE_MAP: Record<keyof SubscriptionPlanFeatures, FeatureFormatter> = {
 
   social_store_service_sync: (value: boolean) =>
     value ? "Service syncing for social media stores" : null,
+
+  automated_shipping_allowed: (value: boolean) =>
+    value ? "Automated shipping allowed" : null,
+
+  max_shipping_accounts: (value: number) =>
+    value > 0 ? `Up to ${value} shipping accounts per store` : null,
 };
 
 export function formatPlanFeatures(
-  features: SubscriptionPlanFeatures
+  features: SubscriptionPlanFeatures,
 ): string[] {
   return (Object.keys(features) as (keyof SubscriptionPlanFeatures)[])
     .map((key) => {
@@ -93,6 +99,8 @@ const FEATURE_LABELS: Record<keyof SubscriptionPlanFeatures, string> = {
   custom_templates: "Custom templates",
   social_store_order_sync: "Social store order sync",
   social_store_service_sync: "Social store service sync",
+  automated_shipping_allowed: "Automated shipping allowed",
+  max_shipping_accounts: "Max shipping accounts per store",
 };
 
 export function getFeatureLabel(key: keyof SubscriptionPlanFeatures): string {
