@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FC, type ReactNode } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import productImage from "../../../assets/images/product.png";
 import storeImage from "../../../assets/images/chat.png";
@@ -8,6 +8,7 @@ import MainTitle from "../../../components/ui/MainTitle";
 import Button from "../../../components/ui/Button";
 import Horizontals from "../../../components/ui/Horizontals";
 import { useAppContext } from "../../../context/useAppContext";
+import ReferralSourceDialog from "./ReferralSourceDialog";
 
 const authBody = [
   {
@@ -40,7 +41,11 @@ interface Props {
   children: ReactNode;
   pageTitle: string;
   type: "register" | "login" | "forgot-password";
-  verifySessionCode: (args: { sessionCode: string }) => void;
+  verifySessionCode: (args: {
+    sessionCode: string;
+    referralSource?: string;
+    marketingData?: Record<string, any>;
+  }) => void;
   isGoogleDisabled?: boolean;
 }
 
@@ -57,6 +62,9 @@ const AuthWrapper: FC<Props> = ({
   const [searchParams] = useSearchParams();
   const lastSessionCodeRef = useRef<string | null>(null);
   const sessionCodeFromQuery = searchParams.get("session_code");
+
+  const [showReferralDialog, setShowReferralDialog] = useState(false);
+  const [pendingSessionCode, setPendingSessionCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthLoading && userInfo && type !== "forgot-password") {
@@ -82,11 +90,34 @@ const AuthWrapper: FC<Props> = ({
     if (!uuidV4Regex.test(normalizedCode)) return;
 
     lastSessionCodeRef.current = normalizedCode;
-    verifySessionCode({ sessionCode: normalizedCode });
-  }, [sessionCodeFromQuery, verifySessionCode]);
+
+    // For registration via Google OAuth, show referral dialog first
+    if (type === "register") {
+      setPendingSessionCode(normalizedCode);
+      setShowReferralDialog(true);
+    } else {
+      // For login, proceed directly
+      verifySessionCode({ sessionCode: normalizedCode });
+    }
+  }, [sessionCodeFromQuery, verifySessionCode, type]);
+
+  const handleReferralSubmit = (data: {
+    referralSource: string;
+    marketingData: Record<string, any>;
+  }) => {
+    if (pendingSessionCode) {
+      verifySessionCode({
+        sessionCode: pendingSessionCode,
+        referralSource: data.referralSource,
+        marketingData: data.marketingData,
+      });
+      setShowReferralDialog(false);
+      setPendingSessionCode(null);
+    }
+  };
 
   return (
-    <main className="lg:h-screen items-center py-20 justify-center w-full radial_background_primary flex flex-col lg:flex-row">
+    <main className="lg:min-h-screen items-center py-20 justify-center w-full radial_background_primary flex flex-col lg:flex-row">
       <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center sm:px-10 lg:px-16 xl:px-[108px]">
         <MainTitle pryTitle={pageTitle} />
 
@@ -167,6 +198,13 @@ const AuthWrapper: FC<Props> = ({
           </div>
         ))}
       </section>
+
+      {/* Referral Source Dialog for Google OAuth Registration */}
+      <ReferralSourceDialog
+        open={showReferralDialog}
+        isLoading={false}
+        onSubmit={handleReferralSubmit}
+      />
     </main>
   );
 };

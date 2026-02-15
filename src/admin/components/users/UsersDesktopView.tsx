@@ -2,14 +2,14 @@ import { useState } from "react";
 import type { UserWithStoreCount } from "@/hooks/use-user";
 import { Pagination } from "@/components/ui/Pagination";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
-import { Ban, Check, Trash } from "lucide-react";
+import { Ban, Check, Trash, TrendingUp, Info } from "lucide-react";
 import { paginate } from "@/utils/paginate";
 
 interface UsersDesktopViewProps {
   users: UserWithStoreCount[];
   handleAction: (
     userUids: string[],
-    action: "Delete" | "Ban" | "Approve"
+    action: "Delete" | "Ban" | "Approve",
   ) => void;
 }
 
@@ -27,18 +27,18 @@ export default function UsersDesktopView({
     const currentPageUsers = paginatedUsers.map((u) => u.uid);
     if (checked) {
       setSelectedUsers((prev) =>
-        Array.from(new Set([...prev, ...currentPageUsers]))
+        Array.from(new Set([...prev, ...currentPageUsers])),
       );
     } else {
       setSelectedUsers((prev) =>
-        prev.filter((id) => !currentPageUsers.includes(id))
+        prev.filter((id) => !currentPageUsers.includes(id)),
       );
     }
   };
 
   const handleSelectUser = (uid: string) => {
     setSelectedUsers((prev) =>
-      prev.includes(uid) ? prev.filter((uid) => uid !== uid) : [...prev, uid]
+      prev.includes(uid) ? prev.filter((uid) => uid !== uid) : [...prev, uid],
     );
   };
 
@@ -83,7 +83,7 @@ export default function UsersDesktopView({
       <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-600">
+            <tr className="text-left text-gray-600 bg-gray-50">
               <th className="p-3">
                 <CustomCheckbox
                   checked={
@@ -93,9 +93,10 @@ export default function UsersDesktopView({
                   onChange={handleSelectAll}
                 />
               </th>
-              <th className="p-3">Name</th>
+              <th className="p-3">User</th>
               <th className="p-3">Email</th>
-              <th className="p-3">Number of Stores</th>
+              <th className="p-3">Stores</th>
+              <th className="p-3">Referral Source</th>
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -104,7 +105,7 @@ export default function UsersDesktopView({
             {paginatedUsers.map((u) => (
               <tr
                 key={u.id}
-                className="border-t border-gray-200 hover:bg-gray-50"
+                className="border-t border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <td className="p-3">
                   <CustomCheckbox
@@ -113,20 +114,53 @@ export default function UsersDesktopView({
                   />
                 </td>
                 <td className="p-3">
-                  <div className="flex items-center  gap-2">
+                  <div className="flex items-center gap-3">
                     <img
                       src={u.image || "/Sarah.png"}
                       alt={u.fullName}
-                      className="w-8 h-8 rounded-full"
+                      className="w-9 h-9 rounded-full object-cover border-2 border-gray-100"
                     />
-                    {u.fullName}
+                    <div>
+                      <p className="font-medium text-gray-900">{u.fullName}</p>
+                    </div>
                   </div>
                 </td>
-                <td className="p-3 text-gray-700">{u.email}</td>
-                <td className="p-3 text-gray-700">{u.storesCount}</td>
+                <td className="p-3">
+                  <span className="text-gray-700">{u.email}</span>
+                </td>
+                <td className="p-3">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-medium">
+                    {u.storesCount} {u.storesCount === 1 ? "Store" : "Stores"}
+                  </span>
+                </td>
+                <td className="p-3">
+                  {u.referralSource ? (
+                    <div className="flex flex-col gap-1">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium w-fit">
+                        <TrendingUp className="w-3 h-3" />
+                        {u.referralSource}
+                      </span>
+                      {u.marketingData?.additionalInfo && (
+                        <span
+                          className="text-xs text-gray-500 flex items-center gap-1 group cursor-help"
+                          title={u.marketingData.additionalInfo}
+                        >
+                          <Info className="w-3 h-3" />
+                          <span className="truncate max-w-[150px]">
+                            {u.marketingData.additionalInfo}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-400 text-xs italic">
+                      Not tracked
+                    </span>
+                  )}
+                </td>
                 <td className="p-3">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                       u.status === "ACTIVE"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
@@ -140,21 +174,21 @@ export default function UsersDesktopView({
                     {u.status === "BANNED" ? (
                       <button
                         onClick={() => handleAction([u.uid], "Approve")}
-                        className="text-green-600 border border-green-200 px-2 py-1 rounded hover:bg-green-50"
+                        className="text-green-600 border border-green-200 px-2.5 py-1.5 rounded-lg hover:bg-green-50 transition-colors text-xs font-medium"
                       >
                         Approve
                       </button>
                     ) : (
                       <button
                         onClick={() => handleAction([u.uid], "Ban")}
-                        className="text-red-600 border border-red-200 px-2 py-1 rounded hover:bg-red-50"
+                        className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-xs font-medium"
                       >
                         Ban
                       </button>
                     )}
                     <button
                       onClick={() => handleAction([u.uid], "Delete")}
-                      className="text-red-600 border border-red-200 px-2 py-1 rounded hover:bg-red-50"
+                      className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-xs font-medium"
                     >
                       Delete
                     </button>

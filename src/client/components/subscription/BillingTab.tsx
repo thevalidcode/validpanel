@@ -7,6 +7,8 @@ import { downloadInvoice, canDownloadInvoice } from "@/utils/invoice.utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useCurrencyConverter } from "@/lib/currencyConverter";
+import { useAppContext } from "@/context/useAppContext";
 
 function BillingTab({
   payments,
@@ -16,6 +18,7 @@ function BillingTab({
   isLoading: boolean;
 }) {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const { userCurrency } = useAppContext();
 
   const handleDownloadInvoice = async (payment: Payment) => {
     if (!canDownloadInvoice(payment.status)) {
@@ -43,6 +46,8 @@ function BillingTab({
   if (!payments) {
     return <NotFound title="No payment has been made yet." variant="page" />;
   }
+
+  const convert = useCurrencyConverter();
 
   return (
     <motion.div
@@ -102,7 +107,15 @@ function BillingTab({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <p className="poppins text-sm font-semibold text-gray-900">
-                      ${payment.amount} {payment.currency}
+                      {
+                        convert(
+                          payment.currency,
+                          userCurrency,
+                          payment.amount,
+                          true,
+                          false,
+                        ).formatted
+                      }
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

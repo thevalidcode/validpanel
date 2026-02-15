@@ -140,6 +140,18 @@ export default function PlatformTour({
     }
   };
 
+  const handleDragEnd = (_event: any, info: any) => {
+    const swipeThreshold = 50;
+
+    if (info.offset.x > swipeThreshold) {
+      // Swiped right - go to previous
+      handlePrevious();
+    } else if (info.offset.x < -swipeThreshold) {
+      // Swiped left - go to next
+      handleNext();
+    }
+  };
+
   const handleSkip = () => {
     onComplete();
   };
@@ -180,7 +192,13 @@ export default function PlatformTour({
             transition={{ duration: 0.15 }}
             className="fixed inset-0 flex items-center justify-center z-[9999] p-4"
           >
-            <div className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+            <motion.div
+              className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+            >
               {/* Header */}
               <div className="relative bg-white border-b border-gray-200 p-6">
                 <button
@@ -313,7 +331,7 @@ export default function PlatformTour({
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </>
       )}

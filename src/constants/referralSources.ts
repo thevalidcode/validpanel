@@ -1,0 +1,47 @@
+/**
+ * Comprehensive marketing referral sources for tracking user acquisition
+ * Used across registration, admin user creation, and analytics
+ */
+export const REFERRAL_SOURCES = [
+  "Google Search",
+  "Google Ads",
+  "Facebook Ads",
+  "Instagram Ads",
+  "TikTok Ads",
+  "Twitter/X Ads",
+  "LinkedIn Ads",
+  "YouTube Ads",
+  "Bing Search",
+  "Facebook Organic",
+  "Instagram Organic",
+  "Twitter/X Organic",
+  "LinkedIn Organic",
+  "TikTok Organic",
+  "YouTube Organic",
+  "Friend Referral",
+  "Influencer Recommendation",
+  "Blog Post/Article",
+  "Podcast",
+  "Email Marketing",
+  "Online Community/Forum",
+  "Reddit",
+  "Quora",
+  "WhatsApp",
+  "Telegram",
+  "App Store/Play Store",
+  "Product Hunt",
+  "Tech Conference/Event",
+  "Webinar",
+  "Direct Mail",
+  "Billboard/Outdoor Ad",
+  "TV/Radio Ad",
+  "Affiliate Partner",
+  "Coupon/Deal Site",
+  "Comparison Site",
+  "Press/Media Coverage",
+  "Company Website",
+  "Admin Created",
+  "Other",
+] as const;
+
+export type ReferralSource = typeof REFERRAL_SOURCES[number];

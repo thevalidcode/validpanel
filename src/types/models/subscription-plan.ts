@@ -21,7 +21,6 @@ export type SubscriptionPlanFeatures = {
   store_email_notifications: boolean;
   store_custom_emails: boolean;
   store_newsletters: boolean;
-  automated_shipping_allowed: boolean;
   max_shipping_accounts: number;
 };
 

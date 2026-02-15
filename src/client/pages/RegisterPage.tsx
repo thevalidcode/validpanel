@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
 import Button from "../../components/ui/Button";
 import TextInput from "../../components/ui/TextInput";
 import AuthWrapper from "../components/login/AuthWrapper";
@@ -6,6 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { useCreateUser } from "@/hooks/use-user";
 import { toast } from "sonner";
 import { useVerifySessionCode } from "@/hooks/use-user";
+import CustomSelect, {
+  type CustomSelectRef,
+  type Option,
+} from "@/components/ui/CustomSelect";
+import { REFERRAL_SOURCES } from "@/constants/referralSources";
+
+// Convert to CustomSelect options
+const referralSourceOptions: Option<string>[] = REFERRAL_SOURCES.map(
+  (source) => ({
+    label: source,
+    value: source,
+  })
+);
 
 const RegisterPage = () => {
   const { mutateAsync: createUser, isPending } = useCreateUser();
@@ -13,12 +26,19 @@ const RegisterPage = () => {
   const { mutate: verifySessionCode, isPending: isVerifyingSession } =
     useVerifySessionCode();
 
+  const referralSelectRef = useRef<CustomSelectRef>(null);
+
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
+
+  const [referralSource, setReferralSource] = useState<Option<string> | null>(
+    null
+  );
+  const [additionalInfo, setAdditionalInfo] = useState("");
 
   const handleInputs = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
@@ -29,11 +49,36 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validate referral source
+    const isReferralValid = referralSelectRef.current?.validate();
+    if (!isReferralValid) {
+      toast.error("Please select how you heard about us");
+      return;
+    }
+
+    if (!referralSource) {
+      toast.error("Please select how you heard about us");
+      return;
+    }
+
+    const marketingData: Record<string, any> = {
+      source: referralSource.value,
+      timestamp: new Date().toISOString(),
+    };
+
+    if (additionalInfo.trim()) {
+      marketingData.additionalInfo = additionalInfo.trim();
+    }
+
     const values = {
       fullName: inputs.lastName + " " + inputs.firstName,
       email: inputs.email,
       password: inputs.password,
+      referralSource: referralSource.value,
+      marketingData,
     };
+
     try {
       const data = await createUser(values);
       if (data) {
@@ -89,6 +134,49 @@ const RegisterPage = () => {
           value={inputs.password}
           onChange={handleInputs}
         />
+
+        {/* Referral Source Section */}
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-gray-700 block">
+            How did you hear about us?*
+          </label>
+          <CustomSelect
+            options={referralSourceOptions}
+            ref={referralSelectRef}
+            value={referralSource || undefined}
+            required={true}
+            isSearchable={true}
+            placeholder="Select where you found us..."
+            onChange={(opt) => setReferralSource(opt as Option<string>)}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            This helps us improve our marketing efforts
+          </p>
+        </div>
+
+        {/* Additional Details */}
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-gray-700 block">
+            Additional Details (Optional)
+          </label>
+          <textarea
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+            placeholder="E.g., specific influencer name, blog post title, friend's name, etc."
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+            rows={2}
+            maxLength={500}
+          />
+          <div className="flex justify-between items-center">
+            <p className="text-xs text-gray-500">
+              Help us track specific campaigns or referrers
+            </p>
+            <span className="text-xs text-gray-400">
+              {additionalInfo.length}/500
+            </span>
+          </div>
+        </div>
+
         <span className="text-sm text-gray-600">
           By signing up i agree to the
           <a

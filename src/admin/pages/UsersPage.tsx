@@ -8,19 +8,22 @@ import {
   useDeleteMultipleUsers,
   useGetUsers,
   type UserWithStoreCount,
+  useCreateUser,
 } from "@/hooks/use-user";
 import Loader from "@/components/Loader";
 import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
-import { Ban, Check, Download, Search } from "lucide-react";
+import { Ban, Check, Download, Plus, Search } from "lucide-react";
 import DeleteDialog from "@/components/DeleteDialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import NotFound from "@/components/NotFound";
+import CreateUserDialog from "../components/users/CreateUserDialog";
 
 const UsersPage = () => {
   const [users, setUsers] = useState<UserWithStoreCount[]>([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("ALL");
 
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string[] | null>(null);
   const [actionTarget, setActionTarget] = useState<{
     uids: string[];
@@ -28,6 +31,8 @@ const UsersPage = () => {
   } | null>(null);
 
   const { data: fetchedUsers, isLoading } = useGetUsers();
+  const { mutateAsync: createUser, isPending: isCreatePending } =
+    useCreateUser();
   const { mutateAsync: deleteUsers, isPending: isDeletePending } =
     useDeleteMultipleUsers();
   const { mutateAsync: banUsers, isPending: isBanPending } =
@@ -102,6 +107,40 @@ const UsersPage = () => {
     }
   };
 
+  // Handle create user
+  const handleCreateUser = async (data: {
+    email: string;
+    fullName: string;
+    password: string;
+    referralSource: string;
+    additionalInfo?: string;
+  }) => {
+    try {
+      const marketingData: Record<string, any> = {
+        source: data.referralSource,
+        timestamp: new Date().toISOString(),
+        createdBy: "admin",
+      };
+
+      if (data.additionalInfo?.trim()) {
+        marketingData.additionalInfo = data.additionalInfo.trim();
+      }
+
+      await createUser({
+        email: data.email,
+        fullName: data.fullName,
+        password: data.password,
+        referralSource: data.referralSource,
+        marketingData,
+      });
+
+      setShowCreateDialog(false);
+      // Refresh users list would happen automatically via react-query
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Layout
       title="Users Management"
@@ -131,9 +170,16 @@ const UsersPage = () => {
             className="flex-1"
           />
           <div className="flex gap-2 items-center flex-1 justify-end">
-            <button className="bg-white text-primary flex gap-2 border border-primary items-center w-[108px] hover:bg-primary/10 px-4 py-2 rounded-lg">
+            <button
+              onClick={() => setShowCreateDialog(true)}
+              className="text-white flex gap-2 border bg-primary items-center w-fit hover:bg-primary/90 px-4 py-2 rounded-lg"
+            >
+              <Plus className="text-base" />
+              <span className="hidden sm:inline-block">Create User</span>
+            </button>
+            <button className="bg-white text-primary flex gap-2 border border-primary items-center w-fit hover:bg-primary/10 px-4 py-2 rounded-lg">
               <Download className="text-base" />
-              <span className="inline-block">Export</span>
+              <span className="hidden sm:inline-block">Export</span>
             </button>
           </div>
         </div>
@@ -199,6 +245,14 @@ const UsersPage = () => {
         isLoading={isDeletePending}
         onCancel={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
+      />
+
+      {/* Create User Dialog */}
+      <CreateUserDialog
+        open={showCreateDialog}
+        isLoading={isCreatePending}
+        onCancel={() => setShowCreateDialog(false)}
+        onSubmit={handleCreateUser}
       />
     </Layout>
   );

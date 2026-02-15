@@ -61,6 +61,7 @@ const DEFAULT_FEATURES: SubscriptionPlanFeatures = {
   store_email_notifications: false,
   store_custom_emails: false,
   store_newsletters: false,
+  max_shipping_accounts: 0,
 };
 
 const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({

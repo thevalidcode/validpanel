@@ -36,6 +36,8 @@ interface NewUser {
   password: string;
   fullName: string;
   ref?: number;
+  referralSource?: string;
+  marketingData?: Record<string, any>;
 }
 
 export function useCreateUser() {
@@ -49,6 +51,8 @@ export function useCreateUser() {
         password: string;
         fullName: string;
         ref?: number;
+        referralSource?: string;
+        marketingData?: Record<string, any>;
       } = {
         email: newUser.email,
         password: newUser.password,
@@ -58,6 +62,16 @@ export function useCreateUser() {
       // Only add ref if it's a valid number
       if (newUser.ref && !isNaN(Number(newUser.ref))) {
         payload.ref = Number(newUser.ref);
+      }
+
+      // Add referralSource if provided
+      if (newUser.referralSource) {
+        payload.referralSource = newUser.referralSource;
+      }
+
+      // Add marketingData if provided
+      if (newUser.marketingData) {
+        payload.marketingData = newUser.marketingData;
       }
 
       const res = await api.post(`/users`, payload);
@@ -142,6 +156,8 @@ export interface UserWithStoreCount {
   fullName: string;
   status: UserStatus;
   storesCount: number;
+  referralSource: string | null;
+  marketingData: Record<string, any> | null;
 }
 
 // get users
@@ -397,6 +413,8 @@ export function useOnboardingSetupStore() {
 
 interface VerifySessionCodeProps {
   sessionCode: string;
+  referralSource?: string;
+  marketingData?: Record<string, any>;
 }
 
 export function useVerifySessionCode() {
