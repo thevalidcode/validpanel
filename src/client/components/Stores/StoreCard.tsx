@@ -13,6 +13,7 @@ import DeleteDialog from "@/components/DeleteDialog";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EditStoreDialog from "../../../components/EditStoreDialog";
 import { useDeleteUserStore, useUpdateStore } from "@/hooks/use-store";
+import { useGetUserActiveSubscription } from "@/hooks/use-subscription";
 import { StatusBadge } from "@/utils/store.utils";
 
 interface StoreCardProps {
@@ -29,6 +30,8 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
 
   const { mutateAsync: updateStore, isPending: isUpdatePending } =
     useUpdateStore();
+
+  const { data: activeSubscription } = useGetUserActiveSubscription();
 
   const handleDelete = async () => {
     await deleteStore(store.uid);
@@ -90,7 +93,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
       <hr className="my-4 border-gray-100" />
 
       {/* Actions */}
-      {store.status !== "PENDING" ? (
+      {store.status !== "PENDING" && activeSubscription ? (
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -149,7 +152,9 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
         </div>
       ) : (
         <p className="text-sm text-gray-500">
-          You'll have to wait for the store to be approved before managing and accessing it.
+          {store.status === "PENDING"
+            ? "You'll have to wait for the store to be approved before managing and accessing it."
+            : "You need an active subscription to manage your store."}
         </p>
       )}
 
