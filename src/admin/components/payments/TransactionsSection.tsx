@@ -8,8 +8,6 @@ import { Pagination } from "@/components/ui/Pagination";
 import type { TransactionStatus } from "@/types";
 import { useGetAdminTransactions } from "@/hooks/use-transaction";
 import { getCurrencySymbol } from "@/_docs/doc";
-import { useAppContext } from "@/context/useAppContext";
-import { useCurrencyConverter } from "@/lib/currencyConverter";
 
 const STATUS_OPTIONS: Option<TransactionStatus | "All">[] = [
   { label: "All Status", value: "All" },
@@ -47,8 +45,6 @@ export default function TransactionsSection({
   const [statusFilter, setStatusFilter] = useState<TransactionStatus | "All">(
     "All",
   );
-  const { userCurrency } = useAppContext();
-  const convert = useCurrencyConverter();
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: transactionsData, isLoading } = useGetAdminTransactions();
@@ -189,15 +185,7 @@ export default function TransactionsSection({
                       <td className="px-6 py-4">
                         <p className="font-medium text-gray-900">
                           {getCurrencySymbol(tx.currency)}
-                          {
-                            convert(
-                              tx.currency,
-                              userCurrency,
-                              tx.amount,
-                              true,
-                              false,
-                            ).formatted
-                          }
+                          {tx.amount.toLocaleString()}
                         </p>
                       </td>
                       <td className="px-6 py-4">
@@ -256,7 +244,7 @@ export default function TransactionsSection({
                     <p className="text-gray-500">Amount</p>
                     <p className="font-medium text-gray-900">
                       {getCurrencySymbol(tx.currency)}
-                      {tx.amount}
+                      {tx.amount.toLocaleString()}
                     </p>
                   </div>
                   <div>
