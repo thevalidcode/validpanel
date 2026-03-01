@@ -8,6 +8,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import type { PaymentStatus } from "@/types";
 import { useGetPaymentsForAdmins } from "@/hooks/use-payment";
 import { getCurrencySymbol } from "@/_docs/doc";
+import { useCurrencyConverter } from "@/lib/currencyConverter";
+import { useAppContext } from "@/context/useAppContext";
 
 const STATUS_OPTIONS: Option<PaymentStatus | "All">[] = [
   { label: "All Status", value: "All" },
@@ -34,8 +36,10 @@ export default function PaymentsSection({
   onSearchChange,
 }: PaymentsSectionProps) {
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "All">(
-    "All"
+    "All",
   );
+  const { userCurrency } = useAppContext();
+  const convert = useCurrencyConverter();
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: paymentsData, isLoading } = useGetPaymentsForAdmins();
@@ -177,7 +181,15 @@ export default function PaymentsSection({
                       <td className="px-6 py-4">
                         <p className="font-medium text-gray-900">
                           {getCurrencySymbol(payment.currency)}
-                          {payment.chargedAmount}
+                          {
+                            convert(
+                              payment.currency,
+                              userCurrency,
+                              payment.chargedAmount,
+                              true,
+                              false,
+                            ).formatted
+                          }
                         </p>
                       </td>
                       <td className="px-6 py-4">

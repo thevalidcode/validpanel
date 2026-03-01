@@ -1,3 +1,4 @@
+import type { CurrencyCode } from "@/lib/currencyConverter";
 import type { User } from "./user";
 
 export type TransactionStatus = "SUCCESS" | "PENDING" | "FAILED";
@@ -14,7 +15,7 @@ export type Transaction = {
   uid: string;
   userUid: string;
   amount: string;
-  currency: string;
+  currency: CurrencyCode;
   status: TransactionStatus;
   type: TransactionType;
   user: User;
