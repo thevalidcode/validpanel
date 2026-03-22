@@ -155,7 +155,7 @@ const UsersPage = () => {
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-lg pr-3 pl-12 py-2 focus:ring-2 focus:ring-purple-500"
+              className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-[4px] pr-3 pl-12 py-2 focus:ring-1 focus:ring-purple-500"
             />
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
           </div>
@@ -172,12 +172,12 @@ const UsersPage = () => {
           <div className="flex gap-2 items-center flex-1 justify-end">
             <button
               onClick={() => setShowCreateDialog(true)}
-              className="text-white flex gap-2 border bg-primary items-center w-fit hover:bg-primary/90 px-4 py-2 rounded-lg"
+              className="text-white flex gap-2 border bg-primary items-center w-fit hover:bg-primary/90 px-4 py-2 rounded-[4px]"
             >
               <Plus className="text-base" />
               <span className="hidden sm:inline-block">Create User</span>
             </button>
-            <button className="bg-white text-primary flex gap-2 border border-primary items-center w-fit hover:bg-primary/10 px-4 py-2 rounded-lg">
+            <button className="bg-white text-primary flex gap-2 border border-primary items-center w-fit hover:bg-primary/10 px-4 py-2 rounded-[4px]">
               <Download className="text-base" />
               <span className="hidden sm:inline-block">Export</span>
             </button>

@@ -62,9 +62,9 @@ const JsonEditor: FC<JsonEditorProps> = ({
           title="features"
           onChange={handleChange}
           disabled={disabled}
-          className={`w-full h-64 font-mono text-xs p-3 rounded-lg border ${
+          className={`w-full h-64 font-mono text-xs p-3 rounded-[4px] border ${
             error ? "border-red-300" : "border-gray-300"
-          } bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 ${
+          } bg-gray-50 text-gray-900 focus:outline-none focus:ring-1 ${
             error ? "focus:ring-red-500" : "focus:ring-primary"
           } focus:border-transparent resize-none transition disabled:opacity-60 disabled:cursor-not-allowed`}
           spellCheck="false"

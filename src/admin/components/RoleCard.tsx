@@ -31,7 +31,7 @@ function RoleCard({ role, maxVisible = 5, onEdit, onDelete }: RoleCardProps) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="rounded-lg border border-gray-200 p-4 flex flex-col gap-3 bg-white"
+      className="rounded-[4px] border border-gray-200 p-4 flex flex-col gap-3 bg-white"
     >
       {/* Header */}
       <div className="flex justify-between items-center gap-2">
@@ -39,7 +39,7 @@ function RoleCard({ role, maxVisible = 5, onEdit, onDelete }: RoleCardProps) {
 
         <div className="flex items-center gap-2">
           <span
-            className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+            className={`px-2 py-1 rounded-[4px] text-xs font-medium whitespace-nowrap ${
               hasAllAccess
                 ? "bg-red-100 text-red-700"
                 : "bg-blue-100 text-blue-700"

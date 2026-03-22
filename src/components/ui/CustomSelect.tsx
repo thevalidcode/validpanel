@@ -23,6 +23,7 @@ export interface CustomSelectProps<T = any> {
   disabled?: boolean;
   className?: string;
   required?: boolean;
+  variant?: "default" | "others";
 }
 
 export interface CustomSelectRef {
@@ -32,6 +33,7 @@ export interface CustomSelectRef {
 function CustomSelectInner<T>(
   {
     options,
+    variant = "others",
     placeholder = "Select...",
     value,
     onChange,
@@ -41,7 +43,7 @@ function CustomSelectInner<T>(
     className = "",
     required = false,
   }: CustomSelectProps<T>,
-  ref: React.Ref<CustomSelectRef>
+  ref: React.Ref<CustomSelectRef>,
 ) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -70,7 +72,7 @@ function CustomSelectInner<T>(
   };
 
   const filteredOptions = options.filter((opt) =>
-    opt.label.toLowerCase().includes(search.toLowerCase())
+    opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -107,12 +109,17 @@ function CustomSelectInner<T>(
     >
       <button
         type="button"
-        className={`w-full px-4 py-2 border rounded-lg text-left flex items-center justify-between cursor-pointer transition
+        className={`w-full text-left flex items-center justify-between cursor-pointer transition
           ${
             disabled
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-white border-gray-300 hover:border-primary"
+              : "bg-white hover:border-primary"
           }
+            ${
+              variant === "default"
+                ? "rounded-[4px] outline-none border border-gray-200 focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] px-4 py-3 text-gray-700"
+                : "px-4 py-2 border rounded-[4px] border-gray-300"
+            }
         `}
         onClick={toggleDropdown}
         disabled={disabled}
@@ -156,7 +163,7 @@ function CustomSelectInner<T>(
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-[4px] shadow-lg max-h-60 overflow-auto"
           >
             {isSearchable && (
               <div className="p-2 border-b border-gray-100">
@@ -164,7 +171,7 @@ function CustomSelectInner<T>(
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-[4px] focus:outline-none focus:ring-1 focus:ring-primary text-sm"
                   placeholder="Search..."
                 />
               </div>
@@ -203,7 +210,7 @@ function CustomSelectInner<T>(
 }
 
 const CustomSelect = forwardRef(CustomSelectInner) as <T>(
-  props: CustomSelectProps<T> & { ref?: React.Ref<CustomSelectRef> }
+  props: CustomSelectProps<T> & { ref?: React.Ref<CustomSelectRef> },
 ) => ReturnType<typeof CustomSelectInner>;
 
 export default CustomSelect;

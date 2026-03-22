@@ -29,7 +29,7 @@ export default function PermissionsDesktopView({
     <div className="flex gap-4 flex-col lg:flex-row">
       {/* Permissions Table */}
       <div className="flex flex-col gap-2 flex-2">
-        <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
+        <div className="overflow-x-auto border border-gray-200 rounded-[4px] bg-white">
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left text-gray-600">

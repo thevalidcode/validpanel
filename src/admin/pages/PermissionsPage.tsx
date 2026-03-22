@@ -103,7 +103,7 @@ function PermissionsPage() {
     >
       <div className="p-6">
         {/* Search */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+        <div className="bg-white p-4 rounded-[4px] border border-gray-200 mb-4">
           <div className="flex justify-between items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -112,12 +112,12 @@ function PermissionsPage() {
                 placeholder="Search permissions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 outline-none rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 outline-none rounded-[4px] focus:ring-1 focus:ring-primary focus:border-primary"
               />
             </div>
             <button
               onClick={handleCreatePermission}
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition flex items-center gap-2"
+              className="bg-primary text-white px-4 py-2 rounded-[4px] hover:bg-primary/90 transition flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               Create Permission

@@ -77,7 +77,7 @@ const ResetPasswordPage = () => {
       verifySessionCode={verifySessionCode}
     >
       <form onSubmit={handleSubmit} className="w-full mt-4">
-        <p className="text-sm mb-4 text-gray-700 text-center">
+        <p className="text-sm mb-4 text-gray-700">
           Enter your new password below to complete the reset process.
         </p>
 
@@ -102,7 +102,11 @@ const ResetPasswordPage = () => {
             onChange={handleInputs}
           />
 
-          <Button styles="text-white text-xs bg-primary" type="submit">
+          <Button 
+            styles="text-white text-xs bg-[var(--color-primary)] hover:bg-purple-700 border-none shadow-lg shadow-purple-500/20 font-bold" 
+            type="submit"
+            style={{ borderRadius: '4px' }}
+          >
             RESET PASSWORD
           </Button>
         </div>

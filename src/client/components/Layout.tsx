@@ -135,7 +135,7 @@ function Layout({
       <aside
         className={`fixed top-0 left-0 h-full bg-white border-r border-gray-100 z-80
   transform transition-transform duration-300 ease-in-out overflow-hidden
-  ${sidebarOpen ? "translate-x-0 w-60" : "-translate-x-[100%] w-0"}`}
+  ${sidebarOpen ? "translate-x-0 w-64" : "-translate-x-[100%] w-0"}`}
       >
         <StoreSidebar
           isMobile={isMobile}
@@ -154,7 +154,7 @@ function Layout({
       {/* Main Content */}
       <div
         className={`flex-1 flex flex-col ${
-          isMobile ? "" : sidebarOpen ? "ml-60 " : ""
+          isMobile ? "" : sidebarOpen ? "ml-64 " : ""
         }`}
       >
         {title && description && (

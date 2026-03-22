@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 
 /* -------------------- TYPES -------------------- */
 
@@ -19,7 +20,7 @@ interface PGFiltersProps {
 const PGFilters: FC<PGFiltersProps> = ({ filters, onChange }) => {
   return (
     <div className="px-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end bg-white border border-gray-200 px-6 py-6 rounded-lg">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end bg-white border border-gray-200 px-6 py-6 rounded-[4px]">
         {/* SEARCH */}
         <div className="md:col-span-2">
           <label
@@ -34,7 +35,7 @@ const PGFilters: FC<PGFiltersProps> = ({ filters, onChange }) => {
             value={filters.search}
             onChange={(e) => onChange({ search: e.target.value })}
             placeholder="Search by name or provider..."
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-[4px] shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
           />
         </div>
 
@@ -46,21 +47,32 @@ const PGFilters: FC<PGFiltersProps> = ({ filters, onChange }) => {
           >
             Status
           </label>
-          <select
-            id="status"
-            value={filters.status}
-            onChange={(e) =>
+          <CustomSelect
+            options={[
+              { label: "All", value: "All" },
+              { label: "Active", value: "ACTIVE" },
+              { label: "Inactive", value: "INACTIVE" },
+              { label: "Sandbox", value: "SANDBOX" },
+            ]}
+            value={
+              {
+                label:
+                  filters.status === "All"
+                    ? "All"
+                    : filters.status === "ACTIVE"
+                    ? "Active"
+                    : filters.status === "INACTIVE"
+                    ? "Inactive"
+                    : "Sandbox",
+                value: filters.status,
+              } as Option<PGStatus | "All">
+            }
+            onChange={(selected) =>
               onChange({
-                status: e.target.value as PGFiltersState["status"],
+                status: (selected as Option<PGStatus | "All">).value,
               })
             }
-            className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-          >
-            <option value="All">All</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-            <option value="SANDBOX">Sandbox</option>
-          </select>
+          />
         </div>
       </div>
     </div>

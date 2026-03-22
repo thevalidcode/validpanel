@@ -27,7 +27,7 @@ const StepCard: FC<StepCardProps> = ({
       }}
       transition={{ type: "spring", stiffness: 220, damping: 18 }}
       className={`
-        rounded-xl px-4 py-6 md:px-0 text-white text-sm font-semibold 
+        rounded-[4px] px-4 py-6 md:px-0 text-white text-sm font-semibold 
         md:min-h-[400px]
         ${isActive ? activeStyle : inactiveStyle}
         flex justify-center items-center md:items-start md:w-[120px]

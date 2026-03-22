@@ -48,7 +48,7 @@ export default function ContactMessageDetailPage() {
         description="View and reply to customer inquiries."
       >
         <div className="py-5 px-6 w-full">
-          <div className="bg-white rounded-lg shadow-md p-12 flex justify-center">
+          <div className="bg-white rounded-[4px] shadow-sm border border-gray-200 p-12 flex justify-center">
             <Loader />
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function ContactMessageDetailPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-6"
+          className="bg-white rounded-[4px] shadow-sm border border-gray-200 p-6 mb-6"
         >
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
@@ -149,7 +149,7 @@ export default function ContactMessageDetailPage() {
             <button
               onClick={() => setDeleteModalOpen(true)}
               disabled={isDeletingMessage}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 text-red-600 hover:bg-red-50 rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
               title="Delete ticket"
             >
               <Trash2 className="w-5 h-5" />
@@ -198,7 +198,7 @@ export default function ContactMessageDetailPage() {
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 p-6">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-[4px] border-2 border-gray-200 p-6">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center">
                 <Mail className="w-4 h-4" />

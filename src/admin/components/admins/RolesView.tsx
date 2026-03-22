@@ -94,7 +94,7 @@ function RolesView({
   };
 
   return (
-    <div className={`rounded-lg bg-white ${className}`}>
+    <div className={`rounded-[4px] bg-white ${className}`}>
       <div className="p-6 flex flex-col border-b rounded-t-lg  border-gray-200">
         <h2 className="text-xl font-semibold inter">Roles & Permission</h2>
         <p className="text-sm text-gray-500">
@@ -112,7 +112,7 @@ function RolesView({
         ))}
         <button
           onClick={handleCreateRole}
-          className="mt-2 w-full bg-gray-200 rounded-lg flex gap-2 items-center px-4 py-2 justify-center
+          className="mt-2 w-full bg-gray-200 rounded-[4px] flex gap-2 items-center px-4 py-2 justify-center
              transition-all duration-150 ease-out
              hover:bg-gray-100 hover:scale-[1.02]
              active:scale-[0.98}"

@@ -1,9 +1,17 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import type { SubscriptionPlan } from "@/types";
-import { useCurrencyConverter } from "@/lib/currencyConverter";
+import type { SubscriptionPlan, PaymentGateway } from "@/types";
+import {
+  useCurrencyConverter,
+  type CurrencyCode,
+  convertCurrency,
+} from "@/lib/currencyConverter";
 import { useAppContext } from "@/context/useAppContext";
 import Decimal from "decimal.js";
+import {
+  computePricingBreakdown,
+  resolvePlanPrice,
+} from "@/utils/subscription-pricing.utils";
 
 interface OrderSummaryProps {
   selectedPlan: SubscriptionPlan;
@@ -11,83 +19,70 @@ interface OrderSummaryProps {
   calculateTax: (amount: string) => string;
   calculateTotal: () => string;
   getDiscountedPrice: () => string;
+  couponCode?: string;
+  couponApplied?: boolean;
+  couponDiscountAmount?: string;
+  couponCurrency?: CurrencyCode;
+  currentStep?: number;
+  handleProceedToPayment?: () => void;
+  isManualGateway?: boolean;
+  isPending?: boolean;
+  selectedGateway?: PaymentGateway | null;
+  annualDiscount?: any;
 }
 
 function OrderSummary({
   selectedPlan,
   isAnnual,
-  calculateTax,
-  calculateTotal,
+  calculateTax: _calculateTax,
+  calculateTotal: _calculateTotal,
   getDiscountedPrice,
+  couponCode,
+  couponApplied,
+  couponDiscountAmount,
+  couponCurrency,
 }: OrderSummaryProps) {
-  const { userCurrency } = useAppContext();
+  const { userCurrency, rates } = useAppContext();
   const convert = useCurrencyConverter();
-  const basePrice = isAnnual
-    ? new Decimal(selectedPlan.price).mul(12)
-    : new Decimal(selectedPlan.price);
 
-  const discount =
-    isAnnual && selectedPlan.discountForAnnually
-      ? basePrice
-          .mul(new Decimal(selectedPlan.discountForAnnually))
-          .div(100)
-          .toFixed(2)
-      : "0.00";
+  const interval = isAnnual ? "YEARLY" : "MONTHLY";
+  const targetCurrency = userCurrency || "USD";
+  const resolvedPrice = resolvePlanPrice(selectedPlan, interval, targetCurrency);
+  const currencyCode = resolvedPrice.currency;
+  const basePrice = resolvedPrice.amount;
 
   const payable = new Decimal(getDiscountedPrice());
-  const taxAmount = new Decimal(calculateTax(payable.toFixed(2)));
-  const total = new Decimal(calculateTotal());
+  const convertAmount = (
+    source: CurrencyCode,
+    target: CurrencyCode,
+    amount: string,
+  ) => convertCurrency(source, target, amount, rates || {}).amount;
 
-  const subtotalAfterDiscount = basePrice.minus(new Decimal(discount));
-  const credit = subtotalAfterDiscount.minus(payable);
+  const breakdown = computePricingBreakdown({
+    subtotal: payable.toFixed(2),
+    taxRate: resolvedPrice.taxRate,
+    couponApplied,
+    couponDiscountAmount,
+    couponCurrency,
+    subtotalCurrency: currencyCode,
+    convertAmount,
+  });
 
-  const displayBase = convert(
-    selectedPlan.currency,
-    userCurrency,
-    basePrice.toFixed(2),
-    true,
-    false
-  ).formatted;
+  const fmt = (amount: string, fromCurrency: CurrencyCode) =>
+    convert(fromCurrency, userCurrency, amount, true, false).formatted;
 
-  const displayDiscount = convert(
-    selectedPlan.currency,
-    userCurrency,
-    discount,
-    true,
-    false
-  ).formatted;
+  const displayBase = fmt(basePrice.toFixed(2), currencyCode);
+  const derivedCurrency = currencyCode;
 
-  const displayPayable = convert(
-    selectedPlan.currency,
-    userCurrency,
-    payable.toFixed(2),
-    true,
-    false
-  ).formatted;
-
-  const displayTax = convert(
-    selectedPlan.currency,
-    userCurrency,
-    taxAmount.toFixed(2),
-    true,
-    false
-  ).formatted;
-
-  const displayTotal = convert(
-    selectedPlan.currency,
-    userCurrency,
-    total.toFixed(2),
-    true,
-    false
-  ).formatted;
-
-  const displayCredit = convert(
-    selectedPlan.currency,
-    userCurrency,
-    credit.toFixed(2),
-    true,
-    false
-  ).formatted;
+  const displayPayable = fmt(breakdown.subtotalAfterDiscount, derivedCurrency);
+  const displayTax = fmt(breakdown.taxAmount, derivedCurrency);
+  const displayTotal = fmt(breakdown.total, derivedCurrency);
+  const displayCouponDiscount = new Decimal(breakdown.couponDiscount).gt(0)
+    ? fmt(
+        breakdown.couponDiscount,
+        (couponCurrency || derivedCurrency) as CurrencyCode,
+      )
+    : null;
 
   return (
     <motion.div
@@ -95,12 +90,12 @@ function OrderSummary({
       animate={{ opacity: 1, x: 0 }}
       className="lg:col-span-1"
     >
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 sticky top-6">
+      <div className="bg-white rounded-[4px] border border-gray-200 p-6 sticky top-6">
         <h3 className="poppins text-lg font-bold text-gray-900 mb-6">
           Order Summary
         </h3>
 
-        <div className="bg-primary/5 rounded-xl p-4 mb-6">
+        <div className="bg-primary/5 rounded-[4px] p-4 mb-6">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">
@@ -119,7 +114,7 @@ function OrderSummary({
                 {displayPayable}
               </p>
               <p className="text-xs text-gray-500 uppercase">
-                {isAnnual ? "due today (yearly)" : "due today (monthly)"}
+                {isAnnual ? "due today" : "due today"}
               </p>
             </div>
           </div>
@@ -133,32 +128,17 @@ function OrderSummary({
             </span>
           </div>
 
-          {discount !== "0.00" && (
+          {couponCode && couponApplied && (
             <div className="flex items-center justify-between">
-              <span className="inter text-sm text-gray-600">
-                Annual discount
-              </span>
-              <span className="poppins font-semibold text-green-700">
-                - {displayDiscount}
-              </span>
-            </div>
-          )}
-
-          {credit.gt(0) && (
-            <div className="flex items-center justify-between">
-              <span className="inter text-sm text-gray-600">
-                Current plan credit
-              </span>
-              <span className="poppins font-semibold text-green-700">
-                - {displayCredit}
+              <span className="inter text-sm text-gray-600">Coupon ({couponCode})</span>
+              <span className="poppins font-semibold text-emerald-700">
+                {displayCouponDiscount ? `- ${displayCouponDiscount}` : "Applied"}
               </span>
             </div>
           )}
 
           <div className="flex items-center justify-between">
-            <span className="inter text-sm text-gray-600">
-              Subtotal after credits
-            </span>
+            <span className="inter text-sm text-gray-600">Subtotal</span>
             <span className="poppins font-semibold text-gray-900">
               {displayPayable}
             </span>
@@ -179,7 +159,7 @@ function OrderSummary({
           </span>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-gray-50 rounded-[4px] p-4">
           <p className="inter text-xs text-gray-600 leading-relaxed">
             By proceeding, you agree to our{" "}
             <Link

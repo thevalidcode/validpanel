@@ -29,7 +29,7 @@ const PermissionsMobileView: FC<PermissionsMobileViewProps> = ({
           {visiblePermissions.map((permission) => (
             <div
               key={permission.id}
-              className="border border-t-4 border-gray-200 rounded-lg py-5 px-[17px] hover:border-primary transition-all flex justify-between items-center shadow-sm relative"
+              className="border border-t-4 border-gray-200 rounded-[4px] py-5 px-[17px] hover:border-primary transition-all flex justify-between items-center shadow-sm relative"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-full">
@@ -66,7 +66,7 @@ const PermissionsMobileView: FC<PermissionsMobileViewProps> = ({
         {hasMore && (
           <button
             onClick={onHandleLoadMore}
-            className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-lg font-medium"
+            className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-[4px] font-medium"
           >
             Load More Permissions
           </button>

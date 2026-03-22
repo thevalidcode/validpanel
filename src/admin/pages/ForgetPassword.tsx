@@ -33,7 +33,7 @@ const ForgotPasswordPage = () => {
       verifySessionCode={verifySessionCode}
     >
       <form onSubmit={handleSubmit} className="w-full mt-4">
-        <p className="text-sm mb-4 text-gray-700 text-center">
+        <p className="text-sm mb-4 text-gray-700">
           Enter your email and we’ll send you a secure link to reset your
           password.
         </p>
@@ -50,7 +50,11 @@ const ForgotPasswordPage = () => {
             }
           />
 
-          <Button styles="text-white text-xs bg-primary" type="submit">
+          <Button 
+            styles="text-white text-xs bg-[var(--color-primary)] hover:bg-purple-700 border-none shadow-lg shadow-purple-500/20 font-bold" 
+            type="submit"
+            style={{ borderRadius: '4px' }}
+          >
             SEND RESET LINK
           </Button>
         </div>

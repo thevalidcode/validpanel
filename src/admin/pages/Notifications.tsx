@@ -55,7 +55,7 @@ const AdminNotifications = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
+            className="bg-white border border-gray-200 rounded-[4px] shadow-lg overflow-hidden"
           >
             <ul className="divide-y divide-gray-100 max-h-[70vh] overflow-y-auto">
               {notifications.map((notif) => {
@@ -74,7 +74,7 @@ const AdminNotifications = () => {
                     className="flex items-start gap-3 p-4 hover:bg-gray-50 cursor-pointer transition"
                   >
                     <div
-                      className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${typeColor}`}
+                      className={`flex-shrink-0 w-10 h-10 rounded-[4px] flex items-center justify-center ${typeColor}`}
                     >
                       <Icon className="w-5 h-5 text-white" />
                     </div>

@@ -129,7 +129,7 @@ export default function AdminStores(): JSX.Element {
 
         {/* Table Section */}
         {stores && stores.length !== 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-4 overflow-x-auto">
+          <div className="bg-white rounded-[4px] shadow-sm p-4 overflow-x-auto">
             <StoreTable stores={stores} handleAction={handleAction} />
           </div>
         ) : (

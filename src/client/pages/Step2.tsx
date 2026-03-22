@@ -16,13 +16,20 @@ import NotFound from "@/components/NotFound";
 import PricingToggle from "../components/pricing/PricingToggle";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import { useAppContext } from "@/context/useAppContext";
-import { useCurrencyConverter } from "@/lib/currencyConverter";
+import {
+  useCurrencyConverter,
+  type CurrencyCode,
+} from "@/lib/currencyConverter";
+import { resolvePlanPrice } from "@/utils/subscription-pricing.utils";
+import CouponShowcase from "@/components/coupons/CouponShowcase";
+import type { Coupon } from "@/types/models/coupon";
 
 const Step2: React.FC = () => {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState<string | null>(null);
   const [isAnnual, setIsAnnual] = useState<boolean>(false);
+  const [selectedCouponCode, setSelectedCouponCode] = useState<string>("");
   const { userCurrency } = useAppContext();
   const convert = useCurrencyConverter();
 
@@ -32,6 +39,7 @@ const Step2: React.FC = () => {
   useEffect(() => {
     const draft = getOnboardingDraft();
     if (draft?.planUid) setSelected(draft.planUid);
+    if (draft?.couponCode) setSelectedCouponCode(draft.couponCode);
     if (draft?.subscriptionInterval) {
       setIsAnnual(draft.subscriptionInterval === "YEARLY");
     }
@@ -49,6 +57,7 @@ const Step2: React.FC = () => {
     setOnboardingDraft((prev) => ({
       ...prev,
       planUid: selected,
+      couponCode: selectedCouponCode || prev.couponCode,
       subscriptionInterval: isAnnual ? "YEARLY" : "MONTHLY",
       completedSteps: [...new Set([...(prev.completedSteps ?? []), 2])],
     }));
@@ -60,25 +69,41 @@ const Step2: React.FC = () => {
     navigate("/onboarding/step1");
   };
 
+  const handleUseSuggestedCoupon = (coupon: Coupon): void => {
+    setSelectedCouponCode(coupon.code);
+    setOnboardingDraft((prev) => ({
+      ...prev,
+      couponCode: coupon.code,
+    }));
+  };
+
+  const handleRemoveSuggestedCoupon = (): void => {
+    setSelectedCouponCode("");
+    setOnboardingDraft((prev) => ({
+      ...prev,
+      couponCode: "",
+    }));
+  };
+
   const getPrice = (plan: SubscriptionPlan): string => {
-    const base = Number(plan.price);
+    const interval = isAnnual ? "YEARLY" : "MONTHLY";
+    const resolved = resolvePlanPrice(plan, interval, userCurrency || "USD");
+    return resolved.amount.toFixed(2);
+  };
 
-    if (isAnnual) {
-      const yearly = base * 12;
-      const discount = plan.discountForAnnually || 0;
-      const discounted = yearly - yearly * (discount / 100);
-      return discounted.toFixed(2);
-    }
-
-    return base.toFixed(2);
+  const getCurrency = (plan: SubscriptionPlan): CurrencyCode => {
+    const interval = isAnnual ? "YEARLY" : "MONTHLY";
+    const resolved = resolvePlanPrice(plan, interval, userCurrency || "USD");
+    return resolved.currency;
   };
 
   const renderPlanCard = (
     plan: SubscriptionPlan,
-    index: number
+    index: number,
   ): JSX.Element => {
     const isSelected = selected === plan.uid;
-    const hasAnnualDiscount = isAnnual && (plan.discountForAnnually ?? 0) > 0;
+    // Calculate potential savings (optional/advanced logic omitted for simplicity or can be re-added if data allows)
+    const hasAnnualDiscount = false;
 
     return (
       <motion.div
@@ -87,7 +112,7 @@ const Step2: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
         onClick={() => setSelected(plan.uid)}
-        className={`cursor-pointer bg-white rounded-2xl border-2 p-6 flex flex-col justify-between transition-all
+        className={`cursor-pointer bg-white rounded-[4px] border-2 p-6 flex flex-col justify-between transition-all
           ${
             isSelected
               ? "border-purple-600 shadow-lg shadow-purple-200"
@@ -101,11 +126,11 @@ const Step2: React.FC = () => {
             <span className="text-3xl font-bold text-gray-900">
               {
                 convert(
-                  plan.currency,
+                  getCurrency(plan),
                   userCurrency,
                   getPrice(plan),
                   true,
-                  false
+                  false,
                 ).formatted
               }
             </span>
@@ -116,7 +141,7 @@ const Step2: React.FC = () => {
 
           {hasAnnualDiscount && (
             <div className="mt-2 inline-block text-xs font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
-              Save {plan.discountForAnnually}% yearly
+              Save more with annual plan!
             </div>
           )}
 
@@ -172,9 +197,26 @@ const Step2: React.FC = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mx-auto mb-10"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-10 mx-auto mb-10"
       >
         {subscriptionPlans.map(renderPlanCard)}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+        className="w-full max-w-3xl mx-auto"
+      >
+        <CouponShowcase
+          context="SUBSCRIPTION_PAGE"
+          appliesTo="NEW"
+          variant="sidebar"
+          title="Available Coupons"
+          selectedCode={selectedCouponCode}
+          onUseCoupon={handleUseSuggestedCoupon}
+          onRemoveCoupon={handleRemoveSuggestedCoupon}
+        />
       </motion.div>
     </OnboardingLayout>
   );

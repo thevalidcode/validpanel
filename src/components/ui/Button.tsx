@@ -18,11 +18,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonComponentProps>(
           alignItems: "center",
           justifyContent: "center",
           gap: "15px",
-          minHeight: "58px",
-          borderRadius: 28,
+          minHeight: "48px",
+          borderRadius: 4,
           cursor: "pointer",
+          ...props.style
         }}
-        className={`border-2 transition-all btn-custom ${props.styles}`}
+        className={`border transition-all btn-custom ${props.styles}`}
       >
         <span className="inline-block font-extrabold tracking-[1.28px] ">
           {" "}

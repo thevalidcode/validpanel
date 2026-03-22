@@ -4,9 +4,9 @@ import ContactMiniHolder from "../components/contact-us/ContactMiniHolder";
 
 export default function ContactUs() {
   return (
-    <div className="bg-white py-20">
+    <>
       <ContactMiniHolder />
       <ContactForm />
-    </div>
+    </>
   );
 }

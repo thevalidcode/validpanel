@@ -98,7 +98,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
         className="w-full max-w-2xl"
       >
         {/* Main Card */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+        <div className="bg-white rounded-[4px] border border-gray-200 shadow-lg overflow-hidden">
           {/* Header */}
           <div className="px-6 md:px-8 py-8 md:py-10 text-center border-b border-gray-200 bg-gray-50">
             <motion.div
@@ -106,7 +106,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
               transition={{ duration: 2, repeat: Infinity }}
               className="inline-flex items-center justify-center mb-4"
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-[4px] bg-primary/10 flex items-center justify-center">
                 <AlertCircle className="w-8 h-8 text-primary" />
               </div>
             </motion.div>
@@ -127,7 +127,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-start gap-3"
+                className="bg-primary/5 border border-primary/20 rounded-[4px] p-4 flex items-start gap-3"
               >
                 <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <div>
@@ -153,7 +153,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Start Date */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-gray-50 rounded-[4px] p-4 border border-gray-200">
                   <p className="text-xs font-medium text-gray-600 mb-2">
                     Start Time
                   </p>
@@ -173,7 +173,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
                 </div>
 
                 {/* End Date */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-gray-50 rounded-[4px] p-4 border border-gray-200">
                   <p className="text-xs font-medium text-gray-600 mb-2">
                     End Time
                   </p>
@@ -200,7 +200,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gray-50 border border-gray-200 rounded-lg p-4"
+                className="bg-gray-50 border border-gray-200 rounded-[4px] p-4"
               >
                 <div className="flex gap-3">
                   <MessageSquare className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
@@ -221,7 +221,7 @@ export default function MaintenanceMode({ children }: MaintenanceModeProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-primary/5 border border-primary/20 rounded-lg p-4"
+              className="bg-primary/5 border border-primary/20 rounded-[4px] p-4"
             >
               <p className="text-sm text-gray-700">
                 We appreciate your patience. During this time, the platform will

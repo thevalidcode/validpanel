@@ -23,6 +23,7 @@ import NotFoundPage from "./client/pages/NotFoundPage";
 import ErrorPage from "./client/pages/ErrorPage";
 import TermsOfService from "./client/pages/TermsOfService";
 import PrivacyPolicy from "./client/pages/PrivacyPolicy";
+import PaymentStatusPage from "./client/pages/PaymentStatusPage";
 
 // Step pages (no Navbar or Footer)
 import Step1 from "./client/pages/Step1";
@@ -44,6 +45,7 @@ import AdminLogin from "./admin/pages/LoginPage";
 import AdminResetPassword from "./admin/pages/ResetPassword";
 import AdminForgotPassword from "./admin/pages/ForgetPassword";
 import RenewSubscription from "./client/pages/RenewSubscription";
+import CouponsPage from "./admin/pages/CouponsPage";
 
 // Admin pages (lazy loaded)
 const UsersPage = React.lazy(() => import("./admin/pages/UsersPage"));
@@ -53,19 +55,19 @@ const AdminPGPage = React.lazy(() => import("./admin/pages/PGPage"));
 const AdminStoresPage = React.lazy(() => import("./admin/pages/AdminStores"));
 const Notifications = React.lazy(() => import("./admin/pages/Notifications"));
 const AdminManagement = React.lazy(
-  () => import("./admin/pages/AdminManagement")
+  () => import("./admin/pages/AdminManagement"),
 );
 const Permissions = React.lazy(() => import("./admin/pages/PermissionsPage"));
 const AdminAccount = React.lazy(() => import("./admin/pages/AdminAccountPage"));
 const SubscriptionPlansPage = React.lazy(
-  () => import("./admin/pages/SubscriptionPlansPage")
+  () => import("./admin/pages/SubscriptionPlansPage"),
 );
 const PaymentsPage = React.lazy(() => import("./admin/pages/PaymentsPage"));
 const ContactMessagesPage = React.lazy(
-  () => import("./admin/pages/ContactMessagesPage")
+  () => import("./admin/pages/ContactMessagesPage"),
 );
 const ContactMessageDetailPage = React.lazy(
-  () => import("./admin/pages/ContactMessageDetailPage")
+  () => import("./admin/pages/ContactMessageDetailPage"),
 );
 
 const App: React.FC = () => {
@@ -110,6 +112,7 @@ const App: React.FC = () => {
               <Route path="/onboarding/step5" element={<Step5 />} />
               <Route path="/onboarding/step6" element={<Step6 />} />
               <Route path="/stores/create" element={<CreateStore />} />
+              <Route path="/payment-status" element={<PaymentStatusPage />} />
               <Route path="/stores" element={<StoresPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
@@ -211,6 +214,15 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<Loader />}>
                     <SubscriptionPlansPage />
+                  </Suspense>
+                }
+              />
+
+              <Route
+                path="/admin/coupons"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <CouponsPage />
                   </Suspense>
                 }
               />

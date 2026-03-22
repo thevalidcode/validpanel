@@ -17,7 +17,7 @@ const Loader: React.FC = () => {
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="w-4 h-4 rounded-full bg-[#7D1EFE]"
+            className="w-4 h-4 rounded-[2px] bg-[#7D1EFE]"
             animate={{ y: [0, -15, 0] }}
             transition={{ ...bounceTransition, delay: i * 0.2 }}
           />

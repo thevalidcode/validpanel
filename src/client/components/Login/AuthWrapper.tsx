@@ -4,9 +4,6 @@ import productImage from "../../../assets/images/product.png";
 import storeImage from "../../../assets/images/chat.png";
 import salesImage from "../../../assets/images/sales.png";
 import pinImage from "../../../assets/images/pin.png";
-import MainTitle from "../../../components/ui/MainTitle";
-import Button from "../../../components/ui/Button";
-import Horizontals from "../../../components/ui/Horizontals";
 import { useAppContext } from "../../../context/useAppContext";
 import ReferralSourceDialog from "./ReferralSourceDialog";
 
@@ -64,7 +61,9 @@ const AuthWrapper: FC<Props> = ({
   const sessionCodeFromQuery = searchParams.get("session_code");
 
   const [showReferralDialog, setShowReferralDialog] = useState(false);
-  const [pendingSessionCode, setPendingSessionCode] = useState<string | null>(null);
+  const [pendingSessionCode, setPendingSessionCode] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!isAuthLoading && userInfo && type !== "forgot-password") {
@@ -75,7 +74,7 @@ const AuthWrapper: FC<Props> = ({
   const handleGoogleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     window.location.replace(
-      `https://auth.validpanel.com/api/auth/core/google?redirect=https://${domain}/${type}`
+      `https://auth.validpanel.com/api/auth/core/google?redirect=https://${domain}/${type}`,
     );
   };
 
@@ -117,86 +116,136 @@ const AuthWrapper: FC<Props> = ({
   };
 
   return (
-    <main className="lg:min-h-screen items-center py-20 justify-center w-full radial_background_primary flex flex-col lg:flex-row">
-      <section className="w-full py-[66.6px] px-[21px] flex flex-col gap-6 items-center sm:px-10 lg:px-16 xl:px-[108px]">
-        <MainTitle pryTitle={pageTitle} />
+    <main className="min-h-screen w-full flex flex-col lg:flex-row bg-white page-transition">
+      {/* LEFT: Form Section */}
+      <section className="w-full lg:w-1/2 min-h-screen flex flex-col justify-start lg:justify-center pt-28 pb-12 px-6 sm:px-12 lg:px-20 relative z-10">
+        {/* Grid Background */}
+        <div
+          className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
 
-        {/* Google only for login/register */}
-        {type !== "forgot-password" && (
-          <>
-            <Button
-              isgoogle="true"
-              disabled={isGoogleDisabled}
-              styles="w-[353px]"
-              onClick={handleGoogleLogin}
-            >
-              SIGN {type === "register" ? "UP" : "IN"} VIA GOOGLE
-            </Button>
-            <Horizontals />
-          </>
-        )}
+        <div className="relative z-10 w-full max-w-md mx-auto">
+          <div className="text-center lg:text-left">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {pageTitle}
+            </h1>
+          </div>
 
-        {children}
-
-        {/* Bottom Links */}
-        <div className="w-full mt-2">
-          {type === "login" && (
-            <p className="text-center leading-6 flex items-center justify-center">
-              <span className="text-xs">Don’t have account?</span>
-              <Link
-                to="/register"
-                className="text-primary hover:text-primary/80 ml-1"
+          {/* Google only for login/register */}
+          {type !== "forgot-password" && (
+            <div className="mb-8">
+              <button
+                onClick={handleGoogleLogin}
+                disabled={isGoogleDisabled}
+                className="w-full h-12 flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-[4px] hover:bg-gray-50 transition-colors shadow-sm text-gray-700 font-medium"
               >
-                Register
-              </Link>
-            </p>
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+                Continue With Google
+              </button>
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">
+                    Or continue with email
+                  </span>
+                </div>
+              </div>
+            </div>
           )}
 
-          {type === "register" && (
-            <p className="text-center leading-6 flex items-center justify-center">
-              <span className="text-xs">Already have an account?</span>
+          {children}
+
+          {/* Bottom Links */}
+          <div className="w-full mt-8 text-center text-sm text-gray-600">
+            {type === "login" && (
+              <p>
+                New to ValidPanel?{" "}
+                <Link
+                  to="/register"
+                  className="font-semibold text-[var(--color-primary)] hover:underline"
+                >
+                  Create an account
+                </Link>
+              </p>
+            )}
+
+            {type === "register" && (
+              <p>
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-[var(--color-primary)] hover:underline"
+                >
+                  Log in
+                </Link>
+              </p>
+            )}
+
+            {type === "login" && (
+              <div className="mt-4">
+                <Link
+                  to="/forgot-password"
+                  className="text-gray-500 hover:text-gray-900 transition-colors inline-block"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+            )}
+
+            {type === "forgot-password" && (
               <Link
                 to="/login"
-                className="text-primary hover:text-primary/80 ml-1"
+                className="font-semibold text-[var(--color-primary)] hover:underline"
               >
-                Login
+                Back to Login
               </Link>
-            </p>
-          )}
-
-          {type === "login" && (
-            <Link
-              to="/forgot-password"
-              className="text-center text-sm text-primary block hover:text-primary/80 mt-1"
-            >
-              Forgot Password?
-            </Link>
-          )}
-
-          {type === "forgot-password" && (
-            <Link
-              to="/login"
-              className="text-center text-sm text-primary block hover:text-primary/80 mt-1"
-            >
-              Back to Login
-            </Link>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
-      <section className="w-full px-[21px] py-10 space-y-10 sm:px-10 lg:px-16 xl:px-[108px]">
-        {authBody.map((item) => (
-          <div
-            key={item.title}
-            className="flex flex-col gap-3 lg:flex-row lg:items-start"
-          >
-            <img src={item.image} alt={item.title} width={64} height={64} />
-            <div className="space-y-2">
-              <h2 className="font-extrabold text-[23.14px]">{item.title}</h2>
-              <p className="font-medium text-[13.65px]">{item.description}</p>
-            </div>
+      {/* RIGHT: Feature Showcase */}
+      <section className="hidden lg:flex w-1/2 bg-white border-l border-gray-100 flex-col justify-center px-16 relative overflow-hidden">
+        {/* Decorative Blobs */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--color-primary)] rounded-full blur-[120px] mix-blend-multiply opacity-10 pointer-events-none translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[var(--color-primary)] rounded-full blur-[120px] mix-blend-multiply opacity-10 pointer-events-none -translate-x-1/2 translate-y-1/2" />
+
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-4xl font-bold text-gray-900 mb-12">
+            The Operating System for Modern Commerce
+          </h2>
+
+          <div className="space-y-8">
+            {authBody.map((item, idx) => (
+              <div key={idx} className="flex gap-4 group">
+                <div className="w-12 h-12 rounded-[4px] bg-white border border-gray-100 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-6 h-6 object-contain opacity-80"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </section>
 
       {/* Referral Source Dialog for Google OAuth Registration */}

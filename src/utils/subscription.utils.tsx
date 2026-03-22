@@ -21,6 +21,8 @@ export const getStatusColor = (status: SubscriptionStatus): string => {
     EXPIRED: "bg-red-100 text-red-700 border-red-200",
     TRIAL: "bg-blue-100 text-blue-700 border-blue-200",
     CANCELED: "bg-gray-100 text-gray-700 border-gray-200",
+    FAILED: "bg-red-100 text-red-700 border-red-200",
+    PAST_DUE: "bg-orange-100 text-orange-700 border-orange-200",
   };
 
   return map[status];

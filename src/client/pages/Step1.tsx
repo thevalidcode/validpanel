@@ -50,23 +50,23 @@ const StepOne: React.FC = () => {
         </>
       }
     >
-      <div className="grid md:grid-cols-2 gap-6 lg:px-36 sm:px-14 pb-10 pt-6">
+      <div className="flex md:flex-row flex-col gap-6 sm:px-4 px-2 pb-10 pt-6">
         {/* Shop Card */}
         <div
           onClick={() => handleSelect("SHOP")}
-          className={`cursor-pointer bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl border-2 transition-all
+          className={`cursor-pointer bg-white rounded-[4px] p-6 text-center shadow-lg hover:shadow-2xl border-2 transition-all w-full
               ${selected === "SHOP" ? "border-purple-600" : "border-gray-200"}`}
         >
-          <div className="mx-auto bg-gradient-to-r from-purple-500 to-purple-700 w-14 h-14 flex items-center justify-center rounded-xl mb-4">
+          <div className="mx-auto bg-gradient-to-r from-purple-500 to-purple-700 w-14 h-14 flex items-center justify-center rounded-[4px] mb-4">
             <ShoppingBag className="text-white w-6 h-6" />
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Shop</h3>
-          <p className="text-gray-600 text-sm mb-4">
+          <p className="text-gray-600 text-sm mb-4 leading-relaxed">
             Perfect for selling physical products. <br />
             Create a professional storefront with product catalogs, inventory
             management, and payment processing.
           </p>
-          <div className="flex justify-center space-x-2">
+          <div className="flex justify-center gap-2">
             <span className="bg-[#DCFCE7] text-green-700 text-xs px-3 py-1 rounded-full">
               Physical Goods
             </span>
@@ -79,12 +79,12 @@ const StepOne: React.FC = () => {
         {/* Social Media Store Card */}
         <div
           onClick={() => handleSelect("SOCIAL")}
-          className={`cursor-pointer bg-white shadow-lg rounded-2xl p-6 text-center hover:shadow-2xl transition-all border-2
+          className={`cursor-pointer bg-white shadow-lg rounded-[4px] p-6 text-center hover:shadow-2xl transition-all border-2 w-full
               ${
                 selected === "SOCIAL" ? "border-purple-600" : "border-gray-200"
               }`}
         >
-          <div className="mx-auto bg-gradient-to-r from-pink-500 to-orange-400 w-14 h-14 flex items-center justify-center rounded-xl mb-4">
+          <div className="mx-auto bg-gradient-to-r from-pink-500 to-orange-400 w-14 h-14 flex items-center justify-center rounded-[4px] mb-4">
             <Share2 className="text-white w-6 h-6" />
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -95,7 +95,7 @@ const StepOne: React.FC = () => {
             Offer Instagram followers, YouTube views, website traffic, and more
             digital services.
           </p>
-          <div className="flex justify-center space-x-2 flex-wrap">
+          <div className="flex justify-center gap-2 flex-wrap">
             <span className="bg-pink-100 text-pink-700 text-xs px-3 py-1 rounded-full">
               Social Services
             </span>

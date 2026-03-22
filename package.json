@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --configLoader runner",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@react-pdf/renderer": "^4.3.2",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
@@ -24,11 +25,9 @@
     "decimal.js": "^10.6.0",
     "framer-motion": "^12.23.11",
     "heroicons": "^2.2.0",
-    "html2canvas": "^1.4.1",
     "idb": "^8.0.3",
     "idb-keyval": "^6.2.2",
     "js-cookie": "^3.0.5",
-    "jspdf": "^4.0.0",
     "lucide-react": "^0.546.0",
     "react": "^19.1.0",
     "react-chartjs-2": "^5.3.1",

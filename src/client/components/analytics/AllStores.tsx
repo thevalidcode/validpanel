@@ -13,10 +13,10 @@ const AllStoreItem: FC<AllStoreItemProps> = ({ store }) => (
         <img
           src={store.logoUrl}
           alt={store.name}
-          className="w-10 h-10 object-cover rounded-lg"
+          className="w-10 h-10 object-cover rounded-[4px]"
         />
       ) : (
-        <div className="flex items-center w-10 h-10 rounded-lg justify-center text-gray-400 text-xs">
+        <div className="flex items-center w-10 h-10 rounded-[4px] justify-center text-gray-400 text-xs">
           No logo
         </div>
       )}
@@ -45,7 +45,7 @@ interface AllStoresProps {
 
 const AllStores: FC<AllStoresProps> = ({ stores }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+    <div className="bg-white rounded-[4px] shadow-sm border border-gray-200 p-4">
       <h2 className="text-lg font-semibold text-gray-800 mb-2">All Stores</h2>
       <div>
         {stores.map((store) => (

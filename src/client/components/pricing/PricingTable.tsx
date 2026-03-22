@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useGetUserSubscriptionPlans } from "@/hooks/use-subscription-plan";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
@@ -16,7 +15,7 @@ function PricingTable() {
   const tableData = (() => {
     // Collect all possible features
     const allFeatureKeys = Array.from(
-      new Set(subscriptionPlans.flatMap((plan) => Object.keys(plan.features)))
+      new Set(subscriptionPlans.flatMap((plan) => Object.keys(plan.features))),
     ) as (keyof SubscriptionPlanFeatures)[];
 
     return allFeatureKeys.map((key) => {
@@ -42,28 +41,19 @@ function PricingTable() {
   })();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="mb-16"
-    >
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-        Compare plan & <span className="text-purple-600">features</span>
-      </h2>
-
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
+    <div className="mb-0">
+      <div className="bg-white rounded-[4px] shadow-sm overflow-hidden border border-gray-200 ring-1 ring-gray-200">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700">
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 w-1/3 sticky left-0 bg-gray-50 border-r border-gray-200 z-10">
                   Features
                 </th>
                 {subscriptionPlans.map((plan) => (
                   <th
                     key={plan.uid}
-                    className="text-center py-4 px-6 text-sm font-semibold text-gray-700"
+                    className="text-center py-4 px-6 text-sm font-semibold text-gray-900 min-w-[140px] border-r border-gray-100 last:border-0"
                   >
                     {plan.name}
                   </th>
@@ -72,49 +62,56 @@ function PricingTable() {
             </thead>
             <tbody>
               {tableData.map((row, index) => (
-                <motion.tr
+                <tr
                   key={index}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                  className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors group last:border-0"
                 >
-                  <td className="py-4 px-6 text-sm text-gray-700 font-medium">
+                  <td className="py-3 px-6 text-sm text-gray-600 font-medium sticky left-0 bg-white group-hover:bg-gray-50 transition-colors z-10 border-r border-gray-100">
                     {row.feature}
                   </td>
                   {subscriptionPlans.map((plan) => {
                     const value = row[plan.uid];
                     return (
-                      <td key={plan.uid} className="py-4 px-6 text-center">
+                      <td key={plan.uid} className="py-3 px-6 text-center border-r border-gray-100 last:border-0">
                         {typeof value === "boolean" ? (
                           value ? (
-                            <svg
-                              className="w-5 h-5 text-purple-600 mx-auto"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
+                            <div className="flex justify-center">
+                              <div className="text-[var(--color-primary)]">
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={2.5}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
                           ) : (
-                            <span className="text-gray-300">-</span>
+                            <div className="flex justify-center">
+                              <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                            </div>
                           )
                         ) : (
-                          <span className="text-sm text-gray-700">{value}</span>
+                          <span className="text-sm text-gray-900 font-medium">
+                            {value}
+                          </span>
                         )}
                       </td>
                     );
                   })}
-                </motion.tr>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

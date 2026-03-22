@@ -6,6 +6,7 @@ import type {
   SubscriptionPlanInterval,
   SubscriptionStatus,
 } from "@/types";
+import type { CouponAppliesTo } from "@/types/models/coupon";
 import { normalizeApiError } from "@/utils/normalizeApiErrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,13 +14,13 @@ import { toast } from "sonner";
 // Custom hook for subscription-related queries and mutations
 
 // get subscriptions
-export function useGetUserSubscriptions() {
+export function useGetUserCurrentSubscription() {
   const { api, userInfo } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptions", userInfo?.uid],
+    queryKey: ["subscription", userInfo?.uid],
     queryFn: async () => {
-      const res = await api.get<Subscription[]>(`/subscriptions`);
-      if (!res.data) throw new Error("Failed to fetch subscriptions");
+      const res = await api.get<Subscription>(`/subscriptions`);
+      if (!res.data) throw new Error("Failed to fetch subscription");
       return res.data;
     },
     enabled: !!userInfo,
@@ -30,7 +31,7 @@ export function useGetUserSubscriptions() {
 export function useGetUserSubscriptionByUid(uid: string) {
   const { api, userInfo } = useAppContext();
   return useQuery({
-    queryKey: ["subscriptions", userInfo?.uid, uid],
+    queryKey: ["subscription", userInfo?.uid, uid],
     queryFn: async () => {
       const res = await api.get<Subscription>(`/subscriptions/${uid}`);
       if (!res.data) throw new Error("Failed to fetch subscription");
@@ -46,16 +47,23 @@ export function useGetUserActiveSubscription() {
   const uid = userInfo?.uid;
 
   return useQuery({
-    queryKey: ["active-subscription"],
+    queryKey: ["active-subscription", uid],
     queryFn: async () => {
-      const res = await api.get<Subscription>("/subscriptions/active");
-      return res.data;
+      try {
+        const res = await api.get<Subscription>("/subscriptions/active");
+        return res.data;
+      } catch (error: any) {
+        if (error.response?.status) {
+          return null;
+        }
+        throw error;
+      }
     },
     enabled: Boolean(uid),
-    staleTime: 5 * 60 * 1000, // cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    retry: 1,
+    retry: false,
   });
 }
 
@@ -65,6 +73,12 @@ interface NewSubscription {
   redirectUrl: string;
   billingCycle: SubscriptionPlanInterval;
   currency: string;
+  priceId?: number;
+  couponCode?: string;
+  subscriptionId?: number;
+  amount?: string;
+  userId?: number;
+  appliesTo?: CouponAppliesTo;
 }
 
 export function useCreateSubscription() {
@@ -90,7 +104,7 @@ export function useCreateSubscription() {
     onError: (error) => {
       const errorMsg = normalizeApiError(
         error,
-        "Failed to create subscription"
+        "Failed to create subscription",
       );
       toast.error(errorMsg);
     },
@@ -102,6 +116,11 @@ interface RenewSubscription {
   platform: PaymentMethod;
   redirectUrl: string;
   currency: string;
+  billingCycle: SubscriptionPlanInterval;
+  couponCode?: string;
+  amount?: string;
+  userId?: number;
+  appliesTo?: CouponAppliesTo;
 }
 
 export function useRenewSubscription() {
@@ -137,6 +156,11 @@ interface UpgradeUserPlanProps {
   redirectUrl: string;
   billingCycle: SubscriptionPlanInterval;
   currency: string;
+  priceId?: number;
+  couponCode?: string;
+  amount?: string;
+  userId?: number;
+  appliesTo?: CouponAppliesTo;
 }
 
 export function useUpgradeUserPlan() {
@@ -178,7 +202,7 @@ export function useDowngradeUserPlan() {
     mutationFn: async (data: DowngradeUserPlanProps) => {
       const res = await api.patch<{ success: string }>(
         "/subscriptions/downgrade-plan",
-        data
+        data,
       );
       return res.data;
     },
@@ -242,7 +266,7 @@ export function useUpdateSubscription() {
       const res = await api.patch<{ success: string }>(`/subscriptions`, data);
       if (!res.data.success) {
         throw new Error(
-          "Failed to update subscription: No success response from server."
+          "Failed to update subscription: No success response from server.",
         );
       }
       return res.data;
@@ -257,7 +281,7 @@ export function useUpdateSubscription() {
     onError: (error: unknown) => {
       const errorMsg = normalizeApiError(
         error,
-        "Failed to update subscription"
+        "Failed to update subscription",
       );
       toast.error(errorMsg);
     },

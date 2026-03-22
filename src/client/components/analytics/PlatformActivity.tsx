@@ -95,7 +95,7 @@ const PlatformActivity: FC<PlatformActivityProps> = ({
   );
 
   return (
-    <div className="w-full bg-white border border-gray-200 mx-auto rounded-xl p-4 shadow-sm">
+    <div className="w-full bg-white border border-gray-200 mx-auto rounded-[4px] p-4 shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg w-full font-semibold text-gray-800">
           Platform Activity

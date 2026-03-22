@@ -57,7 +57,7 @@ const CustomCheckbox = ({
         className="sr-only"
       />
       <div
-        className={`relative flex items-center justify-center rounded-md border transition
+        className={`relative flex items-center justify-center rounded-[4px] border transition
           ${styles.box}
           ${
             checked

@@ -66,7 +66,7 @@ const ReferralSourceDialog: FC<ReferralSourceDialogProps> = ({
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 20, opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full max-w-md rounded-2xl bg-white shadow-2xl"
+            className="w-full max-w-md rounded-[4px] bg-white shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-primary/5 to-purple-50">
@@ -112,7 +112,7 @@ const ReferralSourceDialog: FC<ReferralSourceDialogProps> = ({
                   value={additionalInfo}
                   onChange={(e) => setAdditionalInfo(e.target.value)}
                   placeholder="E.g., specific influencer name, blog post title, friend's name, etc."
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+                  className="w-full rounded-[4px] border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition resize-none"
                   rows={3}
                   maxLength={500}
                 />
@@ -132,7 +132,7 @@ const ReferralSourceDialog: FC<ReferralSourceDialogProps> = ({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg"
+                className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-[4px] font-medium text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg"
               >
                 {isLoading ? "Processing..." : "Continue"}
               </button>

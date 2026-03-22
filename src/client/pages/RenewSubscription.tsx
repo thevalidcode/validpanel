@@ -9,39 +9,58 @@ import PaymentStep from "../components/upgrade-plan/PaymentStep";
 import OrderSummary from "../components/upgrade-plan/OrderSummary";
 import StepIndicator from "../components/upgrade-plan/StepIndicator";
 import {
-  useGetUserActiveSubscription,
+  useGetUserCurrentSubscription,
   useRenewSubscription,
 } from "@/hooks/use-subscription";
 import Loader from "@/components/Loader";
 import NotFound from "@/components/NotFound";
-import Decimal from "decimal.js";
+import AnimatedSection from "@/components/AnimatedSection";
+import { useValidateCoupon } from "@/hooks/use-coupon";
+import { convertCurrency, type CurrencyCode } from "@/lib/currencyConverter";
+import {
+  computeCouponDiscountAmount,
+  computePricingBreakdown,
+  resolvePlanPrice,
+} from "@/utils/subscription-pricing.utils";
+import type { Coupon } from "@/types/models/coupon";
+import CouponShowcase from "@/components/coupons/CouponShowcase";
 
 function RenewSubscription() {
   const navigate = useNavigate();
-  const { userCurrency } = useAppContext();
+  const { userCurrency, isAuthLoading, rates } = useAppContext();
 
   const [selectedGateway, setSelectedGateway] = useState<PaymentGateway | null>(
-    null
+    null,
   );
+  const [couponCode, setCouponCode] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponDiscountAmount, setCouponDiscountAmount] = useState<string>();
+  const [couponCurrency, setCouponCurrency] = useState<CurrencyCode>();
+  const [validatedCoupon, setValidatedCoupon] = useState<Coupon | undefined>();
 
   const { data: userSubscription, isLoading: isSubscriptionLoading } =
-    useGetUserActiveSubscription();
+    useGetUserCurrentSubscription();
   const [isAnnual, _] = useState<boolean>(
-    userSubscription?.billingCycle === "YEARLY"
+    userSubscription?.billingCycle === "YEARLY",
   );
 
   const { data: paymentGateways, isLoading: isGatewaysLoading } =
     useGetUserPaymentGateways();
 
   const { mutateAsync: renewSubscription, isPending } = useRenewSubscription();
+  const { mutateAsync: validateCoupon, isPending: isCouponValidating } =
+    useValidateCoupon();
 
   useEffect(() => {
-    if (!isSubscriptionLoading && !userSubscription) {
-      navigate("/subscription");
+    if (!isSubscriptionLoading && !isAuthLoading) {
+      if (!userSubscription) {
+        navigate("/subscription");
+      }
     }
-  }, [userSubscription, isSubscriptionLoading]);
+  }, [isSubscriptionLoading, userSubscription, isAuthLoading]);
 
-  if (isSubscriptionLoading || isGatewaysLoading) {
+  if (isSubscriptionLoading || isGatewaysLoading || isAuthLoading) {
     return <Loader />;
   }
 
@@ -53,33 +72,72 @@ function RenewSubscription() {
     return <NotFound title="No payment gateways available" variant="page" />;
   }
 
-  const plan: SubscriptionPlan = userSubscription.plan;
+  const plan: SubscriptionPlan = userSubscription.plan!;
   const billingCycle = userSubscription.billingCycle;
+  const resolvedPlanPrice = resolvePlanPrice(
+    plan,
+    billingCycle,
+    userCurrency || "USD",
+  );
 
-  const getBasePrice = () => {
-    const price = new Decimal(plan.price);
+  const getBasePrice = () => resolvedPlanPrice.amount.toFixed(2);
 
-    if (billingCycle === "YEARLY") {
-      const annualBase = price.mul(12);
-      const discount = new Decimal(plan.discountForAnnually || 0);
-      return annualBase.minus(annualBase.mul(discount.div(100))).toFixed(2);
-    }
-
-    return price.toFixed(2);
+  const convertAmount = (
+    source: CurrencyCode,
+    target: CurrencyCode,
+    amount: string,
+  ) => {
+    return convertCurrency(source, target, amount, rates || {}).amount;
   };
 
-  const calculateTax = (amount: string) => {
-    const value = new Decimal(amount);
-    if (value.lte(0)) return "0.00";
+  const fallbackCouponDiscount = computeCouponDiscountAmount(
+    getBasePrice(),
+    resolvedPlanPrice.currency,
+    validatedCoupon
+      ? {
+          type: validatedCoupon.type,
+          value: validatedCoupon.value,
+          currency: validatedCoupon.currency,
+        }
+      : undefined,
+    isCouponApplied,
+    undefined,
+    undefined,
+    convertAmount,
+  );
 
-    const taxRate = new Decimal(plan.tax || 0);
-    return value.mul(taxRate.div(100)).toFixed(2);
+  const effectiveCouponDiscountAmount =
+    couponDiscountAmount ||
+    (isCouponApplied ? fallbackCouponDiscount.toFixed(2) : undefined);
+  const effectiveCouponCurrency = couponCurrency || resolvedPlanPrice.currency;
+
+  const pricingBreakdown = computePricingBreakdown({
+    subtotal: getBasePrice(),
+    taxRate: resolvedPlanPrice.taxRate,
+    couponApplied: isCouponApplied,
+    couponDiscountAmount: effectiveCouponDiscountAmount,
+    couponCurrency: effectiveCouponCurrency,
+    subtotalCurrency: resolvedPlanPrice.currency,
+    coupon: validatedCoupon
+      ? {
+          type: validatedCoupon.type,
+          value: validatedCoupon.value,
+          currency: validatedCoupon.currency,
+        }
+      : undefined,
+    convertAmount,
+  });
+
+  const calculateTax = (amount: string) => {
+    return computePricingBreakdown({
+      subtotal: amount,
+      taxRate: resolvedPlanPrice.taxRate,
+      subtotalCurrency: resolvedPlanPrice.currency,
+    }).taxAmount;
   };
 
   const calculateTotal = () => {
-    const subtotal = new Decimal(getBasePrice());
-    const tax = new Decimal(calculateTax(subtotal.toString()));
-    return subtotal.plus(tax).toFixed(2);
+    return pricingBreakdown.total;
   };
 
   const handleProceedToPayment = async () => {
@@ -89,55 +147,166 @@ function RenewSubscription() {
       const response = await renewSubscription({
         platform: selectedGateway.platform,
         currency: userCurrency,
+        billingCycle: billingCycle,
         planId: plan.id,
-        redirectUrl: window.location.origin + window.location.pathname,
+        redirectUrl: `${window.location.origin}/payment-status`,
+        couponCode: isCouponApplied ? couponCode.trim() : undefined,
+        amount: calculateTotal(),
+        userId: userSubscription.userId,
+        appliesTo: "RENEWAL",
       });
 
       if (selectedGateway.platform === "MANUAL") {
-        navigate("/subscription");
+        navigate("/payment-status?platform=manual");
         return;
       }
 
-      navigate(response.url || "/subscription");
+      if (response.url) {
+        window.location.href = response.url;
+        return;
+      }
+
+      navigate("/payment-status?platform=manual");
     } catch (error) {
       console.error("Renewal failed:", error);
     }
   };
 
+  const applyCouponCode = async (code: string) => {
+    if (!code.trim()) return;
+
+    try {
+      const validation = await validateCoupon({
+        code: code.trim(),
+        planId: plan.id,
+        billingCycle,
+        currency: userCurrency,
+        amount: calculateTotal(),
+        appliesTo: "RENEWAL",
+        userId: userSubscription.userId,
+      });
+      setValidatedCoupon(validation.coupon);
+      const serverDiscount = validation.discountAmount;
+      if (serverDiscount) {
+        setCouponDiscountAmount(serverDiscount);
+        setCouponCurrency(
+          (validation.discountCurrency ||
+            validation.coupon.currency ||
+            resolvedPlanPrice.currency) as CurrencyCode,
+        );
+      } else {
+        setCouponDiscountAmount(undefined);
+        setCouponCurrency(undefined);
+      }
+      setIsCouponApplied(true);
+      setCouponMessage("Coupon validated and will be applied to this renewal.");
+    } catch (_error) {
+      setIsCouponApplied(false);
+      setCouponDiscountAmount(undefined);
+      setCouponCurrency(undefined);
+      setValidatedCoupon(undefined);
+      setCouponMessage("Coupon could not be validated for renewal.");
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    await applyCouponCode(couponCode);
+  };
+
+  const handleUseSuggestedCoupon = async (code: string) => {
+    setCouponCode(code);
+    setIsCouponApplied(false);
+    setCouponDiscountAmount(undefined);
+    setCouponCurrency(undefined);
+    setValidatedCoupon(undefined);
+    await applyCouponCode(code);
+  };
+
+  const handleRemoveSuggestedCoupon = () => {
+    setCouponCode("");
+    setIsCouponApplied(false);
+    setCouponDiscountAmount(undefined);
+    setCouponCurrency(undefined);
+    setValidatedCoupon(undefined);
+    setCouponMessage("");
+  };
+
   return (
     <Layout
       title={`Renew ${plan.name}`}
-      description="Renew your subscription to continue uninterrupted access"
+      description="Secure checkout to continue your subscription."
     >
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* MAIN */}
-          <div className="lg:col-span-2">
-            <StepIndicator currentStep={2} />
-            <AnimatePresence mode="wait">
-              <PaymentStep
-                paymentGateways={paymentGateways}
-                selectedGateway={selectedGateway}
-                setSelectedGateway={setSelectedGateway}
-                onBack={() => navigate("/subscription")}
-                isProcessing={isPending}
-                isManualGateway={selectedGateway?.platform === "MANUAL"}
-                selectedPlan={plan}
-                canProceed={!!selectedGateway}
-                onProceed={handleProceedToPayment}
-              />
-            </AnimatePresence>
-          </div>
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        <AnimatedSection>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* MAIN */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white rounded-[4px] border border-gray-200 shadow-sm p-6">
+                <StepIndicator currentStep={2} />
+                <div className="mt-8">
+                  <AnimatePresence mode="wait">
+                    <PaymentStep
+                      paymentGateways={paymentGateways}
+                      selectedGateway={selectedGateway}
+                      setSelectedGateway={setSelectedGateway}
+                      onBack={() => navigate("/subscription")}
+                      isProcessing={isPending}
+                      isManualGateway={selectedGateway?.platform === "MANUAL"}
+                      selectedPlan={plan}
+                      canProceed={!!selectedGateway}
+                      onProceed={handleProceedToPayment}
+                      couponCode={couponCode}
+                      couponAppliesTo="RENEWAL"
+                      onUseSuggestedCoupon={handleUseSuggestedCoupon}
+                      onRemoveSuggestedCoupon={handleRemoveSuggestedCoupon}
+                      onCouponCodeChange={(code) => {
+                        setCouponCode(code);
+                        if (isCouponApplied) {
+                          setIsCouponApplied(false);
+                          setCouponDiscountAmount(undefined);
+                          setCouponCurrency(undefined);
+                          setValidatedCoupon(undefined);
+                        }
+                      }}
+                      onApplyCoupon={handleApplyCoupon}
+                      isCouponApplying={isCouponValidating}
+                      couponApplied={isCouponApplied}
+                      couponMessage={couponMessage}
+                    />
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
 
-          {/* SUMMARY */}
-          <OrderSummary
-            selectedPlan={plan}
-            isAnnual={isAnnual}
-            calculateTax={calculateTax}
-            calculateTotal={calculateTotal}
-            getDiscountedPrice={getBasePrice}
-          />
-        </div>
+            {/* SUMMARY */}
+            <div className="space-y-4">
+              <OrderSummary
+                selectedPlan={plan}
+                isAnnual={isAnnual}
+                calculateTax={calculateTax}
+                calculateTotal={calculateTotal}
+                getDiscountedPrice={getBasePrice}
+                couponCode={couponCode}
+                couponApplied={isCouponApplied}
+                couponDiscountAmount={effectiveCouponDiscountAmount}
+                couponCurrency={effectiveCouponCurrency}
+              />
+
+              <CouponShowcase
+                context="SUBSCRIPTION_PAGE"
+                appliesTo="RENEWAL"
+                variant="sidebar"
+                title="Available Renewal Coupons"
+                selectedCode={couponCode}
+                isApplying={isCouponValidating}
+                onUseCoupon={(coupon) => {
+                  handleUseSuggestedCoupon(coupon.code);
+                }}
+                onRemoveCoupon={handleRemoveSuggestedCoupon}
+              />
+            </div>
+          </div>
+        </AnimatedSection>
       </div>
     </Layout>
   );

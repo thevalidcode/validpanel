@@ -30,7 +30,7 @@ export default function ContactMessagesDesktopView({
 
   return (
     <div className="space-y-4">
-      <div className="w-full overflow-x-auto border border-gray-200 rounded-lg bg-white">
+      <div className="w-full overflow-x-auto border border-gray-200 rounded-[4px] bg-white">
         <table className="min-w-[960px] w-full text-sm whitespace-nowrap table-fixed">
           <thead>
             <tr className="text-left text-gray-600 bg-gray-50 border-b border-gray-200">
@@ -74,7 +74,7 @@ export default function ContactMessagesDesktopView({
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onViewDetail(msg.uid)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-[4px] transition"
                       title="View message"
                     >
                       <Eye className="w-4 h-4" />
@@ -84,7 +84,7 @@ export default function ContactMessagesDesktopView({
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onDelete(msg.uid)}
                       disabled={isDeleting}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Delete message"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -98,7 +98,7 @@ export default function ContactMessagesDesktopView({
       </div>
 
       {paginatedMessages.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+        <div className="text-center py-12 bg-white rounded-[4px] border border-gray-200">
           <p className="text-gray-500">No messages found</p>
         </div>
       )}

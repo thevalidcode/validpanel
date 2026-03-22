@@ -16,7 +16,7 @@ const PGSummaryCard: FC<PGSummaryCardProps> = ({
   textColor,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between">
+    <div className="bg-white p-6 rounded-[4px] shadow-sm border border-gray-200 flex items-center justify-between">
       <div>
         <p className="text-sm text-gray-500">{title}</p>
         <p className={`text-3xl font-bold ${textColor}`}>{value}</p>

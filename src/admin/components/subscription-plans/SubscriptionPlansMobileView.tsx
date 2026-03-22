@@ -2,7 +2,6 @@ import { useState, type FC } from "react";
 import { Edit2Icon, MoreVertical, Trash } from "lucide-react";
 import ActionMenu from "@/components/ui/ActionMenu";
 import type { SubscriptionPlan } from "@/types";
-import { getCurrencySymbol } from "@/_docs/doc";
 
 interface SubscriptionPlansMobileViewProps {
   plans: SubscriptionPlan[];
@@ -25,7 +24,7 @@ const SubscriptionPlansMobileView: FC<SubscriptionPlansMobileViewProps> = ({
       {visiblePlans.map((plan) => (
         <div
           key={plan.id}
-          className="border border-t-4 border-primary border-t-primary rounded-lg py-5 px-[17px] hover:border-primary/70 transition-all shadow-sm"
+          className="border border-t-4 border-primary border-t-primary rounded-[4px] py-5 px-[17px] hover:border-primary/70 transition-all shadow-sm"
         >
           <div className="space-y-4">
             {/* Header */}
@@ -55,24 +54,23 @@ const SubscriptionPlansMobileView: FC<SubscriptionPlansMobileViewProps> = ({
               />
             </div>
 
-            {/* Price & Interval */}
-            <div className="flex items-center gap-4">
-              <div className="bg-primary/10 rounded-lg px-3 py-2 flex-1">
-                <p className="text-xs text-gray-600">Price</p>
-                <p className="font-semibold text-primary">
-                  {getCurrencySymbol(plan.currency)}{plan.price}
-                </p>
-              </div>
-              <div className="bg-blue-50 rounded-lg px-3 py-2 flex-1">
-                <p className="text-xs text-gray-600">Interval</p>
-                <p className="font-semibold text-blue-700">
-                  {plan.interval === "MONTHLY" ? "Monthly" : "Yearly"}
-                </p>
-              </div>
+            {/* Pricing Summary */}
+            <div className="bg-gray-50 rounded-[4px] px-3 py-2 flex flex-col gap-1">
+              <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                Pricing Options
+              </span>
+              {plan.prices && plan.prices.length > 0 ? (
+                <span className="text-sm font-semibold text-gray-900">
+                  {plan.prices.length}{" "}
+                  {plan.prices.length === 1 ? "price" : "prices"} found
+                </span>
+              ) : (
+                <span className="text-sm text-gray-400 italic">No pricing configured</span>
+              )}
             </div>
 
             {/* Features */}
-            <div className="bg-gray-50 rounded-lg px-3 py-2">
+            <div className="bg-gray-50 rounded-[4px] px-3 py-2">
               <p className="text-xs text-gray-600 mb-2">Features</p>
               <div className="flex gap-2 flex-wrap">
                 {plan.features.stores && (
@@ -109,18 +107,15 @@ const SubscriptionPlansMobileView: FC<SubscriptionPlansMobileViewProps> = ({
               >
                 {plan.status}
               </span>
-              <span>
-                Created {new Date(plan.createdAt).toLocaleDateString()}
-              </span>
+              <span>{new Date(plan.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
         </div>
       ))}
-
       {hasMore && (
         <button
           onClick={onHandleLoadMore}
-          className="w-full py-3 text-sm font-medium text-primary hover:text-primary/90 transition border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100"
+          className="w-full py-2 text-sm text-primary font-medium hover:bg-primary/5 rounded transition-colors"
         >
           Load More
         </button>

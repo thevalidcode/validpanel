@@ -116,7 +116,7 @@ const PageButton = ({
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
       disabled={disabled}
-      className={`min-w-[36px] h-9 px-2 flex items-center justify-center rounded-md border transition
+      className={`min-w-[36px] h-9 px-2 flex items-center justify-center rounded-[4px] border transition
         ${
           active
             ? "bg-primary text-white border-primary"

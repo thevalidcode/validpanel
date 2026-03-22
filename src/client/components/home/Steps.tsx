@@ -2,35 +2,34 @@ import { useState } from "react";
 import type { FC } from "react";
 import StepCard from "./StepCard";
 import type { StepItem } from "../../../types/Home.types";
-
 import Spiral from "../../../assets/images/spiral-icon.svg";
 import Star from "../../../assets/images/star-icon.svg";
 
 const Steps: FC = () => {
   const steps: StepItem[] = [
     {
-      title: "Choose Store Type",
-      desc: "Select the type of store you want to create. You can start with an online shop or a social media store based on your needs.",
+      title: "Select Store Model",
+      desc: "Choose between a Classic Online Shop for products or a Social Media Store for digital services.",
     },
     {
-      title: "Choose a Plan",
-      desc: "Select the pricing plan that best fits your business goals.",
+      title: "Pick Your Plan",
+      desc: "Choose a flexible plan that grows with your business.",
     },
     {
-      title: "Name Your Store",
-      desc: "Give your store a unique name and customize your store link. This is the first identity your customers will see.",
+      title: "Claim Your Identity",
+      desc: "Set your store name and custom domain link.",
     },
     {
-      title: "Add Branding",
-      desc: "Upload your logo, choose brand colors, and customize the design to match your brand identity.",
+      title: "Customize & Brand",
+      desc: "Upload logos and set colors to match your unique style.",
     },
     {
-      title: "Choose Payment Method",
-      desc: "Select the payment method you want to use to pay for your subscription.",
+      title: "Configure Payments",
+      desc: "Set up how you want to get paid by your customers.",
     },
     {
-      title: "Launch Your Store",
-      desc: "Review your setup, publish your store, and start accepting customers immediately.",
+      title: "Go Live",
+      desc: "Review settings and launch your store to the world.",
     },
   ];
 

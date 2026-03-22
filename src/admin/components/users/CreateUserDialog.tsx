@@ -97,11 +97,11 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full max-w-xl rounded-2xl bg-white shadow-xl"
+            className="w-full max-w-xl rounded-[] bg-white shadow-xl"
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[4px] bg-primary/10 text-primary flex items-center justify-center">
                 <User className="w-5 h-5" />
               </div>
               <div>
@@ -122,7 +122,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
                   value={form.fullName}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="mt-1 w-full rounded-[4px] border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </Field>
 
@@ -135,7 +135,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
                   required
                   onChange={handleChange}
                   placeholder="john@example.com"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="mt-1 w-full rounded-[4px] border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </Field>
 
@@ -148,7 +148,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Min. 8 characters"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="mt-1 w-full rounded-[4px] border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </Field>
 
@@ -188,7 +188,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
                   value={form.additionalInfo}
                   onChange={handleChange}
                   placeholder="E.g., campaign name, referrer details, etc."
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+                  className="w-full rounded-[4px] border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition resize-none"
                   rows={3}
                   maxLength={500}
                 />
@@ -209,7 +209,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
                 type="button"
                 onClick={handleCancel}
                 disabled={isLoading}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                className="rounded-[4px] border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -217,7 +217,7 @@ const CreateUserDialog: FC<CreateUserDialogProps> = ({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
+                className="rounded-[4px] bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
               >
                 {isLoading ? "Creating..." : "Create User"}
               </button>

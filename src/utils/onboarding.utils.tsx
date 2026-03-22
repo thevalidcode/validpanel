@@ -6,6 +6,7 @@ import type {
 
 export type OnboardingDraft = {
   planUid?: string;
+  couponCode?: string;
   storeType?: StoreType;
   storeName?: string;
   currency?: string;

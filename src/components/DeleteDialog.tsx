@@ -32,13 +32,14 @@ const DeleteDialog: FC<DeleteDialogProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={onCancel}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="w-full max-w-md rounded-xl bg-white border border-gray-200 shadow-xl p-6 text-center"
+            className="w-full max-w-md rounded-[4px] bg-white border border-gray-200 shadow-xl p-6 text-center"
           >
             <div className="mb-4">
               {icon ? (
@@ -63,7 +64,7 @@ const DeleteDialog: FC<DeleteDialogProps> = ({
                 type="button"
                 onClick={onCancel}
                 disabled={isLoading}
-                className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
+                className="inline-flex items-center rounded-[4px] border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
               >
                 {cancelLabel}
               </button>
@@ -72,7 +73,7 @@ const DeleteDialog: FC<DeleteDialogProps> = ({
                 type="button"
                 onClick={onConfirm}
                 disabled={isLoading}
-                className="inline-flex items-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition disabled:opacity-60"
+                className="inline-flex items-center rounded-[4px] bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition disabled:opacity-60 shadow-md shadow-red-500/20"
               >
                 {isLoading ? "Deleting..." : confirmLabel}
               </button>

@@ -28,9 +28,9 @@ function ColorPicker({
         <div
           key={index}
           onClick={() => setSelectedColor(color)}
-          className={`w-10 h-10 rounded-lg cursor-pointer transition-all duration-150 ease-in-out ${
+          className={`w-10 h-10 rounded-[4px] cursor-pointer transition-all duration-150 ease-in-out ${
             selectedColor === color
-              ? "ring-4 ring-purple-200 scale-105"
+              ? "ring-4 ring-[var(--color-primary)]/20 scale-105"
               : "hover:scale-105"
           }`}
           style={{ backgroundColor: color }}
@@ -40,7 +40,7 @@ function ColorPicker({
       {/* Custom Color Picker */}
       <label
         htmlFor="customColor"
-        className="flex items-center justify-center w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-purple-400 transition"
+        className="flex items-center justify-center w-10 h-10 border-2 border-gray-300 rounded-[4px] cursor-pointer hover:border-[var(--color-primary)] transition"
       >
         <input
           id="customColor"

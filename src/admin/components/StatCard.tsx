@@ -17,7 +17,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   color,
   up,
 }) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-1 hover:shadow-sm transition">
+  <div className="bg-white border border-gray-200 rounded-[4px] p-4 flex flex-col gap-1 hover:shadow-sm transition">
     <p className="text-sm text-gray-500">{title}</p>
 
     <div className="flex justify-between items-center">

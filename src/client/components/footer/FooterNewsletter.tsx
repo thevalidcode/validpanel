@@ -21,10 +21,10 @@ const FooterNewsletter: FC = () => {
 
   return (
     <div>
-      <h4 className="text-lg font-semibold mb-4 text-white">
+      <h4 className="text-gray-900 font-bold mb-4">
         Stay Updated
       </h4>
-      <p className="text-purple-100 text-sm mb-4">
+      <p className="text-gray-500 text-sm mb-4 leading-relaxed">
         Get the latest updates, tips, and exclusive offers delivered to your inbox.
       </p>
       <form className="flex gap-2" onSubmit={onSubmit}>
@@ -34,15 +34,15 @@ const FooterNewsletter: FC = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="flex-1 px-4 py-3 rounded-full text-gray-700 bg-white outline-none focus:ring-2 focus:ring-white text-sm placeholder:text-gray-400"
+          className="flex-1 px-4 py-3 rounded-[4px] border border-gray-200 text-gray-700 bg-white text-sm placeholder:text-gray-400 outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all duration-200"
         />
         <button
           title="Subscribe to newsletter"
           type="submit"
           disabled={isSubmitting}
-          className="h-[48px] w-[48px] rounded-full bg-white hover:bg-purple-50 flex items-center justify-center transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="h-[46px] w-[46px] rounded-[4px] bg-[var(--color-primary)] hover:bg-[#5c0fb3] text-white flex items-center justify-center transition-all duration-200 shadow-md shadow-purple-500/20 hover:shadow-purple-500/30 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <FaPaperPlane className="text-[var(--primary)] text-sm" />
+          <FaPaperPlane className="text-sm" />
         </button>
       </form>
     </div>

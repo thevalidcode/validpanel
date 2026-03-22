@@ -72,7 +72,7 @@ const CreateStoreForm: React.FC = () => {
   };
 
   const canCreateStores =
-    (stores?.length || 0) < (subscription.plan.features.stores || 1);
+    (stores?.length || 0) < (subscription?.plan?.features?.stores || 1);
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) =>
     setStoreName(e.target.value);
@@ -105,7 +105,7 @@ const CreateStoreForm: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="bg-white p-6 sm:p-8 flex-1 rounded-xl shadow-md"
+              className="bg-white p-6 sm:p-8 flex-1 rounded-[4px] shadow-md"
             >
               <h2 className="text-2xl font-bold mb-2 text-center">
                 Create a New Store
@@ -114,13 +114,13 @@ const CreateStoreForm: React.FC = () => {
                 Set up a new store by filling in the details below.
               </p>
 
-              <div className="mb-6 rounded-lg p-4 sm:p-6">
+              <div className="mb-6 rounded-[4px] p-4 sm:p-6">
                 {/* Store Type */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                   {(["SHOP", "SOCIAL"] as const).map((type) => (
                     <button
                       key={type}
-                      className={`flex-1 border rounded-lg py-6 sm:py-8 text-center transition-all duration-200 ${
+                      className={`flex-1 border rounded-[4px] py-6 sm:py-8 text-center transition-all duration-200 ${
                         storeType === type
                           ? "border-purple-500 bg-purple-50 text-primary"
                           : "border-gray-200 text-gray-700 hover:border-purple-200"
@@ -154,7 +154,7 @@ const CreateStoreForm: React.FC = () => {
                   value={storeName}
                   onChange={handleNameChange}
                   required
-                  className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-[4px] p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-purple-500"
                 />
 
                 {/* Description */}
@@ -165,7 +165,7 @@ const CreateStoreForm: React.FC = () => {
                   placeholder="Enter a short description of your store"
                   value={description}
                   onChange={handleDescriptionChange}
-                  className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                  className="w-full border border-gray-300 rounded-[4px] p-2 mb-4 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
                   rows={3}
                 />
 
@@ -198,7 +198,7 @@ const CreateStoreForm: React.FC = () => {
                         title="color"
                         key={color}
                         type="button"
-                        className={`w-8 h-8 rounded-lg border-2 transition-all duration-150 ${
+                        className={`w-8 h-8 rounded-[4px] border-2 transition-all duration-150 ${
                           brandColor === color
                             ? "border-gray-600 scale-105"
                             : "border-transparent"
@@ -215,7 +215,7 @@ const CreateStoreForm: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="border cursor-pointer border-purple-500 text-purple-500 rounded-md px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
+                    className="border cursor-pointer border-purple-500 text-purple-500 rounded-[4px] px-4 py-2 hover:bg-purple-50 w-full sm:w-auto"
                   >
                     Cancel
                   </button>
@@ -223,7 +223,7 @@ const CreateStoreForm: React.FC = () => {
                     type="button"
                     onClick={handleCreate}
                     title="create-store"
-                    className="bg-purple-600 cursor-pointer text-white rounded-md px-4 py-2 hover:bg-primary w-full sm:w-auto flex items-center gap-2 animate-pulse hover:animate-none"
+                    className="bg-purple-600 cursor-pointer text-white rounded-[4px] px-4 py-2 hover:bg-primary w-full sm:w-auto flex items-center gap-2 animate-pulse hover:animate-none"
                   >
                     <img src="/Jet.svg" alt="Jet" /> <span>Create Store</span>
                   </button>

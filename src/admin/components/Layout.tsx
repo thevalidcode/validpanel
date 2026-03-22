@@ -41,7 +41,7 @@ function Layout({
 
   useEffect(() => {
     if (title) {
-      document.title = `${title} | Valid Panel`;
+      document.title = `${title} | ValidPanel`;
     }
   }, [title]);
 

@@ -66,7 +66,7 @@ const Step4: React.FC = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="bg-white rounded-2xl shadow-lg p-8 mt-10 w-full max-w-3xl mx-auto"
+        className="w-full max-w-3xl mx-auto"
       >
         <ImageUploadBox
           label="Brand Logo (Optional)"

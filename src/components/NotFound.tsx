@@ -27,7 +27,7 @@ const NotFound: FC<NotFoundProps> = ({
         "flex flex-col items-center justify-center text-center",
         isPage
           ? "min-h-[70vh] px-6"
-          : "bg-white rounded-xl border border-gray-200 shadow-xs p-6",
+          : "bg-white rounded-[4px] border border-gray-200 shadow-xs p-6",
         className || "",
       ].join(" ")}
     >
@@ -35,7 +35,7 @@ const NotFound: FC<NotFoundProps> = ({
         {icon ? (
           <div className="text-gray-400">{icon}</div>
         ) : (
-          <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xl">
+          <div className="w-14 h-14 rounded-[4px] bg-gray-100 flex items-center justify-center text-gray-400 text-xl">
             ?
           </div>
         )}
@@ -65,7 +65,7 @@ const NotFound: FC<NotFoundProps> = ({
         <button
           type="button"
           onClick={onActionClick}
-          className="mt-6 cursor-pointer inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition"
+          className="mt-6 cursor-pointer inline-flex items-center rounded-[4px] bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition"
         >
           {actionLabel}
         </button>

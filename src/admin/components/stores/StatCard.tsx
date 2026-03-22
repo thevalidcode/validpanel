@@ -14,7 +14,7 @@ export function StatCard({
 }: StatCardProps): JSX.Element {
   return (
     <div
-      className={`flex justify-between items-center p-4 rounded-lg border border-gray-300 bg-white ${color}`}
+      className={`flex justify-between items-center p-4 rounded-[4px] border border-gray-300 bg-white ${color}`}
     >
       <div className="text-left">
         <h3 className="text-sm font-medium text-gray-500">{title}</h3>

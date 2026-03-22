@@ -193,7 +193,7 @@ export default function PlatformTour({
             className="fixed inset-0 flex items-center justify-center z-[9999] p-4"
           >
             <motion.div
-              className="bg-white rounded-xl border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-[4px] border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.2}
@@ -204,18 +204,18 @@ export default function PlatformTour({
                 <button
                   title="skip"
                   onClick={onClose}
-                  className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition text-gray-600"
+                  className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-[4px] transition text-gray-600"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-purple-50 rounded-lg">
+                  <div className="p-3 bg-purple-50 rounded-[4px]">
                     {currentTourStep.icon}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                      <span className="text-xs font-medium text-purple-600 bg-purple-50 px-3 py-1 rounded-[4px]">
                         Step {currentStep + 1} of {tourSteps.length}
                       </span>
                     </div>
@@ -243,7 +243,7 @@ export default function PlatformTour({
                 </p>
 
                 {/* Features List */}
-                <div className="bg-purple-50 rounded-lg border border-purple-100 p-5 mb-6">
+                <div className="bg-purple-50 rounded-[4px] border border-purple-100 p-5 mb-6">
                   <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm">
                     <Check className="w-4 h-4 text-purple-600" />
                     Key Features
@@ -257,7 +257,7 @@ export default function PlatformTour({
                         transition={{ delay: index * 0.1 }}
                         className="flex items-start gap-2.5 text-sm text-gray-700"
                       >
-                        <span className="w-1.5 h-1.5 bg-purple-600 rounded-full mt-2 flex-shrink-0" />
+                        <span className="w-1.5 h-1.5 bg-purple-600 rounded-[2px] mt-2 flex-shrink-0" />
                         <span>{feature}</span>
                       </motion.div>
                     ))}
@@ -297,7 +297,7 @@ export default function PlatformTour({
                     {currentStep > 0 && (
                       <button
                         onClick={handlePrevious}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-[4px] transition"
                       >
                         Previous
                       </button>
@@ -306,7 +306,7 @@ export default function PlatformTour({
                     {currentStep > 0 && currentStep < tourSteps.length - 1 && (
                       <button
                         onClick={handleVisitPage}
-                        className="px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-lg transition"
+                        className="px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-[4px] transition"
                       >
                         Visit Page
                       </button>
@@ -314,7 +314,7 @@ export default function PlatformTour({
 
                     <button
                       onClick={handleNext}
-                      className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition flex items-center gap-2"
+                      className="px-6 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-[4px] transition flex items-center gap-2"
                     >
                       {currentStep === tourSteps.length - 1 ? (
                         <>

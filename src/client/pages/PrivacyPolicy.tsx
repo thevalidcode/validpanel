@@ -3,38 +3,13 @@ import { useEffect } from "react";
 
 const PrivacyPolicy = () => {
   useEffect(() => {
-    document.title = "Privacy Policy | Valid Panel";
+    document.title = "Privacy Policy | ValidPanel";
   }, []);
 
   return (
-    <section className="mx-auto px-5 py-40">
-      {/* Animated background */}
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 90, 0],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute top-0 left-0 w-96 h-96 bg-primary/30 rounded-full mix-blend-multiply filter blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, -90, 0],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute top-1/4 right-1/9 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl pointer-events-none"
-      />
+    <section className="relative mx-auto px-5 py-40 min-h-screen">
+      {/* Background Grid */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

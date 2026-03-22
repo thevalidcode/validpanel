@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../../context/useAppContext";
 import { MdClose } from "react-icons/md";
+import { FaBars } from "react-icons/fa";
 
 const Navbar: FC = () => {
   const [open, setOpen] = useState(false);
   const { userInfo } = useAppContext();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Pricing", path: "/pricing" },
-    { label: "FAQ", path: "/faq" },
     { label: "Contact", path: "/contact-us" },
   ];
 
@@ -23,86 +32,75 @@ const Navbar: FC = () => {
 
   return (
     <>
-      {/* Main Header */}
-      <header className="bg-white absolute top-0 z-50 shadow-sm h-[80px] w-full flex items-center">
-        <div className="flex justify-between items-center h-full w-full py-0 px-[16px] md:px-[150px]">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled || open
+            ? "bg-white/80 backdrop-blur-md border-b border-gray-100 py-3"
+            : "bg-white py-5 border-b border-transparent"
+        }`}
+      >
+        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
           {/* Brand */}
-          <Link to="/" className="flex items-center h-full overflow-hidden">
+          <Link to="/" className="flex items-center gap-2 group">
             <img
               src="/Valid2.svg"
-              alt="ValidPanel Logo"
-              className="h-15 w-40 object-cover md:block hidden"
+              alt="ValidPanel"
+              className="h-12 w-auto object-contain"
             />
-            <p className="font-bold text-2xl text-primary md:hidden block">
-              ValidPanel
-            </p>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-[40px] text-[15px] font-medium text-gray-700">
-            {navItems.map(({ label, path }, i) => (
+          <nav className="hidden md:flex items-center gap-8">
+            {navItems.map((item, i) => (
               <Link
                 key={i}
-                to={path}
-                className="hover:text-primary transition-colors"
+                to={item.path}
+                className="text-sm font-medium text-gray-600 hover:text-[var(--color-primary)] transition-colors relative group"
               >
-                {label}
+                {item.label}
+                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-[var(--color-primary)] scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </Link>
             ))}
           </nav>
 
           {/* Desktop Auth */}
-          <div className="hidden md:flex space-x-3">
+          <div className="hidden md:flex items-center gap-3">
             {!userInfo ? (
               <>
                 <Link
                   to="/login"
-                  className="border border-primary text-primary px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
+                  className="text-sm font-semibold text-gray-600 hover:text-gray-900 px-4 py-2"
                 >
-                  Login
+                  Log in
                 </Link>
-
                 <Link
                   to="/register"
-                  className="bg-primary text-white px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
+                  className="text-sm font-semibold text-white bg-[var(--color-primary)] px-5 py-2.5 rounded-[4px] shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 hover:-translate-y-0.5 transition-all"
                 >
-                  Get Started
+                  Start Free
                 </Link>
               </>
             ) : (
-              <>
-                <Link
-                  to="/analytics"
-                  className="border border-primary text-primary px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
-                >
-                  Overview
-                </Link>
-
-                <Link
-                  to="/stores"
-                  className="bg-primary text-white px-5 py-2 rounded-full text-[15px] shadow-[0_4px_13.33px_rgba(106,13,173,0.25)]"
-                >
-                  Stores
-                </Link>
-              </>
+              <Link
+                to="/analytics"
+                className="text-sm font-semibold text-white bg-[var(--color-primary)] px-5 py-2.5 rounded-[4px] shadow-lg shadow-purple-500/20 hover:-translate-y-0.5 transition-all"
+              >
+                Go to Dashboard
+              </Link>
             )}
           </div>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Toggle */}
           <button
-            type="button"
-            title="open"
             onClick={() => setOpen(!open)}
-            className="md:hidden relative h-6 w-8 flex flex-col justify-between items-center"
+            className="md:hidden text-2xl text-gray-700 p-1"
           >
-            <motion.span className="block h-[2px] bg-gray-700 w-full rounded" />
-            <motion.span className="block h-[2px] bg-gray-700 w-full rounded" />
-            <motion.span className="block h-[2px] bg-gray-700 w-full rounded" />
+            {open ? <MdClose /> : <FaBars />}
           </button>
         </div>
       </header>
 
-      {/* MOBILE FULL SCREEN MENU */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -110,89 +108,61 @@ const Navbar: FC = () => {
             animate="visible"
             exit="hidden"
             variants={mobileMenuVariant}
-            transition={{ type: "tween", duration: 0.35 }}
-            className="fixed top-0 right-0 h-full w-full bg-white text-gray-900 z-[999] md:hidden shadow-xl"
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 bg-white z-[40] md:hidden pt-24 px-6 flex flex-col"
           >
-            {/* Header inside drawer */}
-            <div className="flex justify-between items-center px-5 pt-6 pb-4 border-b border-neutral-200">
-              <Link
-                to="/"
-                onClick={() => setOpen(false)}
-                className="flex items-center h-full overflow-hidden"
-              >
-                <img
-                  src="Valid2.svg"
-                  alt="ValidPanel Logo"
-                  className="h-15 w-40 object-cover md:block hidden"
-                />
-                <p className="font-bold text-2xl text-primary md:hidden block">
-                  ValidPanel
-                </p>
-              </Link>
-
+            <div className="absolute top-4 right-4 h-10 w-10 flex items-center justify-center">
               <button
-                type="button"
                 title="close"
+                type="button"
                 onClick={() => setOpen(false)}
-                className="text-[32px] text-gray-700"
+                className="text-[32px] text-gray-700 "
               >
                 <MdClose />
               </button>
             </div>
 
-            {/* Nav Items */}
-            <nav className="flex flex-col mt-4">
-              {navItems.map(({ label, path }, i) => (
+            <nav className="flex flex-col gap-6 mt-10">
+              {navItems.map((item, i) => (
                 <Link
                   key={i}
-                  to={path}
+                  to={item.path}
                   onClick={() => setOpen(false)}
-                  className="flex justify-between items-center w-full text-left px-5 py-4 text-[17px] font-medium border-b border-neutral-200 hover:bg-gray-50 transition"
+                  className="text-2xl font-bold text-gray-800 border-b border-gray-100 pb-4"
                 >
-                  {label}
-                  <span className="text-[18px]">{">"}</span>
+                  {item.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Auth Buttons */}
-            {!userInfo ? (
-              <div className="mt-19 px-5 flex flex-col gap-3">
-                <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="border border-primary text-primary py-3 rounded-4xl text-[16px] text-center"
-                >
-                  Login
-                </Link>
-
-                <Link
-                  to="/register"
-                  onClick={() => setOpen(false)}
-                  className="bg-primary text-white py-3 rounded-4xl text-[16px] text-center"
-                >
-                  Get Started
-                </Link>
-              </div>
-            ) : (
-              <div className="mt-19 px-5 flex flex-col gap-3">
+            <div className="mt-auto mb-10 flex flex-col gap-4">
+              {!userInfo ? (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setOpen(false)}
+                    className="w-full py-4 rounded-[4px] border border-gray-200 text-center font-semibold text-gray-800"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setOpen(false)}
+                    className="w-full py-4 rounded-[4px] bg-[var(--color-primary)] text-center font-semibold text-white shadow-xl"
+                  >
+                    Get Started Free
+                  </Link>
+                </>
+              ) : (
                 <Link
                   to="/analytics"
                   onClick={() => setOpen(false)}
-                  className="border border-primary text-primary py-3 rounded-4xl text-[16px] text-center"
+                  className="w-full py-4 rounded-[4px] bg-[var(--color-primary)] text-center font-semibold text-white shadow-xl"
                 >
-                  Overview
+                  Dashboard
                 </Link>
-
-                <Link
-                  to="/stores"
-                  onClick={() => setOpen(false)}
-                  className="bg-primary text-white py-3 rounded-4xl text-[16px] text-center"
-                >
-                  Stores
-                </Link>
-              </div>
-            )}
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -43,7 +43,7 @@ const AdminsMobileView: FC<AdminsMobileViewProps> = ({
           {visibleUsers.map((admin) => (
             <div
               key={admin.id}
-              className="border border-t-4 border-gray-200 rounded-lg py-5 px-[17px] hover:border-primary transition-all flex justify-between items-start shadow-sm relative"
+              className="border border-t-4 border-gray-200 rounded-[4px] py-5 px-[17px] hover:border-primary transition-all flex justify-between items-start shadow-sm relative"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
@@ -114,7 +114,7 @@ const AdminsMobileView: FC<AdminsMobileViewProps> = ({
       {hasMore && (
         <button
           onClick={onHandleLoadMore}
-          className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-lg font-medium"
+          className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-[4px] font-medium"
         >
           Load More Users
         </button>

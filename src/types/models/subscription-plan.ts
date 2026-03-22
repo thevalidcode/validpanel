@@ -1,4 +1,5 @@
 import type { CurrencyCode } from "@/lib/currencyConverter";
+import type { BillingInterval } from "./coupon";
 
 export type SubscriptionPlanFeatures = {
   stores: number;
@@ -24,22 +25,33 @@ export type SubscriptionPlanFeatures = {
   max_shipping_accounts: number;
 };
 
-export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE";
-export type SubscriptionPlanInterval = "MONTHLY" | "YEARLY";
+export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE" | "DRAFT";
+export type SubscriptionPlanInterval = BillingInterval;
+
+export interface PlanPrice {
+  id: number;
+  planId: number;
+  interval: BillingInterval;
+  price: string; // decimal string from backend
+  tax?: number | null; // percentage integer (e.g. 7 for 7%)
+  amountInMinor: number; // minor units, e.g. cents/kobo
+  currency: CurrencyCode; // 3-letter uppercase
+  externalId?: string | null;
+  isActive: boolean;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface SubscriptionPlan {
   id: number;
   uid: string;
   name: string;
-  gracePeriod: number | null;
-  price: string;
-  currency: CurrencyCode;
   description: string | null;
   status: SubscriptionPlanStatus;
   features: SubscriptionPlanFeatures;
-  interval: SubscriptionPlanInterval;
-  discountForAnnually: number | null;
-  tax: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+  gracePeriod: number | null;
+  createdAt: string;
+  updatedAt: string;
+  prices: PlanPrice[];
 }

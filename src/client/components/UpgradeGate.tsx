@@ -27,7 +27,7 @@ const UpgradeGate: FC<UpgradeGateProps> = ({
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={[
         "flex flex-col items-center justify-center text-center m-6",
-        "border border-gray-200 shadow-sm rounded-xl",
+        "border border-gray-200 shadow-sm rounded-[4px]",
         isPage ? "min-h-[70vh] px-6 bg-white" : "p-6 bg-white",
       ].join(" ")}
     >
@@ -67,7 +67,7 @@ const UpgradeGate: FC<UpgradeGateProps> = ({
           whileTap={{ scale: 0.97 }}
           type="button"
           onClick={onActionClick}
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition shadow-sm"
+          className="mt-6 inline-flex items-center gap-2 rounded-[4px] bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 transition shadow-sm"
         >
           {actionLabel}
         </motion.button>

@@ -122,7 +122,7 @@ const PGPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200 mb-6"
+          className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-[4px] border border-gray-200 mb-6"
         >
           <div className="flex-1 relative flex items-center gap-3">
             <div className="flex gap-4 flex-2">
@@ -138,7 +138,7 @@ const PGPage = () => {
                   setSearch(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-[4px] focus:outline-none focus:ring-1 focus:ring-primary transition text-sm"
               />
             </div>
             <div className="sm:w-40">
@@ -168,7 +168,7 @@ const PGPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setDialogMode("create")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#6a18d9] transition font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-[4px] hover:bg-[#6a18d9] transition font-medium"
           >
             <Plus size={18} />
             Add Gateway

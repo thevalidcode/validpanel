@@ -95,7 +95,7 @@ export default function ContactMessagesPage() {
     >
       <div className="py-5 px-6 w-full">
         {/* Filters */}
-        <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200">
+        <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white px-5 py-3 rounded-[4px] border border-gray-200">
           <div className="md:w-[75%] w-full flex flex-wrap md:flex-nowrap gap-2 items-center">
             <div className="relative w-full md:w-[60%]">
               <input
@@ -103,7 +103,7 @@ export default function ContactMessagesPage() {
                 placeholder="Search by name or email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-lg pr-3 pl-12 py-2 focus:ring-2 focus:ring-primary"
+                className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-[4px] pr-3 pl-12 py-2 focus:ring-1 focus:ring-primary"
               />
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
             </div>

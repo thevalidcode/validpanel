@@ -240,7 +240,7 @@ export default function AdminSettings() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-y"
+          className="bg-white rounded-[4px] border border-gray-200 shadow-sm overflow-y"
         >
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <h3 className="text-xl font-semibold text-gray-900">
@@ -261,7 +261,7 @@ export default function AdminSettings() {
                   required
                   value={siteName}
                   onChange={(e) => setSiteName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   placeholder="Enter site name"
                 />
               </div>
@@ -274,7 +274,7 @@ export default function AdminSettings() {
                   type="email"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   placeholder="admin@example.com"
                 />
               </div>
@@ -319,7 +319,7 @@ export default function AdminSettings() {
                   rows={3}
                   value={siteDesc}
                   onChange={(e) => setSiteDesc(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
                   placeholder="Describe your application..."
                 />
               </div>
@@ -353,7 +353,7 @@ export default function AdminSettings() {
 
               {/* Preview Section */}
               {(logoUrl || faviconUrl) && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="mt-4 p-4 bg-gray-50 rounded-[4px] border border-gray-200">
                   <p className="text-sm font-medium text-gray-700 mb-3">
                     Preview
                   </p>
@@ -434,7 +434,7 @@ export default function AdminSettings() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+          className="bg-white rounded-[4px] border border-gray-200 shadow-sm overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <h3 className="text-xl font-semibold text-gray-900">
@@ -463,7 +463,7 @@ export default function AdminSettings() {
                   title="start-date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -476,7 +476,7 @@ export default function AdminSettings() {
                   value={endDate}
                   title="end-date"
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -488,7 +488,7 @@ export default function AdminSettings() {
                   rows={3}
                   value={maintenanceMsg}
                   onChange={(e) => setMaintenanceMsg(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition resize-none"
                   placeholder="Enter maintenance message..."
                 />
               </div>
@@ -501,7 +501,7 @@ export default function AdminSettings() {
                   value={allowedIPs}
                   onChange={(e) => setAllowedIPs(e.target.value)}
                   placeholder="e.g., 192.168.1.1, 127.0.0.1"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
             </div>
@@ -513,7 +513,7 @@ export default function AdminSettings() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+          className="bg-white rounded-[4px] border border-gray-200 shadow-sm overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <h3 className="text-xl font-semibold text-gray-900">
@@ -534,7 +534,7 @@ export default function AdminSettings() {
                   title="session-timeout"
                   value={sessionTimeout}
                   onChange={(e) => setSessionTimeout(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   required
                 />
               </div>
@@ -548,7 +548,7 @@ export default function AdminSettings() {
                   title="max-attempt"
                   value={maxLoginAttempts}
                   onChange={(e) => handleNumberChange(setMaxLoginAttempts, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   required
                 />
               </div>
@@ -562,7 +562,7 @@ export default function AdminSettings() {
                   value={passwordMinLength}
                   title="password-min"
                   onChange={(e) => handleNumberChange(setPasswordMinLength, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   required
                 />
               </div>
@@ -576,7 +576,7 @@ export default function AdminSettings() {
                   title="lockout-duration"
                   value={lockoutDuration}
                   onChange={(e) => handleNumberChange(setLockoutDuration, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                   required
                 />
               </div>
@@ -589,7 +589,7 @@ export default function AdminSettings() {
                   value={whitelistedIps}
                   onChange={(e) => setWhitelistedIps(e.target.value)}
                   placeholder="e.g., 192.168.1.1, 127.0.0.1"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
             </div>
@@ -621,7 +621,7 @@ export default function AdminSettings() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+          className="bg-white rounded-[4px] border border-gray-200 shadow-sm overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <h3 className="text-xl font-semibold text-gray-900">
@@ -642,7 +642,7 @@ export default function AdminSettings() {
                   title="requests-per-minute"
                   value={rpm}
                   onChange={(e) => handleNumberChange(setRpm, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -655,7 +655,7 @@ export default function AdminSettings() {
                   value={rph}
                   title="requests-per-hour"
                   onChange={(e) => handleNumberChange(setRph, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -668,7 +668,7 @@ export default function AdminSettings() {
                   title="requests-per-day"
                   value={rpd}
                   onChange={(e) => handleNumberChange(setRpd, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -681,7 +681,7 @@ export default function AdminSettings() {
                   title="max-file-size"
                   value={maxFileSize}
                   onChange={(e) => handleNumberChange(setMaxFileSize, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -694,7 +694,7 @@ export default function AdminSettings() {
                   title="uploads-per-hour"
                   value={uploadsPerHour}
                   onChange={(e) => handleNumberChange(setUploadsPerHour, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
 
@@ -707,7 +707,7 @@ export default function AdminSettings() {
                   title="concurrent-uploads"
                   value={concurrentUploads}
                   onChange={(e) => handleNumberChange(setConcurrentUploads, e)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
+                  className="w-full border border-gray-300 rounded-[4px] px-4 py-3 text-sm focus:ring-1 focus:ring-purple-600 focus:border-purple-600 outline-none transition"
                 />
               </div>
             </div>
@@ -737,7 +737,7 @@ export default function AdminSettings() {
           <button
             type="submit"
             disabled={updateSettingsMutation.isPending}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-purple-700 focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-purple-600 text-white px-6 py-3 rounded-[4px] text-sm font-medium hover:bg-purple-700 focus:ring-1 focus:ring-purple-600 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
           </button>

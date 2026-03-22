@@ -33,7 +33,7 @@ export default function ContactReplyCard({
         className={`relative ${isAdmin ? "ml-0 mr-8" : "ml-8 mr-0"}`}
       >
         <div
-          className={`rounded-lg border-2 p-4 ${
+          className={`rounded-[4px] border-2 p-4 ${
             isAdmin
               ? "bg-purple-50 border-purple-200"
               : "bg-gray-50 border-gray-200"
@@ -77,7 +77,7 @@ export default function ContactReplyCard({
                 <button
                   onClick={() => setDeleteModalOpen(true)}
                   disabled={isDeleting}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Delete reply"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

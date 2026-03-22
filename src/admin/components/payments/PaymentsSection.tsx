@@ -74,7 +74,7 @@ export default function PaymentsSection({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200 mb-6"
+        className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-[4px] border border-gray-200 mb-6"
       >
         <div className="flex-1 relative">
           <Search
@@ -89,7 +89,7 @@ export default function PaymentsSection({
               onSearchChange(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm"
+            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-[4px] focus:outline-none focus:ring-1 focus:ring-primary transition text-sm"
           />
         </div>
         <div className="sm:w-40">
@@ -113,7 +113,7 @@ export default function PaymentsSection({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="border border-gray-200 rounded-lg overflow-hidden bg-white"
+              className="border border-gray-200 rounded-[4px] overflow-hidden bg-white"
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
@@ -129,6 +129,9 @@ export default function PaymentsSection({
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide">
                       Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                      Coupon
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide">
                       Status
@@ -181,6 +184,22 @@ export default function PaymentsSection({
                         </p>
                       </td>
                       <td className="px-6 py-4">
+                        {payment.coupon ? (
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {payment.coupon.code}
+                            </span>
+                            <span className="text-xs text-gray-600">
+                              {payment.coupon.type === "PERCENTAGE"
+                                ? `${payment.coupon.value}%`
+                                : `${getCurrencySymbol(payment.coupon.currency || payment.currency)}${payment.coupon.value}`}
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500">—</p>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             STATUS_COLORS[payment.status].bg
@@ -207,7 +226,7 @@ export default function PaymentsSection({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="bg-white border border-gray-200 rounded-lg p-4 space-y-3"
+                className="bg-white border border-gray-200 rounded-[4px] p-4 space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -252,6 +271,16 @@ export default function PaymentsSection({
                     <p className="font-medium text-gray-900">
                       {new Date(payment.createdAt).toLocaleDateString()}
                     </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Coupon</p>
+                    {payment.coupon ? (
+                      <p className="font-mono font-bold text-xs text-blue-700">
+                        {payment.coupon.code}
+                      </p>
+                    ) : (
+                      <p className="text-gray-500">—</p>
+                    )}
                   </div>
                 </div>
               </motion.div>

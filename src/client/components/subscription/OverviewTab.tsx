@@ -1,4 +1,3 @@
-import type { Subscription, SubscriptionStatus } from "@/types";
 import {
   formatDate,
   getDaysRemaining,
@@ -9,14 +8,17 @@ import {
   ArrowRight,
   Calendar,
   Clock,
-  Receipt,
   TrendingUp,
   AlertTriangle,
+  Receipt,
+  AlertOctagon,
 } from "lucide-react";
+import type { Subscription, SubscriptionStatus } from "@/types";
 import PricingFeatures from "../pricing/PricingFeatures";
 import { useAppContext } from "@/context/useAppContext";
 import { useCurrencyConverter } from "@/lib/currencyConverter";
 import { useNavigate } from "react-router-dom";
+import { resolvePlanPrice } from "@/utils/subscription-pricing.utils";
 
 interface OverviewTabProps {
   subscription: Subscription;
@@ -28,76 +30,114 @@ function OverviewTab({ subscription, setActiveTab }: OverviewTabProps) {
   const convert = useCurrencyConverter();
   const navigate = useNavigate();
 
-  const daysRemaining = getDaysRemaining(subscription.expiresAt!);
+  const daysRemaining = subscription.expiresAt
+    ? getDaysRemaining(subscription.expiresAt)
+    : Infinity;
 
-  // Determine reminder urgency
+  // Determine reminder urgency based on expiration and grace period
   const getReminderLevel = () => {
-    if (
-      subscription.plan.gracePeriod &&
-      daysRemaining <= subscription.plan.gracePeriod
-    ) {
+    // If status is PAST_DUE or explicitly in grace period logic
+    if (subscription.status === "PAST_DUE") {
       return "grace";
     }
-    if (daysRemaining <= 1) return "critical";
-    if (daysRemaining <= 3) return "high";
-    if (daysRemaining <= 7) return "medium";
+
+    if (subscription.status === "EXPIRED") {
+      return "expired";
+    }
+
+    if (daysRemaining <= 0) return "expired";
+    if (daysRemaining <= 3) return "critical"; // 3 days or less
+    if (daysRemaining <= 7) return "warning"; // 7 days or less
     return null;
   };
 
   const reminderLevel = getReminderLevel();
 
-  const reminderMessage = (() => {
+  const showRenewButton =
+    reminderLevel !== null ||
+    subscription.status === "PAST_DUE" ||
+    subscription.status === "EXPIRED" ||
+    subscription.status === "CANCELED";
+
+  const reminderContent = (() => {
     switch (reminderLevel) {
-      case "medium":
-        return `Your plan will expire in ${daysRemaining} days. Consider renewing soon.`;
-      case "high":
-        return `Your plan will expire in ${daysRemaining} days. Renew now to avoid service interruption.`;
-      case "critical":
-        return `Your plan expires tomorrow! Renew immediately to continue enjoying your benefits.`;
+      case "expired":
+        return {
+          title: "Subscription Expired",
+          message:
+            "Your subscription has expired. Please renew immediately to restore full access.",
+          color: "bg-red-50 text-red-800 border-red-200",
+          icon: <AlertOctagon className="w-5 h-5 text-red-600" />,
+        };
       case "grace":
-        return `Your plan is in grace period (${daysRemaining} days remaining). Renew to avoid service loss.`;
+        return {
+          title: "Payment Past Due",
+          message:
+            "Your payment is past due. You are currently in a grace period. Please update your payment method or renew now to avoid service interruption.",
+          color: "bg-orange-50 text-orange-800 border-orange-200",
+          icon: <AlertTriangle className="w-5 h-5 text-orange-600" />,
+        };
+      case "critical":
+        return {
+          title: "Expiring Soon",
+          message: `Your subscription expires in ${
+            daysRemaining === 0 ? "today" : daysRemaining + " days"
+          }. Renew now to keep your benefits seamlessly.`,
+          color: "bg-red-50 text-red-800 border-red-200",
+          icon: <Clock className="w-5 h-5 text-red-600" />,
+        };
+      case "warning":
+        return {
+          title: "Upcoming Renewal",
+          message: `Your subscription will renew in ${daysRemaining} days.`,
+          color: "bg-blue-50 text-blue-800 border-blue-200", // Less urgent, friendly reminder
+          icon: <Calendar className="w-5 h-5 text-blue-600" />,
+        };
       default:
-        return "";
+        return null; // Don't show reminder
     }
   })();
 
+  const currentInterval = subscription.billingCycle || "MONTHLY";
+  const targetCurrency = userCurrency || "USD";
+  const resolvedPrice = subscription.plan
+    ? resolvePlanPrice(subscription.plan, currentInterval, targetCurrency)
+    : null;
+  const baseCurrency = resolvedPrice?.currency || "USD";
+  const baseAmount = resolvedPrice?.amount.toFixed(2) || "0.00";
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="w-full"
-    >
-      {/* Current Subscription Card */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 mb-8 relative">
-        {/* Reminder Banner */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Plan Details Card */}
+      <div className="bg-white rounded-[4px] border border-gray-200 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
         <AnimatePresence>
-          {reminderLevel && (
+          {reminderContent && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className={`absolute top-0 left-0 w-full rounded-t-2xl p-4 flex items-center space-x-3 ${
-                reminderLevel === "critical"
-                  ? "bg-red-600 text-white"
-                  : reminderLevel === "high"
-                  ? "bg-orange-500 text-white"
-                  : reminderLevel === "medium"
-                  ? "bg-yellow-400 text-gray-900"
-                  : "bg-purple-100 text-purple-900"
-              }`}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className={`mb-6 rounded-[4px] p-4 border flex items-start gap-3 ${reminderContent.color}`}
             >
-              <AlertTriangle className="w-5 h-5" />
-              <span className="inter text-sm font-medium">
-                {reminderMessage}
-              </span>
-              <button
-                onClick={() => navigate("/subscription/renew")}
-                className="ml-auto bg-white text-purple-700 px-3 py-1 rounded-lg font-medium hover:bg-gray-100 transition"
-              >
-                Renew Plan
-              </button>
+              <div className="flex-shrink-0 mt-0.5">{reminderContent.icon}</div>
+              <div className="flex-1">
+                <h4 className="text-sm font-bold mb-1">
+                  {reminderContent.title}
+                </h4>
+                <p className="text-sm leading-relaxed opacity-90">
+                  {reminderContent.message}
+                </p>
+                {/* Action in alert for urgency */}
+                {(reminderLevel === "grace" ||
+                  reminderLevel === "critical" ||
+                  reminderLevel === "expired") && (
+                  <button
+                    onClick={() => navigate("/subscription/renew")}
+                    className="mt-3 text-xs font-bold uppercase tracking-wide bg-white/50 hover:bg-white/80 border border-current px-3 py-1.5 rounded-[4px] transition-colors"
+                  >
+                    Renew Now
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -106,126 +146,97 @@ function OverviewTab({ subscription, setActiveTab }: OverviewTabProps) {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2 className="poppins text-2xl font-bold text-gray-900 mb-1">
-              {subscription.plan.name}
+              {subscription.plan?.name}
             </h2>
             <span
               className={`inter text-xs px-3 py-1 rounded-full border font-medium ${getStatusColor(
-                subscription.status as SubscriptionStatus
+                subscription.status as SubscriptionStatus,
               )}`}
             >
               {subscription.status}
             </span>
             <p className="text-xs inter uppercase text-gray-500 tracking-wide mt-3">
-              {subscription.plan.description}
+              {subscription.plan?.description}
             </p>
           </div>
 
           <div className="text-right">
             <div className="poppins text-4xl font-bold text-gray-900">
               {
-                convert(
-                  subscription.plan.currency,
-                  userCurrency,
-                  subscription.plan.price,
-                  true,
-                  false
-                ).formatted
+                convert(baseCurrency, targetCurrency, baseAmount, true, false)
+                  .formatted
               }
             </div>
             <p className="inter text-sm text-gray-500">
-              {subscription.plan.interval === "MONTHLY"
-                ? "per month"
-                : "per year"}
+              {currentInterval === "MONTHLY" ? "per month" : "per year"}
             </p>
           </div>
         </div>
 
         {/* Dates */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-[4px] p-4">
             <div className="flex items-center space-x-3 mb-2">
               <Calendar className="w-5 h-5 text-purple-600" />
               <span className="inter text-sm font-medium text-gray-700">
                 Started On
               </span>
             </div>
-            <p className="poppins text-lg font-semibold text-gray-900 ml-8">
+            <p className="inter text-gray-900 font-semibold pl-8">
               {formatDate(subscription.startedAt)}
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-[4px] p-4">
             <div className="flex items-center space-x-3 mb-2">
               <Clock className="w-5 h-5 text-purple-600" />
               <span className="inter text-sm font-medium text-gray-700">
-                Renews On
+                Expires On
               </span>
             </div>
-            <p className="poppins text-lg font-semibold text-gray-900 ml-8">
-              {formatDate(subscription.expiresAt)}
-              <span className="inter text-sm text-gray-500 ml-2">
-                ({daysRemaining} days)
-              </span>
+            <p className="inter text-gray-900 font-semibold pl-8">
+              {subscription.expiresAt
+                ? formatDate(subscription.expiresAt)
+                : "N/A"}
             </p>
           </div>
         </div>
 
-        {/* Features */}
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-          <h3 className="poppins text-lg font-semibold text-gray-900 mb-4">
-            Plan Features
-          </h3>
-          <PricingFeatures plan={subscription.plan} />
+        {/* Actions */}
+        <div className="flex flex-wrap gap-4 mt-auto">
+          {subscription.status === "ACTIVE" && (
+            <button
+              onClick={() => setActiveTab("plans")}
+              className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-[4px] text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"
+            >
+              <TrendingUp className="w-4 h-4" />
+              Change Plan
+            </button>
+          )}
+
+          {showRenewButton && (
+            <button
+              onClick={() => navigate("/subscription/renew")}
+              className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-[4px] text-sm font-medium hover:bg-[var(--color-primary)]/90 transition-colors flex items-center gap-2 ml-auto"
+            >
+              <Receipt className="w-4 h-4" />
+              Renew Subscription
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Upgrade */}
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => setActiveTab("plans")}
-          className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl p-6 flex items-center justify-between shadow-md hover:shadow-lg transition-all"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="bg-white/20 p-3 rounded-lg">
-              <TrendingUp className="w-6 h-6" />
-            </div>
-            <div className="text-left">
-              <p className="poppins font-semibold text-lg">Upgrade Plan</p>
-              <p className="inter text-sm text-white/90">
-                Get more features and benefits
-              </p>
-            </div>
-          </div>
-          <ArrowRight className="w-5 h-5" />
-        </motion.button>
-
-        {/* View Invoices */}
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => setActiveTab("billing")}
-          className="bg-white border border-gray-200 rounded-xl p-6 flex items-center justify-between shadow-sm hover:shadow-md transition-all"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="bg-purple-100 p-3 rounded-lg">
-              <Receipt className="w-6 h-6 text-purple-600" />
-            </div>
-            <div className="text-left">
-              <p className="poppins font-semibold text-lg text-gray-900">
-                View Invoices
-              </p>
-              <p className="inter text-sm text-gray-600">
-                Download billing history
-              </p>
-            </div>
-          </div>
-          <ArrowRight className="w-5 h-5 text-gray-400" />
-        </motion.button>
-      </div>
-    </motion.div>
+      {/* Plan Features */}
+      {subscription.plan && (
+        <div className="bg-white rounded-[4px] border border-gray-200 p-6 h-full flex flex-col justify-start shadow-sm hover:shadow-md transition-shadow duration-200">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 poppins border-b border-gray-100 pb-2">
+            Active Features
+          </h3>
+          <PricingFeatures plan={subscription.plan} />
+        </div>
+      )}
+    </div>
   );
 }
 

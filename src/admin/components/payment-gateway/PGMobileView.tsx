@@ -26,7 +26,7 @@ export default function PGMobileView({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.05 }}
-          className="bg-white border border-gray-200 rounded-lg p-4 space-y-3"
+          className="bg-white border border-gray-200 rounded-[4px] p-4 space-y-3"
         >
           {/* Header with Image */}
           <div className="flex items-start gap-3">
@@ -34,7 +34,7 @@ export default function PGMobileView({
               <img
                 src={gateway.image}
                 alt={gateway.name}
-                className="w-12 h-12 rounded-lg object-cover"
+                className="w-12 h-12 rounded-[4px] object-cover"
               />
             )}
             <div className="flex-1">
@@ -71,14 +71,14 @@ export default function PGMobileView({
           <div className="flex gap-2 pt-2 border-t border-gray-200">
             <button
               onClick={() => onEdit(gateway)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:bg-purple-50 rounded-lg transition"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:bg-purple-50 rounded-[4px] transition"
             >
               <Edit2 size={16} />
               Edit
             </button>
             <button
               onClick={() => onDelete(gateway.uid)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-[4px] transition"
             >
               <Trash2 size={16} />
               Delete

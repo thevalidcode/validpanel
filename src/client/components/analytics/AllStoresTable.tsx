@@ -9,7 +9,7 @@ interface AllStoresTableProps {
 
 const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-white p-6 rounded-[4px] shadow-sm border border-gray-200">
       <h2 className="text-xl font-bold text-gray-800 mb-4">All Stores</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-500">
@@ -43,10 +43,10 @@ const AllStoresTable: FC<AllStoresTableProps> = ({ data }) => {
                     <img
                       src={store.logoUrl}
                       alt={store.name}
-                      className="w-10 h-10 rounded-lg object-cover"
+                      className="w-10 h-10 rounded-[4px] object-cover"
                     />
                   ) : (
-                    <div className="flex items-center w-10 h-10 rounded-lg justify-center text-gray-400 text-xs">
+                    <div className="flex items-center w-10 h-10 rounded-[4px] justify-center text-gray-400 text-xs">
                       No logo
                     </div>
                   )}

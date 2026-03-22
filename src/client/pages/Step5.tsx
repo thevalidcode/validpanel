@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,54 +14,153 @@ import { useGetUserSubscriptionPlanByUid } from "@/hooks/use-subscription-plan";
 import { AlertTriangle } from "lucide-react";
 import { useAppContext } from "@/context/useAppContext";
 import type { PaymentMethod } from "@/types";
-import { useCurrencyConverter } from "@/lib/currencyConverter";
+import {
+  convertCurrency,
+  useCurrencyConverter,
+  type CurrencyCode,
+} from "@/lib/currencyConverter";
 import { useCreateSubscription } from "@/hooks/use-subscription";
+import { useValidateCoupon } from "@/hooks/use-coupon";
+import CouponCodeField from "@/components/coupons/CouponCodeField";
+import CouponShowcase from "@/components/coupons/CouponShowcase";
+import {
+  computeCouponDiscountAmount,
+  computePricingBreakdown,
+  resolvePlanPrice,
+} from "@/utils/subscription-pricing.utils";
+import type { Coupon } from "@/types/models/coupon";
 
 const Step5: React.FC = () => {
   const navigate = useNavigate();
   const convert = useCurrencyConverter();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("MANUAL");
-  const { userCurrency } = useAppContext();
+  const { userCurrency, userInfo, rates } = useAppContext();
+  const [couponCode, setCouponCode] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponDiscountAmount, setCouponDiscountAmount] = useState<string>();
+  const [couponCurrency, setCouponCurrency] = useState<CurrencyCode>();
+  const [validatedCoupon, setValidatedCoupon] = useState<Coupon | undefined>();
   const { data: paymentOptions, isLoading } = useGetUserPaymentGateways();
   const { mutateAsync: initializePayment, isPending } = useCreateSubscription();
+  const { mutateAsync: validateCoupon, isPending: isCouponValidating } =
+    useValidateCoupon();
   const draft = getOnboardingDraft();
+
+  useEffect(() => {
+    if (draft?.couponCode) {
+      setCouponCode(draft.couponCode);
+    }
+  }, [draft?.couponCode]);
 
   const { data: subscriptionPlan, isLoading: isSubscriptionLoading } =
     useGetUserSubscriptionPlanByUid(draft?.planUid || "");
 
   const interval = draft?.subscriptionInterval ?? "MONTHLY";
-  /**
-   * PRICE CALCULATIONS
-   */
-  const { baseAmount, discountAmount, taxAmount, totalAmount } = useMemo(() => {
+  const {
+    baseAmount,
+    discountAmount,
+    taxAmount,
+    totalAmount,
+    currency,
+    taxPercent,
+    discountPercent,
+  } = useMemo(() => {
     if (!subscriptionPlan) {
       return {
-        baseAmount: 0,
-        discountAmount: 0,
-        taxAmount: 0,
-        totalAmount: 0,
+        baseAmount: "0.00",
+        discountAmount: "0.00",
+        taxAmount: "0.00",
+        totalAmount: "0.00",
+        currency: "USD" as CurrencyCode,
+        taxPercent: 0,
+        discountPercent: 0,
       };
     }
-    const monthlyPrice = Number(subscriptionPlan.price);
+    const resolvedPrice = resolvePlanPrice(
+      subscriptionPlan,
+      interval,
+      userCurrency || "USD",
+    );
 
-    const base = interval === "YEARLY" ? monthlyPrice * 12 : monthlyPrice;
+    const convertAmount = (
+      source: CurrencyCode,
+      target: CurrencyCode,
+      amount: string,
+    ) => {
+      return convertCurrency(source, target, amount, rates || {}).amount;
+    };
 
-    const discountPercent =
-      interval === "YEARLY" ? subscriptionPlan.discountForAnnually ?? 0 : 0;
+    const fallbackCouponDiscount = computeCouponDiscountAmount(
+      resolvedPrice.amount.toFixed(2),
+      resolvedPrice.currency,
+      validatedCoupon
+        ? {
+            type: validatedCoupon.type,
+            value: validatedCoupon.value,
+            currency: validatedCoupon.currency,
+          }
+        : undefined,
+      isCouponApplied,
+      undefined,
+      undefined,
+      convertAmount,
+    );
 
-    const discount = (base * discountPercent) / 100;
-    const afterDiscount = base - discount;
+    const effectiveCouponDiscountAmount =
+      couponDiscountAmount ||
+      (isCouponApplied ? fallbackCouponDiscount.toFixed(2) : undefined);
 
-    const taxPercent = subscriptionPlan.tax ?? 0;
-    const tax = (afterDiscount * taxPercent) / 100;
+    const breakdown = computePricingBreakdown({
+      subtotal: resolvedPrice.amount.toFixed(2),
+      taxRate: resolvedPrice.taxRate,
+      couponApplied: isCouponApplied,
+      couponDiscountAmount: effectiveCouponDiscountAmount,
+      couponCurrency: couponCurrency || resolvedPrice.currency,
+      subtotalCurrency: resolvedPrice.currency,
+      coupon: validatedCoupon
+        ? {
+            type: validatedCoupon.type,
+            value: validatedCoupon.value,
+            currency: validatedCoupon.currency,
+          }
+        : undefined,
+      convertAmount,
+    });
+
+    const base = resolvedPrice.amount.toFixed(2);
+    const taxPercent = Number(resolvedPrice.taxRate.toString() || 0);
+    const computedCouponDiscount = breakdown.couponDiscount;
+
+    const discountPercent = resolvedPrice.amount.gt(0)
+      ? Number(
+          new Intl.NumberFormat("en-US", {
+            maximumFractionDigits: 2,
+          }).format(
+            (Number(computedCouponDiscount) / Number(base || "1")) * 100,
+          ),
+        )
+      : 0;
 
     return {
       baseAmount: base,
-      discountAmount: discount,
-      taxAmount: tax,
-      totalAmount: afterDiscount + tax,
+      discountAmount: computedCouponDiscount,
+      taxAmount: breakdown.taxAmount,
+      totalAmount: breakdown.total,
+      currency: resolvedPrice.currency,
+      taxPercent,
+      discountPercent,
     };
-  }, [subscriptionPlan, interval]);
+  }, [
+    subscriptionPlan,
+    interval,
+    userCurrency,
+    rates,
+    couponDiscountAmount,
+    couponCurrency,
+    isCouponApplied,
+    validatedCoupon,
+  ]);
 
   if (isLoading || isSubscriptionLoading) {
     return <Loader />;
@@ -86,7 +185,7 @@ const Step5: React.FC = () => {
   }
 
   const selectedPaymentOption = paymentOptions.find(
-    (p) => p.platform === selectedMethod
+    (p) => p.platform === selectedMethod,
   );
 
   const handlePayNow = async (): Promise<void> => {
@@ -104,6 +203,10 @@ const Step5: React.FC = () => {
       planId: subscriptionPlan.id,
       redirectUrl: newUrl,
       billingCycle: draft.subscriptionInterval,
+      couponCode: isCouponApplied ? couponCode.trim() : undefined,
+      amount: totalAmount,
+      userId: userInfo?.id,
+      appliesTo: "NEW",
     });
 
     if (response.url) {
@@ -116,6 +219,102 @@ const Step5: React.FC = () => {
 
   const handleBack = (): void => {
     navigate("/onboarding/step4");
+  };
+
+  const handleApplyCoupon = async (): Promise<void> => {
+    if (!couponCode.trim()) return;
+
+    try {
+      const validation = await validateCoupon({
+        code: couponCode.trim(),
+        planId: subscriptionPlan.id,
+        billingCycle: interval,
+        currency,
+        amount: totalAmount,
+        appliesTo: "NEW",
+        userId: userInfo?.id,
+      });
+      setValidatedCoupon(validation.coupon);
+      const serverDiscount = validation.discountAmount;
+      if (serverDiscount) {
+        setCouponDiscountAmount(serverDiscount);
+        setCouponCurrency(
+          (validation.discountCurrency ||
+            validation.coupon.currency ||
+            currency) as CurrencyCode,
+        );
+      } else {
+        setCouponDiscountAmount(undefined);
+        setCouponCurrency(undefined);
+      }
+      setIsCouponApplied(true);
+      setCouponMessage("Coupon validated and will be applied at checkout.");
+      setOnboardingDraft((prev) => ({
+        ...prev,
+        couponCode: couponCode.trim(),
+      }));
+    } catch (_error) {
+      setIsCouponApplied(false);
+      setCouponDiscountAmount(undefined);
+      setCouponCurrency(undefined);
+      setValidatedCoupon(undefined);
+      setCouponMessage(
+        "Coupon could not be validated. Please try another code.",
+      );
+    }
+  };
+
+  const handleUseSuggestedCoupon = async (code: string): Promise<void> => {
+    setCouponCode(code);
+    setIsCouponApplied(false);
+    setCouponDiscountAmount(undefined);
+    setCouponCurrency(undefined);
+    setValidatedCoupon(undefined);
+
+    try {
+      const validation = await validateCoupon({
+        code,
+        planId: subscriptionPlan.id,
+        billingCycle: interval,
+        currency,
+        amount: totalAmount,
+        appliesTo: "NEW",
+        userId: userInfo?.id,
+      });
+      setValidatedCoupon(validation.coupon);
+      const serverDiscount = validation.discountAmount;
+      if (serverDiscount) {
+        setCouponDiscountAmount(serverDiscount);
+        setCouponCurrency(
+          (validation.discountCurrency ||
+            validation.coupon.currency ||
+            currency) as CurrencyCode,
+        );
+      }
+      setIsCouponApplied(true);
+      setCouponMessage("Coupon validated and will be applied at checkout.");
+      setOnboardingDraft((prev) => ({
+        ...prev,
+        couponCode: code,
+      }));
+    } catch (_error) {
+      setCouponMessage(
+        "Coupon could not be validated. Please try another code.",
+      );
+    }
+  };
+
+  const handleRemoveSuggestedCoupon = (): void => {
+    setCouponCode("");
+    setIsCouponApplied(false);
+    setCouponDiscountAmount(undefined);
+    setCouponCurrency(undefined);
+    setValidatedCoupon(undefined);
+    setCouponMessage("");
+    setOnboardingDraft((prev) => ({
+      ...prev,
+      couponCode: "",
+    }));
   };
 
   return (
@@ -143,7 +342,7 @@ const Step5: React.FC = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-2xl p-8 bg-white rounded-2xl shadow-lg mx-auto mt-6"
+        className="w-full max-w-2xl mx-auto"
       >
         {/* Payment Options */}
         <div className="space-y-3">
@@ -153,7 +352,7 @@ const Step5: React.FC = () => {
             return (
               <label
                 key={platform}
-                className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition
+                className={`flex items-center justify-between p-4 border rounded-[4px] cursor-pointer transition
                     ${
                       isSelected
                         ? "border-purple-600 shadow-md"
@@ -162,7 +361,7 @@ const Step5: React.FC = () => {
                 onClick={() => setSelectedMethod(platform)}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-[4px] bg-gray-100">
                     <img src={image} alt={name} className="w-6 h-6" />
                   </div>
                   <div>
@@ -184,13 +383,48 @@ const Step5: React.FC = () => {
 
         {/* Payment Warning / Info */}
         {selectedPaymentOption?.content && (
-          <div className="mt-5 flex gap-3 items-start rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+          <div className="mt-5 flex gap-3 items-start rounded-[4px] border border-yellow-300 bg-yellow-50 p-4">
             <AlertTriangle className="text-yellow-600 mt-0.5" size={18} />
             <p className="text-sm text-yellow-800 leading-relaxed">
               {selectedPaymentOption?.content}
             </p>
           </div>
         )}
+
+        <div className="mt-5">
+          <CouponCodeField
+            value={couponCode}
+            onChange={(value) => {
+              setCouponCode(value);
+              if (isCouponApplied) {
+                setIsCouponApplied(false);
+                setCouponDiscountAmount(undefined);
+                setCouponCurrency(undefined);
+                setValidatedCoupon(undefined);
+              }
+            }}
+            onApply={handleApplyCoupon}
+            isApplying={isCouponValidating}
+            applied={isCouponApplied}
+            message={couponMessage}
+            disabled={isPending}
+          />
+        </div>
+
+        <div className="mt-4">
+          <CouponShowcase
+            context="SUBSCRIPTION_PAGE"
+            appliesTo="NEW"
+            variant="sidebar"
+            title="Available Coupons"
+            selectedCode={couponCode}
+            isApplying={isCouponValidating}
+            onUseCoupon={(coupon) => {
+              handleUseSuggestedCoupon(coupon.code);
+            }}
+            onRemoveCoupon={handleRemoveSuggestedCoupon}
+          />
+        </div>
 
         {/* Order Summary */}
         <div className="mt-6 border-t border-gray-200 pt-4">
@@ -203,48 +437,36 @@ const Step5: React.FC = () => {
             <span>
               {
                 convert(
-                  subscriptionPlan.currency,
+                  currency,
                   userCurrency,
-                  baseAmount,
+                  baseAmount.toString(),
                   true,
-                  false
+                  false,
                 ).formatted
               }
             </span>
           </div>
 
-          {discountAmount > 0 && (
+          {Number(discountAmount) > 0 && (
             <div className="flex justify-between text-sm text-green-700 mb-1">
-              <span>
-                Annual Discount ({subscriptionPlan.discountForAnnually}%)
-              </span>
+              <span>Coupon Discount ({discountPercent}%)</span>
               <span>
                 -{" "}
                 {
-                  convert(
-                    subscriptionPlan.currency,
-                    userCurrency,
-                    discountAmount,
-                    true,
-                    false
-                  ).formatted
+                  convert(currency, userCurrency, discountAmount, true, false)
+                    .formatted
                 }
               </span>
             </div>
           )}
 
           <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>VAT ({subscriptionPlan.tax}%)</span>
+            <span>VAT ({taxPercent}%)</span>
             <span>
               -{" "}
               {
-                convert(
-                  subscriptionPlan.currency,
-                  userCurrency,
-                  taxAmount,
-                  true,
-                  false
-                ).formatted
+                convert(currency, userCurrency, taxAmount, true, false)
+                  .formatted
               }
             </span>
           </div>
@@ -253,13 +475,8 @@ const Step5: React.FC = () => {
             <span>Total</span>
             <span>
               {
-                convert(
-                  subscriptionPlan.currency,
-                  userCurrency,
-                  totalAmount,
-                  true,
-                  false
-                ).formatted
+                convert(currency, userCurrency, totalAmount, true, false)
+                  .formatted
               }
             </span>
           </div>

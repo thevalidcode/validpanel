@@ -30,11 +30,11 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         {logoUrl ? (
           <img
             src={logoUrl}
-            className="w-10 h-10 rounded-md object-cover"
+            className="w-10 h-10 rounded-[4px] object-cover"
             alt={planName}
           />
         ) : (
-          <div className="w-10 h-10 rounded-md bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-semibold">
+          <div className="w-10 h-10 rounded-[4px] bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-semibold">
             {initials}
           </div>
         )}

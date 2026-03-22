@@ -86,7 +86,7 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="pointer-events-auto h-fit w-full max-w-sm sm:max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col"
+            className="pointer-events-auto h-fit w-full max-w-sm sm:max-w-md bg-white rounded-[4px] shadow-lg border border-gray-200 overflow-hidden flex flex-col"
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
               <h4 className="font-semibold text-gray-900 text-sm">
@@ -122,7 +122,7 @@ const NotificationPopup: FC<NotificationPopupProps> = ({
                       }}
                     >
                       <div
-                        className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                        className={`flex-shrink-0 w-10 h-10 rounded-[4px] flex items-center justify-center ${
                           isAdmin
                             ? typeColor
                             : notif.isRead

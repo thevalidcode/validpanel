@@ -9,6 +9,8 @@ import Layout from "@/client/components/Layout";
 import Loader from "@/components/Loader";
 import { useGetUserAnalytics } from "@/hooks/use-user";
 import NotFound from "@/components/NotFound";
+import AnimatedSection from "@/components/AnimatedSection";
+import CouponShowcase from "@/components/coupons/CouponShowcase";
 
 const AnalyticsPage = () => {
   const { data: analyticsData, isLoading } = useGetUserAnalytics();
@@ -80,6 +82,7 @@ const AnalyticsPage = () => {
       iconBg: "bg-orange-100",
     },
   ];
+
   const platformEvents = analyticsData.platformEvents ?? {
     "Last 7 days": [],
     "Last 30 days": [],
@@ -89,25 +92,38 @@ const AnalyticsPage = () => {
   return (
     <Layout
       title="Analytics"
-      description="Track stores performance and platform activity."
+      description="Track store performance and platform activity."
     >
-      <div className="w-full space-y-5 p-6">
-        <AnalyticsMobileView
-          summaryData={summaryData}
-          dataSets={platformEvents}
-          range={range}
-          setRange={setRange}
-          allStores={analyticsData.allStores}
-          featuresData={analyticsData.subscription.features}
+      <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <CouponShowcase
+          context="ANALYTICS_PAGE"
+          variant="cards"
+          title="Performance-Based Offers"
         />
-        <AnalyticsDesktopView
-          dataSets={platformEvents}
-          summaryData={summaryData}
-          featuresData={analyticsData.subscription.features}
-          allStoresData={analyticsData.allStores}
-          range={range}
-          setRange={setRange}
-        />
+
+        <AnimatedSection>
+          <div className="md:hidden">
+            <AnalyticsMobileView
+              summaryData={summaryData}
+              dataSets={platformEvents}
+              range={range}
+              setRange={setRange}
+              allStores={analyticsData.allStores}
+              featuresData={analyticsData.subscription.features}
+            />
+          </div>
+          
+          <div className="hidden md:block bg-white rounded-[4px] border border-gray-200 shadow-sm p-6 overflow-hidden">
+            <AnalyticsDesktopView
+              dataSets={platformEvents}
+              summaryData={summaryData}
+              featuresData={analyticsData.subscription.features}
+              allStoresData={analyticsData.allStores}
+              range={range}
+              setRange={setRange}
+            />
+          </div>
+        </AnimatedSection>
       </div>
     </Layout>
   );

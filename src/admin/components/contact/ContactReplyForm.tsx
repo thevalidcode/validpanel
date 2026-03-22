@@ -25,7 +25,7 @@ export default function ContactReplyForm({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-lg border-2 border-purple-200 p-4"
+      className="bg-white rounded-[4px] border-2 border-purple-200 p-4"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -42,7 +42,7 @@ export default function ContactReplyForm({
             placeholder="Type your response here..."
             rows={6}
             disabled={isLoading}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-[4px] focus:outline-none focus:border-purple-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed transition"
             required
             maxLength={10000}
           />
@@ -55,7 +55,7 @@ export default function ContactReplyForm({
           <button
             type="submit"
             disabled={isLoading || !message.trim()}
-            className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-[4px] hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {isLoading ? (
               <>

@@ -18,7 +18,7 @@ const Step3: React.FC = () => {
   const [useCustomDomain, setUseCustomDomain] = useState<boolean>(false);
   const draft = getOnboardingDraft();
   const { data: subscriptionPlan } = useGetUserSubscriptionPlanByUid(
-    draft?.planUid || ""
+    draft?.planUid || "",
   );
 
   // Initialize from localStorage if draft exists
@@ -54,7 +54,7 @@ const Step3: React.FC = () => {
       title="Name Your Store"
       description="Give your store a name and choose your custom link."
       step={3}
-      selected={!!domain && !!storeName}
+      selected={!!domain && !!storeName && storeName.trim().length > 2}
       onNext={handleContinue}
       onBack={() => navigate("/onboarding/step2")}
       nextButton={
@@ -75,7 +75,7 @@ const Step3: React.FC = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-white shadow-lg rounded-2xl p-6 sm:p-8 w-full mx-auto max-w-md sm:max-w-xl md:max-w-2xl"
+        className="w-full mx-auto max-w-md sm:max-w-xl md:max-w-2xl"
       >
         {/* Store Name */}
         <div className="mb-6">
@@ -91,7 +91,7 @@ const Step3: React.FC = () => {
             value={storeName}
             onChange={(e) => setStoreName(e.target.value)}
             placeholder="Enter your store name"
-            className="w-full border border-gray-300 rounded-md px-4 py-2 text-sm sm:text-base focus:outline-none focus:border-purple-500"
+            className="w-full border border-gray-300 rounded-[4px] px-4 py-2 text-sm sm:text-base focus:outline-none focus:border-purple-500"
           />
         </div>
 

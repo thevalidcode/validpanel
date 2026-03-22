@@ -31,7 +31,7 @@ export default function UserSettings(): JSX.Element {
   }, [userInfo]);
 
   const handleSave = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     await updateUser({
@@ -46,12 +46,12 @@ export default function UserSettings(): JSX.Element {
     (code) => ({
       label: `${code} (${getCurrencySymbol(code)})`,
       value: code,
-    })
+    }),
   );
 
   return (
-    <div className="p-6 min-h-screen">
-      <div className="mx-auto bg-white shadow-sm rounded-lg p-8">
+    <div className="p-6 min-h-screen space-y-8">
+      <div className="mx-auto bg-white shadow-sm rounded-[4px] p-8">
         <p className="mb-3 font-semibold text-lg">Profile Picture</p>
         <div className="flex items-center gap-4 mb-8">
           <img
@@ -82,7 +82,7 @@ export default function UserSettings(): JSX.Element {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full border border-gray-300 rounded-[4px] px-3 py-2 focus:ring-1 focus:ring-purple-500 focus:outline-none"
               />
             </div>
 
@@ -96,7 +96,7 @@ export default function UserSettings(): JSX.Element {
                 title="lastName"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full border border-gray-300 rounded-[4px] px-3 py-2 focus:ring-1 focus:ring-purple-500 focus:outline-none"
               />
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function UserSettings(): JSX.Element {
                 value={email}
                 disabled
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full border border-gray-300 rounded-[4px] px-3 py-2 focus:ring-1 focus:ring-purple-500 focus:outline-none"
               />
             </div>
 
@@ -127,7 +127,7 @@ export default function UserSettings(): JSX.Element {
                 title="phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full border border-gray-300 rounded-[4px] px-3 py-2 focus:ring-1 focus:ring-purple-500 focus:outline-none"
               />
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function UserSettings(): JSX.Element {
           </div>
 
           {/* Password Section */}
-          <div className="border border-gray-200 rounded-md p-4 bg-gray-50">
+          <div className="border border-gray-200 rounded-[4px] p-4 bg-gray-50">
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm text-gray-700">Password</p>
@@ -180,7 +180,7 @@ export default function UserSettings(): JSX.Element {
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              className="bg-purple-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition"
+              className="bg-purple-600 text-white px-5 py-2 rounded-[4px] text-sm font-medium hover:bg-purple-700 transition"
             >
               Save Changes
             </button>

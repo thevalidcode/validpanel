@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Globe } from "lucide-react";
 import CustomSelect, { type Option } from "@/components/ui/CustomSelect";
 import { currency as currencyMap, getCurrencySymbol } from "@/_docs/doc";
 import { useAppContext } from "@/context/useAppContext";
@@ -17,7 +16,7 @@ export default function CurrencySwitcher({
     (code) => ({
       label: `${code} (${getCurrencySymbol(code)})`,
       value: code,
-    })
+    }),
   );
 
   return (
@@ -27,13 +26,6 @@ export default function CurrencySwitcher({
       transition={{ duration: 0.5, delay: 0.15 }}
       className={`flex items-center gap-3 ${className}`}
     >
-      <div className="flex items-center gap-2 text-gray-700">
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-600 to-purple-700 text-white flex items-center justify-center shadow-md">
-          <Globe className="w-4 h-4" />
-        </div>
-        <span className="text-sm font-medium hidden sm:inline">Currency:</span>
-      </div>
-
       <div className="min-w-[180px]">
         <CustomSelect
           options={currencyOptions}

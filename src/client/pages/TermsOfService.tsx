@@ -3,37 +3,19 @@ import { useEffect } from "react";
 
 const TermsOfService = () => {
   useEffect(() => {
-    document.title = "Terms of Service | Valid Panel";
+    document.title = "Terms of Service | ValidPanel";
   }, []);
 
   return (
-    <section className="mx-auto px-5 py-40">
-      {/* Animated background */}
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 90, 0],
-          opacity: [0.3, 0.5, 0.3],
+    <section className="mx-auto px-5 py-40 relative">
+      {/* Grid Background */}
+      <div
+        className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute top-0 left-0 w-96 h-96 bg-primary/30 rounded-full mix-blend-multiply filter blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, -90, 0],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="absolute top-1/4 right-1/9 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl pointer-events-none"
       />
 
       <motion.div
@@ -46,7 +28,7 @@ const TermsOfService = () => {
           Terms of Service
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Please read these terms carefully before using Valid Panel's services.
+          Please read these terms carefully before using ValidPanel's services.
         </p>
         <p className="text-sm text-gray-500 mt-2">
           Last updated: January 11, 2026

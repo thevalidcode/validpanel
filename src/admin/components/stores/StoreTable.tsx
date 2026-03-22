@@ -65,7 +65,7 @@ const StoreTable = ({
             placeholder="Search stores..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto"
+            className="border border-gray-200 rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary w-full sm:w-auto"
           />
           <CustomSelect
             options={typeOptions}
@@ -89,7 +89,7 @@ const StoreTable = ({
           />
         </div>
         <div className="flex gap-2">
-          <button className="  rounded-md px-4 py-2 text-sm hover:bg-gray-50 transition">
+          <button className="  rounded-[4px] px-4 py-2 text-sm hover:bg-gray-50 transition">
             Export
           </button>
         </div>
@@ -142,7 +142,7 @@ const StoreTable = ({
 
                   {/* Store Type */}
                   <td className="py-3 px-4">
-                    <span className="px-2 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-md font-medium">
+                    <span className="px-2 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-[4px] font-medium">
                       {store.type}
                     </span>
                   </td>
@@ -150,7 +150,7 @@ const StoreTable = ({
                   {/* Status */}
                   <td className="py-3 px-4">
                     <span
-                      className={`px-2 py-1 text-xs rounded-md font-medium ${
+                      className={`px-2 py-1 text-xs rounded-[4px] font-medium ${
                         store.status === "ACTIVE"
                           ? "bg-green-50 text-green-600"
                           : "bg-yellow-50 text-yellow-600"
@@ -191,7 +191,7 @@ const StoreTable = ({
           paginatedStores.map((store) => (
             <div
               key={store.storeId}
-              className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"
+              className="border border-gray-200 rounded-[4px] p-4 shadow-sm hover:shadow-md transition"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -208,14 +208,14 @@ const StoreTable = ({
                 <p className="text-gray-500 text-xs">{store.owner.email}</p>
                 <p className="mt-2">
                   <span className="font-medium">Type:</span>{" "}
-                  <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded-md">
+                  <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded-[4px]">
                     {store.type}
                   </span>
                 </p>
                 <p className="mt-1">
                   <span className="font-medium">Status:</span>{" "}
                   <span
-                    className={`px-2 py-0.5 text-xs rounded-md font-medium ${
+                    className={`px-2 py-0.5 text-xs rounded-[4px] font-medium ${
                       store.status === "ACTIVE"
                         ? "bg-green-50 text-green-600"
                         : "bg-yellow-50 text-yellow-600"

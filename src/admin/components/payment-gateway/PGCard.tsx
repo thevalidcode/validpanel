@@ -52,14 +52,14 @@ const PGCard: FC<PGCardProps> = ({ pg }) => {
   const primaryAction = status === "INACTIVE" ? "Activate" : "Configure";
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
+    <div className="bg-white rounded-[4px] border border-gray-200 p-4 space-y-4">
       {/* HEADER */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <img
             src={logo}
             alt={name}
-            className="w-10 h-10 rounded-md object-contain bg-gray-50"
+            className="w-10 h-10 rounded-[4px] object-contain bg-gray-50"
           />
           <div>
             <p className="font-semibold text-gray-900">{name}</p>
@@ -94,11 +94,11 @@ const PGCard: FC<PGCardProps> = ({ pg }) => {
 
       {/* ACTIONS */}
       <div className="flex gap-3 pt-2">
-        <button className="flex-1 border border-gray-300 rounded-lg py-2 text-sm font-medium hover:bg-gray-50">
+        <button className="flex-1 border border-gray-300 rounded-[4px] py-2 text-sm font-medium hover:bg-gray-50">
           {primaryAction}
         </button>
 
-        <button className="flex-1 bg-purple-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-purple-700">
+        <button className="flex-1 bg-purple-600 text-white rounded-[4px] py-2 text-sm font-medium hover:bg-purple-700">
           Test
         </button>
       </div>

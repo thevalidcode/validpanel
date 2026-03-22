@@ -160,12 +160,12 @@ export default function EditPGDialog({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-full max-w-lg rounded-2xl bg-white border border-gray-200 shadow-xl"
+              className="w-full max-w-lg rounded-[4px] bg-white border border-gray-200 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200 bg-white rounded-t-2xl">
-                <div className="w-11 h-11 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                <div className="w-11 h-11 rounded-[4px] bg-green-100 text-green-600 flex items-center justify-center">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
@@ -204,7 +204,7 @@ export default function EditPGDialog({
                       type="text"
                       value={signature}
                       readOnly
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm text-gray-900 bg-gray-50 font-mono focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                      className="w-full rounded-[4px] border border-gray-200 px-3 py-2.5 pr-10 text-sm text-gray-900 bg-gray-50 font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                     />
                     <button
                       type="button"
@@ -231,7 +231,7 @@ export default function EditPGDialog({
                 <button
                   type="button"
                   onClick={onSignatureClose}
-                  className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90"
+                  className="rounded-[4px] bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90"
                 >
                   Close
                 </button>
@@ -257,12 +257,12 @@ export default function EditPGDialog({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-full max-w-2xl rounded-2xl bg-white border border-gray-200 shadow-xl max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl rounded-[4px] bg-white border border-gray-200 shadow-xl max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="sticky top-0 z-10 flex items-center gap-3 px-6 py-4 border-b border-gray-200 bg-white">
-                <div className="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <div className="w-11 h-11 rounded-[4px] bg-primary/10 text-primary flex items-center justify-center">
                   <CreditCard className="w-5 h-5" />
                 </div>
                 <div>
@@ -319,7 +319,7 @@ export default function EditPGDialog({
                         setForm((p) => ({ ...p, name: e.target.value }))
                       }
                       placeholder="e.g., Stripe Production"
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                      className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                     />
                   </Field>
                 </div>
@@ -336,7 +336,7 @@ export default function EditPGDialog({
                         setForm((p) => ({ ...p, min: e.target.value }))
                       }
                       placeholder="100"
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                      className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                     />
                   </Field>
 
@@ -351,7 +351,7 @@ export default function EditPGDialog({
                         setForm((p) => ({ ...p, max: e.target.value }))
                       }
                       placeholder="100000"
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                      className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                     />
                   </Field>
                 </div>
@@ -369,7 +369,7 @@ export default function EditPGDialog({
                         setForm((p) => ({ ...p, secretKey: e.target.value }))
                       }
                       placeholder="sk_live_..."
-                      className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition font-mono"
+                      className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition font-mono"
                     />
                     <p className="mt-1 text-xs text-gray-500">
                       Stored encrypted and hidden in logs.
@@ -387,7 +387,7 @@ export default function EditPGDialog({
                       setForm((p) => ({ ...p, description: e.target.value }))
                     }
                     placeholder="Short label for this gateway"
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                    className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                   />
                 </Field>
 
@@ -419,11 +419,11 @@ export default function EditPGDialog({
                     }
                     placeholder="Detailed instructions or notes for this gateway"
                     rows={4}
-                    className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+                    className="mt-1 w-full rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition resize-none"
                   />
                 </Field>
 
-                <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+                <div className="border border-dashed border-gray-300 rounded-[4px] p-4 bg-gray-50">
                   <ImageUploadBox
                     label=" Gateway Logo"
                     collection="payment-gateways"
@@ -439,7 +439,7 @@ export default function EditPGDialog({
                     disabled
                     title="webhook"
                     value={`https://api.${domain}/v1/webhooks/${form.platform.toLowerCase()}`}
-                    className="mt-1 w-full disabled:bg-gray-100 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                    className="mt-1 w-full disabled:bg-gray-100 rounded-[4px] border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
                   />
                 </Field>
               </div>
@@ -450,7 +450,7 @@ export default function EditPGDialog({
                   type="button"
                   onClick={onCancel}
                   disabled={isLoading}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                  className="rounded-[4px] border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
                 >
                   Cancel
                 </button>
@@ -458,7 +458,7 @@ export default function EditPGDialog({
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
+                  className="rounded-[4px] bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
                 >
                   {isLoading
                     ? mode === "create"

@@ -32,7 +32,7 @@ export default function ContactMessagesMobileView({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.05 }}
-          className="border border-t-4 border-gray-200 rounded-lg py-4 px-4 hover:border-blue-600 transition-all flex justify-between items-start shadow-sm"
+          className="border border-t-4 border-gray-200 rounded-[4px] py-4 px-4 hover:border-blue-600 transition-all flex justify-between items-start shadow-sm"
         >
           <div className="space-y-3 flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export default function ContactMessagesMobileView({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onViewDetail(msg.uid)}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+              className="p-2 text-blue-600 hover:bg-blue-50 rounded-[4px] transition"
               title="View message"
             >
               <Eye className="w-4 h-4" />
@@ -73,7 +73,7 @@ export default function ContactMessagesMobileView({
               whileTap={{ scale: 0.95 }}
               onClick={() => onDelete(msg.uid)}
               disabled={isDeleting}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 text-red-600 hover:bg-red-50 rounded-[4px] transition disabled:opacity-50 disabled:cursor-not-allowed"
               title="Delete message"
             >
               <Trash2 className="w-4 h-4" />
@@ -86,7 +86,7 @@ export default function ContactMessagesMobileView({
         <div className="flex justify-center pt-4">
           <button
             onClick={onHandleLoadMore}
-            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition font-medium text-sm"
+            className="px-6 py-2 border border-gray-300 rounded-[4px] text-gray-700 hover:bg-gray-50 transition font-medium text-sm"
           >
             Load More
           </button>

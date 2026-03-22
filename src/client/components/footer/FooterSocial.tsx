@@ -4,7 +4,7 @@ import FooterSocialLink from "./FooterSocialLink";
 
 const FooterSocial: FC = () => (
   <div>
-    <h5 className="font-semibold mb-3 text-white text-sm">Connect With Us</h5>
+    <h4 className="text-gray-900 font-bold mb-4">Connect With Us</h4>
     <div className="flex space-x-3">
       <FooterSocialLink
         icon={<FaFacebook size={18} />}

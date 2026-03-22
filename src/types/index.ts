@@ -13,3 +13,4 @@ export * from "./models/role";
 export * from "./models/permission";
 export * from "./models/contact-message";
 export * from "./models/platform-event";
+export * from "./models/coupon";

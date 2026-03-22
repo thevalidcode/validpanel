@@ -31,7 +31,7 @@ export default function PGDesktopView({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="border border-gray-200 rounded-lg overflow-hidden bg-white"
+        className="border border-gray-200 rounded-[4px] overflow-hidden bg-white"
       >
         <table className="w-full">
           <thead className="border-b border-gray-200">
@@ -69,7 +69,7 @@ export default function PGDesktopView({
                       <img
                         src={gateway.image}
                         alt={gateway.name}
-                        className="w-10 h-10 rounded-lg object-cover"
+                        className="w-10 h-10 rounded-[4px] object-cover"
                       />
                     )}
                     <div>
@@ -117,7 +117,7 @@ export default function PGDesktopView({
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onEdit(gateway)}
-                      className="p-2 text-primary hover:bg-purple-50 rounded-lg transition"
+                      className="p-2 text-primary hover:bg-purple-50 rounded-[4px] transition"
                       title="Edit"
                     >
                       <Edit2 size={16} />
@@ -126,7 +126,7 @@ export default function PGDesktopView({
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onDelete(gateway.uid)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-[4px] transition"
                       title="Delete"
                     >
                       <Trash2 size={16} />
@@ -153,7 +153,7 @@ export default function PGDesktopView({
             <button
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 border border-gray-200 rounded-[4px] text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               Previous
             </button>
@@ -162,7 +162,7 @@ export default function PGDesktopView({
                 onPageChange(Math.min(totalPages, currentPage + 1))
               }
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 border border-gray-200 rounded-[4px] text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               Next
             </button>

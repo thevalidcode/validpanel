@@ -14,7 +14,7 @@ const FaqQuestionAnswer: FC<FaqQuestionAnswerProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-gradient-to-r from-purple-100 to-white p-4 rounded-t-lg cursor-pointer border border-gray-200 rounded-lg mb-3 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      className="bg-white p-4 cursor-pointer border border-gray-200 rounded-[4px] mb-3 overflow-hidden shadow-sm hover:border-[var(--color-primary)] transition-all"
       onClick={() => setOpen(!open)}
     >
       <button

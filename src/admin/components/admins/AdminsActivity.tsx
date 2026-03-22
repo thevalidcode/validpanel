@@ -50,7 +50,7 @@ function AdminsActivity() {
   const { data: platformEvents } = useGetPlatformEvents();
 
   return (
-    <div className="rounded-xl bg-white border border-gray-200 overflow-hidden">
+    <div className="rounded-[4px] bg-white border border-gray-200 overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-semibold inter">Admin Activity Logs</h2>
@@ -85,7 +85,7 @@ function AdminsActivity() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
-                    className="flex gap-4 p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors"
+                    className="flex gap-4 p-4 rounded-[4px] border border-gray-100 hover:bg-gray-50 transition-colors"
                   >
                     {/* Icon */}
                     <div

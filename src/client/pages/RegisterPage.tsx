@@ -17,7 +17,7 @@ const referralSourceOptions: Option<string>[] = REFERRAL_SOURCES.map(
   (source) => ({
     label: source,
     value: source,
-  })
+  }),
 );
 
 const RegisterPage = () => {
@@ -36,7 +36,7 @@ const RegisterPage = () => {
   });
 
   const [referralSource, setReferralSource] = useState<Option<string> | null>(
-    null
+    null,
   );
   const [additionalInfo, setAdditionalInfo] = useState("");
 
@@ -145,6 +145,7 @@ const RegisterPage = () => {
             ref={referralSelectRef}
             value={referralSource || undefined}
             required={true}
+            variant="default"
             isSearchable={true}
             placeholder="Select where you found us..."
             onChange={(opt) => setReferralSource(opt as Option<string>)}
@@ -163,7 +164,7 @@ const RegisterPage = () => {
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
             placeholder="E.g., specific influencer name, blog post title, friend's name, etc."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"
+            className="w-full rounded-[4px] outline-none border-2 focus:border-primary px-5 py-4 text-sm border-gray-200"
             rows={2}
             maxLength={500}
           />
@@ -178,14 +179,15 @@ const RegisterPage = () => {
         </div>
 
         <span className="text-sm text-gray-600">
-          By signing up i agree to the
+          By signing up you agree to the
           <a
             href="/terms-of-service"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:text-primary/80 underline"
           >
-            Terms of Service
+            {" "}
+            terms of service
           </a>{" "}
           and{" "}
           <a
@@ -194,12 +196,18 @@ const RegisterPage = () => {
             rel="noopener noreferrer"
             className="text-primary hover:text-primary/80 underline"
           >
-            Privacy Policy
+            privacy policy
           </a>{" "}
-          of Valid Panel
+          of ValidPanel
         </span>
-        <Button styles="text-white text-xs bg-primary" type="submit">
-          {isPending || isVerifyingSession ? "Signing Up..." : "Sign Up"}
+        <Button
+          styles="text-white text-xs bg-[var(--color-primary)] hover:bg-purple-700 border-none shadow-lg shadow-purple-500/20 font-bold w-full"
+          type="submit"
+          style={{ borderRadius: "4px" }}
+        >
+          {isPending || isVerifyingSession
+            ? "CREATING ACCOUNT..."
+            : "CREATE ACCOUNT"}
         </Button>
       </form>
     </AuthWrapper>

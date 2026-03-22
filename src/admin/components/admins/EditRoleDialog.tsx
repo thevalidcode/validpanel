@@ -107,11 +107,11 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full max-w-2xl rounded-2xl bg-white border border-gray-200 shadow-xl"
+            className="w-full max-w-2xl rounded-[4px] bg-white border border-gray-200 shadow-xl"
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[4px] bg-primary/10 text-primary flex items-center justify-center">
                 <Shield className="w-5 h-5" />
               </div>
               <div className="flex-1">
@@ -152,7 +152,7 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
                         value={form.name}
                         onChange={handleNameChange}
                         placeholder="Enter role name"
-                        className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="mt-1 w-full rounded-[4px] border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition disabled:opacity-60 disabled:cursor-not-allowed"
                       />
                     </Field>
                   </motion.div>
@@ -194,7 +194,7 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
                 type="button"
                 onClick={onCancel}
                 disabled={isLoading}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                className="rounded-[4px] border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -208,7 +208,7 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
                       handleBack();
                     }}
                     disabled={isLoading}
-                    className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60 flex items-center gap-2"
+                    className="rounded-[4px] border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60 flex items-center gap-2"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     Back
@@ -223,7 +223,7 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
                       handleNext();
                     }}
                     disabled={!canProceedToStep2 || isLoading}
-                    className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60 flex items-center gap-2"
+                    className="rounded-[4px] bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60 flex items-center gap-2"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -232,7 +232,7 @@ const EditRoleDialog: FC<EditRoleDialogProps> = ({
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
+                    className="rounded-[4px] bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-60"
                   >
                     {mode === "edit" && isLoading
                       ? "Saving..."

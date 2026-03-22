@@ -34,7 +34,7 @@ export default function AdminDesktopView({
       <div className="flex flex-wrap gap-4">
         {/* Left Container */}{" "}
         <div className="flex-2 flex flex-col gap-2">
-          <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
+          <div className="overflow-x-auto border border-gray-200 rounded-[4px] bg-white">
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left text-gray-600">
@@ -106,7 +106,7 @@ export default function AdminDesktopView({
         <div className="flex-1">
           <div className="flex flex-col gap-2">
             <RolesView roles={roles} />
-            <div className="rounded-lg bg-white">
+            <div className="rounded-[4px] bg-white">
               <div className="p-6 flex flex-col border-b rounded-t-lg  border-gray-200">
                 <h2 className="text-xl font-semibold inter">Quick Stats</h2>
               </div>

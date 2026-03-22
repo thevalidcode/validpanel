@@ -10,7 +10,7 @@ const FaqSupport: FC = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
-      className="mt-12 bg-white rounded-2xl border-2 border-gray-200 p-8 text-center shadow-lg"
+      className="mt-12 bg-white rounded-[4px] border-2 border-gray-200 p-8 text-center shadow-lg"
     >
       <h3 className="text-xl font-bold mb-3 text-gray-800">
         Still have question ?

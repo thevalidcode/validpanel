@@ -5,7 +5,9 @@ import {
   useDeleteSubscriptionPlan,
   useCreateSubscriptionPlan,
   useUpdateSubscriptionPlan,
-  type NewSubscriptionPlan,
+  useCreateSubscriptionPlanPrice,
+  useUpdateSubscriptionPlanPrice,
+  useDeleteSubscriptionPlanPrice,
 } from "@/hooks/use-subscription-plan";
 
 import Loader from "@/components/Loader";
@@ -40,6 +42,10 @@ const SubscriptionPlansPage = () => {
     useCreateSubscriptionPlan();
   const { mutateAsync: updatePlan, isPending: isUpdatePending } =
     useUpdateSubscriptionPlan();
+
+  const { mutateAsync: createPrice } = useCreateSubscriptionPlanPrice();
+  const { mutateAsync: updatePrice } = useUpdateSubscriptionPlanPrice();
+  const { mutateAsync: deletePrice } = useDeleteSubscriptionPlanPrice();
 
   const filteredPlans = useMemo(() => {
     return plans.filter((plan) => {
@@ -88,11 +94,11 @@ const SubscriptionPlansPage = () => {
   const handleDialogSubmit = async (data: any) => {
     try {
       if (dialogMode === "create") {
-        await createPlan(data as NewSubscriptionPlan);
+        await createPlan(data as SubscriptionPlan);
       } else if (dialogMode === "edit" && editTarget) {
         await updatePlan({
           uid: editTarget.uid,
-          updates: data as NewSubscriptionPlan,
+          updates: data as SubscriptionPlan,
         });
       }
     } finally {
@@ -108,14 +114,14 @@ const SubscriptionPlansPage = () => {
     >
       <div className="py-5 px-6 w-full">
         {/* Filters */}
-        <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200">
+        <div className="flex w-full flex-col md:flex-row md:items-center gap-3 bg-white px-5 py-3 rounded-[4px] border border-gray-200">
           <div className="relative flex-1 md:w-[60%]">
             <input
               type="text"
               placeholder="Search plans..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-lg pr-3 pl-12 py-2 focus:ring-2 focus:ring-primary transition-all"
+              className="flex-1 border border-gray-200 outline-0 w-full h-full rounded-[4px] pr-3 pl-12 py-2 focus:ring-1 focus:ring-primary transition-all"
             />
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
           </div>
@@ -123,7 +129,7 @@ const SubscriptionPlansPage = () => {
           <div className="flex gap-2 items-center justify-end flex-1">
             <button
               onClick={() => setDialogMode("create")}
-              className="text-white flex gap-2 border bg-primary items-center w-fit hover:bg-primary/90 px-4 py-2 rounded-lg transition-all font-medium"
+              className="text-white flex gap-2 border bg-primary items-center w-fit hover:bg-primary/90 px-4 py-2 rounded-[4px] transition-all font-medium"
             >
               <Plus className="text-base" />
               <span>Create Plan</span>
@@ -148,10 +154,7 @@ const SubscriptionPlansPage = () => {
             </div>
           </div>
         ) : (
-          <NotFound
-            title="No subscription plans found."
-            className="mt-5"
-          />
+          <NotFound title="No subscription plans found." className="mt-5" />
         )}
       </div>
 
@@ -174,6 +177,15 @@ const SubscriptionPlansPage = () => {
         onCancel={() => {
           setDialogMode(null);
           setEditTarget(undefined);
+        }}
+        onAddPrice={async (planId, data) => {
+          return await createPrice({ planId, data });
+        }}
+        onUpdatePrice={async (planId, priceId, data) => {
+          return await updatePrice({ planId, priceId, data });
+        }}
+        onDeletePrice={async (planId, priceId) => {
+          await deletePrice({ planId, priceId });
         }}
       />
     </Layout>

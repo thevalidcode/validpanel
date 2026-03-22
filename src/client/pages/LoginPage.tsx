@@ -60,8 +60,12 @@ const LoginPage = () => {
             value={inputs.password}
             onChange={handleInputs}
           />
-          <Button styles="text-white text-xs bg-primary" type="submit">
-            {isPending || isVerifyingSession ? "Signing In..." : "Sign In"}
+          <Button 
+            styles="text-white text-xs bg-[var(--color-primary)] hover:bg-purple-700 border-none shadow-lg shadow-purple-500/20 font-bold" 
+            type="submit"
+            style={{ borderRadius: '4px' }}
+          >
+            {isPending || isVerifyingSession ? "SIGNING IN..." : "SIGN IN"}
           </Button>
         </div>
       </form>

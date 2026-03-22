@@ -15,7 +15,7 @@ export function useGetUserNotifications(page: number = 1, limit: number = 20) {
         `/notifications/me?page=${page}&limit=${limit}`
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
-      return res.data.notifications;
+      return res.data.notifications || [];
     },
     enabled: !!userInfo,
     retry: 1,
@@ -31,7 +31,7 @@ export function useGetUserUnreadNotificationCount() {
         `/notifications/unread-count`
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
-      return res.data.unreadCount;
+      return res.data.unreadCount || 0;
     },
     enabled: !!userInfo,
     retry: 1,

@@ -4,11 +4,11 @@
       "title": "General Questions",
       "questions": [
         {
-          "q": "What is Valid Panel and how does it work?",
-          "a": "Valid Panel is a cloud platform where you can open a shop to sell physical or digital products and a social media store to resell social media marketing services. Sign up, choose a plan, customise your storefront, list items or select social media services, connect payments and start selling."
+          "q": "What is ValidPanel and how does it work?",
+          "a": "ValidPanel is a cloud platform where you can open a shop to sell physical or digital products and a social media store to resell social media marketing services. Sign up, choose a plan, customise your storefront, list items or select social media services, connect payments and start selling."
         },
         {
-          "q": "Who can use Valid Panel? Do I need technical experience?",
+          "q": "Who can use ValidPanel? Do I need technical experience?",
           "a": "Entrepreneurs, creators and agencies worldwide can use it. The dashboard is beginner friendly so you do not need coding skills, but developers can extend it through the API."
         },
         {
@@ -24,7 +24,7 @@
           "a": "Yes. You can enable both modules under one account and manage them from the same dashboard."
         },
         {
-          "q": "How do I create my first shop on Valid Panel?",
+          "q": "How do I create my first shop on ValidPanel?",
           "a": "Sign up, click Create Shop, pick a template, enter a shop name, set a domain, configure payments and add your first product."
         },
         {
@@ -36,11 +36,11 @@
           "a": "Connect a payment gateway in Settings. Funds settle in your gateway account and you can withdraw to your bank."
         },
         {
-          "q": "Is my data and customer information safe on Valid Panel?",
+          "q": "Is my data and customer information safe on ValidPanel?",
           "a": "Yes. We use encrypted connections, secure servers and routine security audits. Data is encrypted at rest and in transit."
         },
         {
-          "q": "Is Valid Panel GDPR and privacy compliant?",
+          "q": "Is ValidPanel GDPR and privacy compliant?",
           "a": "Yes. We follow GDPR, CCPA and other global privacy standards. You can generate a Data Processing Agreement inside the Legal Centre."
         },
         {
@@ -48,7 +48,7 @@
           "a": "Yes. We provide step by step video tutorials, a searchable knowledge base and a free onboarding call on request."
         },
         {
-          "q": "Can I connect my domain to my Valid Panel shop?",
+          "q": "Can I connect my domain to my ValidPanel shop?",
           "a": "Yes. Add your domain in the Domains section and update your DNS records. We issue an SSL certificate automatically."
         }
       ]
@@ -61,11 +61,11 @@
           "a": "Stripe, PayPal, Flutterwave, Paystack, crypto via Coinbase Commerce and manual bank transfer are supported. Availability depends on your country."
         },
         {
-          "q": "Can I sell subscriptions or recurring services through Valid Panel?",
+          "q": "Can I sell subscriptions or recurring services through ValidPanel?",
           "a": "Yes. Choose Subscription when creating a product, set the billing cycle and the connected gateway will bill your customer automatically."
         },
         {
-          "q": "Does Valid Panel support international users and currencies?",
+          "q": "Does ValidPanel support international users and currencies?",
           "a": "Yes. The dashboard is global and you can enable multi currency pricing with automatic conversion."
         },
         {

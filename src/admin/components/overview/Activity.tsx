@@ -18,7 +18,7 @@ export const Activity: React.FC<ActivityProps & { index: number }> = ({
 }) => {
   const Icon = activityIcons[index % activityIcons.length]; // cycle icons based on index
   return (
-    <li className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg transition">
+    <li className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-[4px] transition">
       <div className="flex-shrink-0">
         {img ? (
           <img src={img} alt={name} className="w-8 h-8 rounded-full" />

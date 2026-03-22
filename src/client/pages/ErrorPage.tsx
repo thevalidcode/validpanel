@@ -15,16 +15,15 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center px-6 py-20">
-      {/* Animated background blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-red-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none" />
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none" />
+    <div className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 py-20 overflow-hidden">
+      {/* Background Grid */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
       <div className="relative z-10 max-w-2xl w-full">
         {/* Main error content */}
         <div className="text-center mb-12">
           <div className="mb-6 flex justify-center">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-[4px] bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
               <AlertTriangle className="w-12 h-12 text-white" />
             </div>
           </div>
@@ -45,19 +44,19 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center justify-center rounded-lg bg-white border-2 border-gray-300 px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
+              className="inline-flex items-center justify-center rounded-[4px] bg-white border-2 border-gray-300 px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition duration-200"
             >
               Go Back
             </button>
             <button
               onClick={() => navigate("/")}
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary/90 transition duration-200 hover:shadow-lg"
+              className="inline-flex items-center justify-center rounded-[4px] bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary/90 transition duration-200 hover:shadow-lg"
             >
               Go to Home
             </button>
             <button
               onClick={() => navigate("/contact-us")}
-              className="inline-flex items-center justify-center rounded-lg bg-white border-2 border-primary px-8 py-3 text-base font-medium text-primary hover:bg-primary/5 transition duration-200"
+              className="inline-flex items-center justify-center rounded-[4px] bg-white border-2 border-primary px-8 py-3 text-base font-medium text-primary hover:bg-primary/5 transition duration-200"
             >
               Contact Support
             </button>
@@ -65,7 +64,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         </div>
 
         {/* Support information */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-xs p-8 mt-12">
+        <div className="bg-white rounded-[4px] border border-gray-200 shadow-xs p-8 mt-12">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Need Help?
           </h3>
@@ -75,7 +74,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           </p>
           <div className="space-y-3">
             <div className="flex items-center">
-              <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary text-sm font-medium mr-3 flex-shrink-0">
+              <span className="inline-flex items-center justify-center h-8 w-8 rounded-[4px] bg-primary/10 text-primary text-sm font-medium mr-3 flex-shrink-0">
                 📧
               </span>
               <span className="text-gray-700">
@@ -89,7 +88,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
               </span>
             </div>
             <div className="flex items-center">
-              <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 text-primary text-sm font-medium mr-3 flex-shrink-0">
+              <span className="inline-flex items-center justify-center h-8 w-8 rounded-[4px] bg-primary/10 text-primary text-sm font-medium mr-3 flex-shrink-0">
                 💬
               </span>
               <span className="text-gray-700">

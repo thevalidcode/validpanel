@@ -73,7 +73,7 @@ const DomainInput: FC<DomainInputProps> = ({
           placeholder={
             useCustomDomain ? customPlaceholder : subdomainPlaceholder
           }
-          className="flex-1 border border-gray-300 rounded-t-md sm:rounded-l-md sm:rounded-t-none px-4 py-2 text-sm sm:text-base focus:outline-none focus:border-purple-500"
+          className="flex-1 border border-gray-300 rounded-t-md sm:rounded-l-md sm:rounded-t-none px-4 py-[6px] text-sm sm:text-base focus:outline-none focus:border-purple-500"
           required={required}
         />
 
@@ -92,7 +92,7 @@ const DomainInput: FC<DomainInputProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.25 }}
-            className="mt-3 rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800"
+            className="mt-3 rounded-[4px] border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800"
           >
             <p className="font-medium mb-1">Custom domain setup required</p>
             <p className="text-xs sm:text-sm">

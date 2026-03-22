@@ -50,11 +50,11 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition border-l-4 border-l-primary">
+    <div className="bg-white rounded-[4px] p-5 shadow-sm hover:shadow-md transition border-l-4 border-l-primary">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-gray-200 rounded-md overflow-hidden">
+          <div className="w-14 h-14 bg-gray-200 rounded-[4px] overflow-hidden">
             {store.logoUrl ? (
               <img
                 src={store.logoUrl}
@@ -98,7 +98,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
           <button
             type="button"
             onClick={() => window.open(`https://${store.uid}`, "_blank")}
-            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
+            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-[4px]"
           >
             <EyeIcon className="w-4 h-4" /> View
           </button>
@@ -108,7 +108,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             onClick={() =>
               window.open(`https://${store.uid}/admin/auth/signin`, "_blank")
             }
-            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-md"
+            className="flex items-center gap-1 bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-[4px]"
           >
             <EyeIcon className="w-4 h-4" /> Manage Store
           </button>
@@ -116,7 +116,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
           <button
             type="button"
             onClick={() => setShowEdit(true)}
-            className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-md"
+            className="flex items-center gap-1 bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-[4px]"
           >
             <PencilSquareIcon className="w-4 h-4" /> Edit
           </button>
@@ -125,7 +125,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             <button
               type="button"
               onClick={() => setTargetStatus("DISABLED")}
-              className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-md"
+              className="flex items-center gap-1 bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-[4px]"
             >
               <PauseIcon className="w-4 h-4" /> Pause
             </button>
@@ -135,7 +135,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             <button
               type="button"
               onClick={() => setTargetStatus("ACTIVE")}
-              className="flex items-center gap-1 bg-green-100 text-green-700 text-sm px-3 py-1 rounded-md"
+              className="flex items-center gap-1 bg-green-100 text-green-700 text-sm px-3 py-1 rounded-[4px]"
             >
               <PlayIcon className="w-4 h-4" /> Resume
             </button>
@@ -145,7 +145,7 @@ const StoreCard: FC<StoreCardProps> = ({ store }) => {
             title="delete"
             type="button"
             onClick={() => setShowDelete(true)}
-            className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-md"
+            className="flex items-center gap-1 bg-red-100 text-red-600 text-sm px-3 py-1 rounded-[4px]"
           >
             <TrashIcon className="w-4 h-4" />
           </button>

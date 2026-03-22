@@ -26,7 +26,7 @@ const UsersMobileView: FC<UsersMobileViewProps> = ({ users, handleAction }) => {
         {visibleUsers.map((user) => (
           <div
             key={user.id}
-            className="border border-t-4 border-gray-200 rounded-lg py-5 px-[17px] hover:border-primary transition-all flex justify-between items-start shadow-sm relative"
+            className="border border-t-4 border-gray-200 rounded-[4px] py-5 px-[17px] hover:border-primary transition-all flex justify-between items-start shadow-sm relative"
           >
             <div className="space-y-4 flex-1">
               <div className="flex items-center gap-3">
@@ -59,13 +59,13 @@ const UsersMobileView: FC<UsersMobileViewProps> = ({ users, handleAction }) => {
               {user.referralSource && (
                 <div className="pt-2 border-t border-gray-100 space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-blue-50 text-blue-700 text-xs font-medium">
                       <TrendingUp className="w-3 h-3" />
                       {user.referralSource}
                     </span>
                   </div>
                   {user.marketingData?.additionalInfo && (
-                    <div className="flex items-start gap-1.5 text-xs text-gray-600 bg-gray-50 rounded-lg p-2">
+                    <div className="flex items-start gap-1.5 text-xs text-gray-600 bg-gray-50 rounded-[4px] p-2">
                       <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-gray-400" />
                       <p className="line-clamp-2">{user.marketingData.additionalInfo}</p>
                     </div>
@@ -107,7 +107,7 @@ const UsersMobileView: FC<UsersMobileViewProps> = ({ users, handleAction }) => {
       {hasMore && (
         <button
           onClick={onHandleLoadMore}
-          className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-lg font-medium"
+          className="border border-purple-500 mt-8 text-purple-600 hover:bg-purple-50 px-4 py-2 rounded-[4px] font-medium"
         >
           Load More Users
         </button>

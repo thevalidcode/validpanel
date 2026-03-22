@@ -47,7 +47,7 @@ export default function ActionMenu({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden"
+            className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-[4px] shadow-lg z-10 overflow-hidden"
           >
             {items.map((item, idx) => (
               <button

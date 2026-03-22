@@ -99,7 +99,7 @@ export default function SubscriptionsSection({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-lg border border-gray-200 mb-6"
+        className="flex flex-col sm:flex-row gap-3 bg-white px-5 py-3 rounded-[4px] border border-gray-200 mb-6"
       >
         <div className="flex-1 relative">
           <Search
@@ -114,7 +114,7 @@ export default function SubscriptionsSection({
               onSearchChange(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm"
+            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-[4px] focus:outline-none focus:ring-1 focus:ring-primary transition text-sm"
           />
         </div>
         <div className="sm:w-40">
@@ -138,7 +138,7 @@ export default function SubscriptionsSection({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="border border-gray-200 rounded-lg overflow-hidden bg-white"
+              className="border border-gray-200 rounded-[4px] overflow-hidden bg-white"
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
@@ -207,7 +207,9 @@ export default function SubscriptionsSection({
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(sub.expiresAt).toLocaleDateString()}
+                        {sub.expiresAt
+                          ? new Date(sub.expiresAt).toLocaleDateString()
+                          : "N/A"}
                       </td>
                       <td className="px-6 py-4">
                         <button
@@ -238,7 +240,7 @@ export default function SubscriptionsSection({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="bg-white border border-gray-200 rounded-lg p-4 space-y-3"
+                className="bg-white border border-gray-200 rounded-[4px] p-4 space-y-3"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -272,7 +274,9 @@ export default function SubscriptionsSection({
                   <div>
                     <p className="text-gray-500">Expires</p>
                     <p className="font-medium text-gray-900">
-                      {new Date(sub.expiresAt).toLocaleDateString()}
+                        {sub.expiresAt
+                          ? new Date(sub.expiresAt).toLocaleDateString()
+                          : "N/A"}
                     </p>
                   </div>
                 </div>

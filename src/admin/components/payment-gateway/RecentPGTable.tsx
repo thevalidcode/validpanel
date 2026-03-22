@@ -56,7 +56,7 @@ const RecentPGTable: FC<RecentPGTableProps> = ({
   onPageChange,
 }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-[4px] shadow-sm">
       {/* HEADER */}
       <div className="px-6 py-4 border-b">
         <h2 className="text-lg font-semibold text-gray-800">
@@ -94,7 +94,7 @@ const RecentPGTable: FC<RecentPGTableProps> = ({
                       <img
                         src={pg.logo}
                         alt={pg.name}
-                        className="w-8 h-8 rounded-md object-contain bg-gray-50"
+                        className="w-8 h-8 rounded-[4px] object-contain bg-gray-50"
                       />
                       <div>
                         <p className="font-medium text-gray-900">{pg.name}</p>
@@ -157,7 +157,7 @@ const RecentPGTable: FC<RecentPGTableProps> = ({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 border rounded-md disabled:opacity-50"
+            className="px-3 py-1 border rounded-[4px] disabled:opacity-50"
           >
             Previous
           </button>
@@ -165,7 +165,7 @@ const RecentPGTable: FC<RecentPGTableProps> = ({
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border rounded-md disabled:opacity-50"
+            className="px-3 py-1 border rounded-[4px] disabled:opacity-50"
           >
             Next
           </button>

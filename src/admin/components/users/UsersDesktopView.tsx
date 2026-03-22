@@ -45,7 +45,7 @@ export default function UsersDesktopView({
   return (
     <div>
       {/* Bulk Actions */}
-      <div className="flex flex-wrap items-center justify-between border border-gray-200 p-3 rounded-lg my-3 text-sm">
+      <div className="flex flex-wrap items-center justify-between border border-gray-200 p-3 rounded-[4px] my-3 text-sm">
         <CustomCheckbox
           checked={
             paginatedUsers.every((u) => selectedUsers.includes(u.uid)) &&
@@ -80,7 +80,7 @@ export default function UsersDesktopView({
       </div>
 
       {/* User Table */}
-      <div className="overflow-x-auto border border-gray-200 rounded-lg bg-white">
+      <div className="overflow-x-auto border border-gray-200 rounded-[4px] bg-white">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-left text-gray-600 bg-gray-50">
@@ -136,7 +136,7 @@ export default function UsersDesktopView({
                 <td className="p-3">
                   {u.referralSource ? (
                     <div className="flex flex-col gap-1">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium w-fit">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] bg-blue-50 text-blue-700 text-xs font-medium w-fit">
                         <TrendingUp className="w-3 h-3" />
                         {u.referralSource}
                       </span>
@@ -174,21 +174,21 @@ export default function UsersDesktopView({
                     {u.status === "BANNED" ? (
                       <button
                         onClick={() => handleAction([u.uid], "Approve")}
-                        className="text-green-600 border border-green-200 px-2.5 py-1.5 rounded-lg hover:bg-green-50 transition-colors text-xs font-medium"
+                        className="text-green-600 border border-green-200 px-2.5 py-1.5 rounded-[4px] hover:bg-green-50 transition-colors text-xs font-medium"
                       >
                         Approve
                       </button>
                     ) : (
                       <button
                         onClick={() => handleAction([u.uid], "Ban")}
-                        className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-xs font-medium"
+                        className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-[4px] hover:bg-red-50 transition-colors text-xs font-medium"
                       >
                         Ban
                       </button>
                     )}
                     <button
                       onClick={() => handleAction([u.uid], "Delete")}
-                      className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-xs font-medium"
+                      className="text-red-600 border border-red-200 px-2.5 py-1.5 rounded-[4px] hover:bg-red-50 transition-colors text-xs font-medium"
                     >
                       Delete
                     </button>

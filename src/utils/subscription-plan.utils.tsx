@@ -65,8 +65,12 @@ const FEATURE_MAP: Record<keyof SubscriptionPlanFeatures, FeatureFormatter> = {
 };
 
 export function formatPlanFeatures(
-  features: SubscriptionPlanFeatures,
+  features?: SubscriptionPlanFeatures | null,
 ): string[] {
+  if (!features || typeof features !== "object") {
+    return [];
+  }
+
   return (Object.keys(features) as (keyof SubscriptionPlanFeatures)[])
     .map((key) => {
       const formatter = FEATURE_MAP[key];

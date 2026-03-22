@@ -17,7 +17,7 @@ function PricingCard({ isAnnual }: PricingCardProps) {
     return <NotFound title="No subscription plan found" variant="page" />;
   }
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 grid gap-6">
+    <div className="w-full max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
       {subscriptionPlans.map((plan, index) => (
         <PricingPlanCard
           key={plan.id}
