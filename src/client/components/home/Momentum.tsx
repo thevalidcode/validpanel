@@ -3,7 +3,7 @@ import { FaGlobe, FaShieldAlt, FaBolt, FaHeadset } from "react-icons/fa";
 
 const Momentum: FC = () => {
   return (
-    <section className="py-12 border-b border-gray-100 bg-white">
+    <section className="py-12 border-b border-gray-100 bg-white hidden md:block ">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
           <div className="flex items-center gap-3">

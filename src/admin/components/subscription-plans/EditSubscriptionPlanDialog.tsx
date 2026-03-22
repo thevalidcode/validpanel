@@ -1,4 +1,4 @@
-import { type FC, type FormEvent, useEffect, useState } from "react";
+import { type FC, type FormEvent, useEffect, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { PackageIcon, FileText, Clock, Edit2, X, Trash2 } from "lucide-react";
 import type {
@@ -102,6 +102,19 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
     priceId?: number;
   } | null>(null);
 
+  const priceListRef = useRef<HTMLDivElement>(null);
+
+  // Smooth scroll to bottom when new price is added
+  useEffect(() => {
+    if (activeTab === "prices" && priceListRef.current) {
+      priceListRef.current.scrollTo({
+        top: priceListRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.prices.length, activeTab]);
+
   useEffect(() => {
     if (mode === "edit" && initialValues) {
       setForm({
@@ -173,7 +186,17 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
 
           // If backend returns the new price object (with ID), use it. otherwise use submitted data
           const newPrice =
-            res && typeof res === "object" ? { ...priceData, ...res } : priceData;
+            res && typeof res === "object"
+              ? {
+                  ...priceData,
+                  ...res,
+                  // Ensure price is string if backend returns a Decimal object
+                  price:
+                    typeof res.price === "object"
+                      ? priceData.price
+                      : res.price || priceData.price,
+                }
+              : priceData;
 
           setForm((prev) => ({
             ...prev,
@@ -226,23 +249,25 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
   const existingPrices = form.prices;
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 px-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onCancel}
-        >
+    <>
+      <AnimatePresence>
+        {open && (
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 20, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full max-w-3xl rounded-[4px] bg-white border border-gray-200 shadow-xl max-h-[90vh] overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+            key="edit-subscription-dialog"
+            className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onCancel}
           >
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="w-full max-w-3xl rounded-[4px] bg-white border border-gray-200 shadow-xl max-h-[90vh] overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white">
               <div className="flex items-center gap-3">
@@ -357,19 +382,19 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
               ) : (
                 <div className="space-y-4">
                   {/* Price List */}
-                  <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar" ref={priceListRef}>
                     {existingPrices.map((price: any, idx: number) => (
                       <div
-                        key={idx}
+                        key={price.id || idx}
                         className="flex items-center justify-between p-3 border border-gray-200 rounded-[4px] bg-gray-50"
                       >
                         <div className="flex flex-col">
                           <span className="font-semibold text-gray-900">
-                            {price.currency} {price.price} /{" "}
+                            {price.currency} {String(price.price)} /{" "}
                             {price.interval === "MONTHLY" ? "mo" : "yr"}
                           </span>
                           <span className="text-xs text-gray-500">
-                            Tax: {price.tax || 0}% | Active:{" "}
+                            Tax: {String(price.tax || 0)}% | Active:{" "}
                             {price.isActive ? "Yes" : "No"} | Default:{" "}
                             {price.isDefault ? "Yes" : "No"}
                           </span>
@@ -459,8 +484,9 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
           </motion.div>
         </motion.div>
       )}
+    </AnimatePresence>
 
-      <DeleteDialog
+    <DeleteDialog
         open={!!deletePriceTarget}
         title="Delete Price"
         description="Are you sure you want to delete this price permanently?"
@@ -468,7 +494,7 @@ const EditSubscriptionPlanDialog: FC<EditSubscriptionPlanDialogProps> = ({
         onConfirm={handleConfirmDeletePrice}
         isLoading={isLoading}
       />
-    </AnimatePresence>
+    </>
   );
 };
 
