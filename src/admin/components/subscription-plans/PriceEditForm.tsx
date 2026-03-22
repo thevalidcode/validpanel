@@ -67,6 +67,19 @@ export default function PriceEditForm({
     // Ideally we parse price * 100 for standard currencies
     const minor = Math.round(parseFloat(data.price || "0") * 100);
     onSubmit({ ...data, amountInMinor: minor });
+
+    // Reset form if we are adding a new price (not editing existing)
+    if (!initialData) {
+      setData({
+        interval: "MONTHLY",
+        price: "",
+        tax: null,
+        amountInMinor: 0,
+        currency: "USD",
+        isActive: true,
+        isDefault: false,
+      });
+    }
   };
 
   return (

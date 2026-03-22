@@ -25,13 +25,13 @@ export default function ContactMessagesDesktopView({
   const { data: paginatedMessages } = paginate(
     messages,
     currentPage,
-    itemsPerPage
+    itemsPerPage,
   );
 
   return (
     <div className="space-y-4">
       <div className="w-full overflow-x-auto border border-gray-200 rounded-[4px] bg-white">
-        <table className="min-w-[1000px] w-full text-sm whitespace-nowrap">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead>
             <tr className="text-left text-gray-600 bg-gray-50 border-b border-gray-200">
               <th className="p-4 font-semibold">Name</th>
