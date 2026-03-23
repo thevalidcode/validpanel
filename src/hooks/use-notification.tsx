@@ -12,7 +12,7 @@ export function useGetUserNotifications(page: number = 1, limit: number = 20) {
     queryKey: ["notifications", userInfo?.uid],
     queryFn: async () => {
       const res = await api.get<{ notifications: Notification[] }>(
-        `/notifications/me?page=${page}&limit=${limit}`
+        `/notifications/me?page=${page}&limit=${limit}`,
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
       return res.data.notifications || [];
@@ -28,7 +28,7 @@ export function useGetUserUnreadNotificationCount() {
     queryKey: ["notifications-count", userInfo?.uid],
     queryFn: async () => {
       const res = await api.get<{ unreadCount: number }>(
-        `/notifications/unread-count`
+        `/notifications/unread-count`,
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
       return res.data.unreadCount || 0;
@@ -45,7 +45,7 @@ export function useMarkNotificationAsRead() {
     mutationKey: ["notifications-mark-as-read"],
     mutationFn: async (uid: string) => {
       const res = await api.patch<{ success: string }>(
-        `/notifications/${uid}/mark-as-read`
+        `/notifications/${uid}/mark-as-read`,
       );
       if (!res.data) throw new Error("Failed to mark notification as read");
       return res.data;
@@ -61,7 +61,7 @@ export function useMarkNotificationAsRead() {
     onError: (error) => {
       const errorMsg = normalizeApiError(
         error,
-        "Failed to mark notification as read"
+        "Failed to mark notification as read",
       );
       toast.error(errorMsg);
     },
@@ -69,15 +69,17 @@ export function useMarkNotificationAsRead() {
 }
 
 export function useGetNotifications(page: number = 1, limit: number = 20) {
-  const { api } = useAppContext();
+  const { api, adminInfo } = useAppContext();
   return useQuery({
     queryKey: ["notifications-all"],
     queryFn: async () => {
       const res = await api.get<{ notifications: Notification[] }>(
-        `/notifications?page=${page}&limit=${limit}`
+        `/notifications?page=${page}&limit=${limit}`,
       );
       if (!res.data) throw new Error("Failed to fetch notifications");
       return res.data.notifications;
     },
+    enabled: !!adminInfo,
+    retry: 1,
   });
 }
