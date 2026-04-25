@@ -1,6 +1,15 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowUpRight, Compass, ImageIcon, Layers, Store } from "lucide-react";
+import {
+  ArrowUpRight,
+  Compass,
+  ImageIcon,
+  Layers,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Store,
+} from "lucide-react";
 import { useAppContext } from "@/context/useAppContext";
 import {
   useGetResellerSourceProducts,
@@ -136,7 +145,8 @@ const ResellerHubPage = () => {
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap items-center gap-2">
+        <div className="mb-6 rounded-[8px] border border-gray-200 bg-white p-2 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => {
@@ -145,12 +155,13 @@ const ResellerHubPage = () => {
               setPage(1);
               setPreviewPage(1);
             }}
-            className={`rounded-[4px] border px-4 py-2 text-sm font-medium transition ${
+            className={`inline-flex items-center gap-2 rounded-[6px] border px-4 py-2 text-sm font-semibold transition ${
               sourceType === "SHOP"
-                ? "border-[var(--color-primary)] bg-purple-50 text-[var(--color-primary)]"
-                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                ? "border-[var(--color-primary)] bg-purple-50 text-[var(--color-primary)] shadow-sm"
+                : "border-transparent bg-white text-gray-700 hover:border-gray-200 hover:bg-gray-50"
             }`}
           >
+            <ShoppingBag className="h-4 w-4" />
             Shop Products
           </button>
           <button
@@ -161,17 +172,24 @@ const ResellerHubPage = () => {
               setPage(1);
               setPreviewPage(1);
             }}
-            className={`rounded-[4px] border px-4 py-2 text-sm font-medium transition ${
+            className={`inline-flex items-center gap-2 rounded-[6px] border px-4 py-2 text-sm font-semibold transition ${
               sourceType === "SOCIAL"
-                ? "border-[var(--color-primary)] bg-purple-50 text-[var(--color-primary)]"
-                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                ? "border-[var(--color-primary)] bg-purple-50 text-[var(--color-primary)] shadow-sm"
+                : "border-transparent bg-white text-gray-700 hover:border-gray-200 hover:bg-gray-50"
             }`}
           >
+            <Sparkles className="h-4 w-4" />
             Social Media Services
           </button>
+          </div>
         </div>
 
         <div className="mb-6">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Find {sourceType === "SOCIAL" ? "providers" : "suppliers"}
+          </label>
+          <div className="relative w-full md:w-[460px]">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={search}
@@ -180,12 +198,17 @@ const ResellerHubPage = () => {
               setPage(1);
             }}
             placeholder={`Search ${sourceType === "SOCIAL" ? "providers" : "suppliers"}`}
-            className="w-full md:w-[420px] rounded-[4px] border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            className="w-full rounded-[6px] border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-sm transition placeholder:text-gray-400 focus:border-[var(--color-primary)] focus:outline-none"
           />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <div
+          className={`grid grid-cols-1 gap-6 ${
+            selectedSourceId ? "lg:grid-cols-3" : ""
+          }`}
+        >
+          <div className={selectedSourceId ? "lg:col-span-2" : "lg:col-span-3"}>
             {hasNoSources ? (
               <NotFound
                 title={`No ${sourceType === "SOCIAL" ? "providers" : "suppliers"} found`}
@@ -211,8 +234,8 @@ const ResellerHubPage = () => {
                       }}
                       className={`text-left rounded-[6px] border p-4 transition ${
                         active
-                          ? "border-[var(--color-primary)] bg-purple-50/30"
-                          : "border-gray-200 bg-white hover:border-gray-300"
+                          ? "border-[var(--color-primary)] bg-purple-50/40 shadow-sm"
+                          : "border-gray-200 bg-white hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-sm"
                       }`}
                     >
                       <div className="flex items-start gap-3 mb-3">
@@ -236,6 +259,11 @@ const ResellerHubPage = () => {
                               <Layers className="w-4 h-4 text-gray-500 shrink-0" />
                             ) : (
                               <Store className="w-4 h-4 text-gray-500 shrink-0" />
+                            )}
+                            {active && (
+                              <span className="rounded-[4px] border border-[var(--color-primary)] bg-purple-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-primary)]">
+                                Selected
+                              </span>
                             )}
                           </div>
                           <p className="text-xs text-gray-500 mt-0.5 truncate">
@@ -276,7 +304,8 @@ const ResellerHubPage = () => {
             />
           </div>
 
-          <aside className="rounded-[6px] border border-gray-200 bg-white p-4 h-fit">
+          {!!selectedSourceId && (
+            <aside className="rounded-[6px] border border-gray-200 bg-white p-4 h-fit">
             <div className="flex items-start justify-between gap-3 mb-2">
               <h2 className="text-base font-semibold text-gray-900">
                 {sourceType === "SOCIAL"
@@ -400,7 +429,8 @@ const ResellerHubPage = () => {
                   No services available for preview.
                 </p>
               )}
-          </aside>
+            </aside>
+          )}
         </div>
       </section>
 

@@ -56,7 +56,7 @@ export default function CouponShowcase({
   isApplying,
   autoOpenDelayMs,
   autoOpenStorageKey,
-  signupPath = "/register",
+  signupPath = "/onboarding",
 }: CouponShowcaseProps) {
   const { data: coupons, isLoading } = useGetCouponsByContext(context);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -145,8 +145,8 @@ export default function CouponShowcase({
           canRemoveSelected
             ? "bg-rose-100 text-rose-700 hover:bg-rose-200"
             : isSelected
-            ? "bg-emerald-100 text-emerald-700"
-            : "bg-primary/10 text-primary hover:bg-primary/15"
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-primary/10 text-primary hover:bg-primary/15"
         } ${isApplying ? "opacity-60 cursor-not-allowed" : ""}`}
       >
         {canRemoveSelected ? <X size={14} /> : <BadgePercent size={14} />}

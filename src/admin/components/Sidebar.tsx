@@ -6,6 +6,7 @@ import {
   HomeIcon,
   BellIcon,
   ShoppingBagIcon,
+  BookOpenIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 
@@ -106,6 +107,11 @@ const sections: MenuSection[] = [
         name: "Permissions",
         to: "/admin/permissions",
         icon: <Key className="w-5 h-5" />,
+      },
+      {
+        name: "Knowledge Base",
+        to: "/admin/knowledge-base",
+        icon: <BookOpenIcon className="w-5 h-5" />,
       },
     ],
   },

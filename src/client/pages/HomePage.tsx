@@ -144,7 +144,7 @@ export default function HomePage() {
             title="Special Offers For New Stores"
             autoOpenDelayMs={20000}
             autoOpenStorageKey="home_coupon_spotlight_seen_v1"
-            signupPath="/register"
+            signupPath="/onboarding"
           />
         </div>
       </AnimatedSection>

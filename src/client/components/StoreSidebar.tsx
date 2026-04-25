@@ -3,7 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { ShoppingBagIcon, HomeIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "@/context/useAppContext";
-import { CreditCard, MailIcon, TagIcon, User } from "lucide-react";
+import {
+  BookOpenIcon,
+  CreditCard,
+  MailIcon,
+  TagIcon,
+  User,
+} from "lucide-react";
 
 interface MenuItem {
   name: string;
@@ -20,6 +26,7 @@ const menu: MenuItem[] = [
   { name: "Analytics", icon: HomeIcon, to: "/analytics" },
   { name: "Stores", icon: ShoppingBagIcon, to: "/stores" },
   { name: "Subscription", icon: CreditCard, to: "/subscription" },
+  { name: "Knowledge Base", icon: BookOpenIcon, to: "/knowledge-base" },
   { name: "Pricing", icon: TagIcon, to: "/pricing" },
   { name: "Contact Us", icon: MailIcon, to: "/contact-us" },
 ];

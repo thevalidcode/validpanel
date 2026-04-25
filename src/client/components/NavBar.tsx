@@ -21,6 +21,7 @@ const Navbar: FC = () => {
 
   const navItems = [
     { label: "Home", path: "/" },
+    { label: "Knowledge Base", path: "/knowledge-base" },
     { label: "Reseller Hub", path: "/reseller-hub" },
     { label: "Pricing", path: "/pricing" },
     { label: "Contact", path: "/contact-us" },

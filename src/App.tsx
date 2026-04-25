@@ -16,6 +16,8 @@ import FAQPage from "./client/pages/FAQPage";
 import PricingPage from "./client/pages/PricingPage";
 import ContactUs from "./client/pages/ContactUs";
 import ResellerHubPage from "./client/pages/ResellerHubPage";
+import KnowledgeBasePage from "./client/pages/KnowledgeBasePage";
+import KnowledgeBaseArticlePage from "./client/pages/KnowledgeBaseArticlePage";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 import ForgetPassword from "./client/pages/ForgetPassword";
@@ -27,6 +29,7 @@ import PrivacyPolicy from "./client/pages/PrivacyPolicy";
 import PaymentStatusPage from "./client/pages/PaymentStatusPage";
 
 // Step pages (no Navbar or Footer)
+import CouponOnboardingEntry from "./client/components/onboarding/CouponOnboardingEntry";
 import Step1 from "./client/pages/Step1";
 import Step2 from "./client/pages/Step2";
 import Step3 from "./client/pages/Step3";
@@ -73,6 +76,9 @@ const ContactMessagesPage = React.lazy(
 const ContactMessageDetailPage = React.lazy(
   () => import("./admin/pages/ContactMessageDetailPage"),
 );
+const AdminKnowledgeBasePage = React.lazy(
+  () => import("./admin/pages/KnowledgeBasePage"),
+);
 
 const App: React.FC = () => {
   return (
@@ -90,6 +96,11 @@ const App: React.FC = () => {
                 <Route index element={<HomePage />} />
                 <Route path="faq" element={<FAQPage />} />
                 <Route path="reseller-hub" element={<ResellerHubPage />} />
+                <Route path="knowledge-base" element={<KnowledgeBasePage />} />
+                <Route
+                  path="knowledge-base/:slug"
+                  element={<KnowledgeBaseArticlePage />}
+                />
                 <Route path="pricing" element={<PricingPage />} />
                 <Route path="terms-of-service" element={<TermsOfService />} />
                 <Route path="privacy-policy" element={<PrivacyPolicy />} />
@@ -108,6 +119,9 @@ const App: React.FC = () => {
                   element={<AdminResetPassword />}
                 />
               </Route>
+
+              {/* Coupon-gated onboarding entry */}
+              <Route path="/onboarding" element={<CouponOnboardingEntry />} />
 
               {/* Onboarding & store creation (no layout) */}
               <Route path="/onboarding/step1" element={<Step1 />} />
@@ -252,6 +266,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<Loader />}>
                     <ContactMessageDetailPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/knowledge-base"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <AdminKnowledgeBasePage />
                   </Suspense>
                 }
               />

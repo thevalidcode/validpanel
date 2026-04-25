@@ -16,3 +16,4 @@ export * from "./models/platform-event";
 export * from "./models/coupon";
 export * from "./models/reseller";
 export * from "./models/reseller-store";
+export * from "./models/knowledge-base";
