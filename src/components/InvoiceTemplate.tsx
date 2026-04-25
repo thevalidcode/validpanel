@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import logoPng from "../../public/Valid2.png";
+import logoPng from "../assets/images/Valid2.png";
 
 interface InvoiceTemplateProps {
   payment: Payment;

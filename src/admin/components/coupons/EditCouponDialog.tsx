@@ -12,6 +12,7 @@ import {
   Layers,
   Globe,
   DollarSign,
+  Mail,
   User,
   Plus,
   Trash2,
@@ -54,6 +55,7 @@ export interface CouponRuleData {
 
 export interface CouponForm {
   code: string;
+  couponOwnerEmail?: string;
   type: DiscountType;
   value: string;
   startsAt?: string; // ISO string
@@ -106,6 +108,7 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
   // Main form state
   const [form, setForm] = useState<CouponForm>({
     code: "",
+    couponOwnerEmail: "",
     type: "FIXED",
     value: "0",
     isActive: true,
@@ -141,6 +144,7 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
             mode === "duplicate"
               ? `${initialValues.code}_COPY`
               : initialValues.code,
+          couponOwnerEmail: initialValues.couponOwnerEmail || "",
           type: initialValues.type,
           value: initialValues.value,
           startsAt: initialValues.startsAt
@@ -168,6 +172,7 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
       } else {
         setForm({
           code: "",
+          couponOwnerEmail: "",
           type: "FIXED",
           value: "0",
           isActive: true,
@@ -240,6 +245,7 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
     e.preventDefault();
     const submitData = {
       ...form,
+      couponOwnerEmail: form.couponOwnerEmail?.trim() || undefined,
       value: form.value,
       startsAt: form.startsAt
         ? new Date(form.startsAt).toISOString()
@@ -360,6 +366,23 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
                       </Field>
 
                       <Field
+                        label="Coupon Owner Email"
+                        icon={<Mail className="w-4 h-4" />}
+                      >
+                        <input
+                          type="email"
+                          name="couponOwnerEmail"
+                          title="Coupon Owner Email"
+                          value={form.couponOwnerEmail ?? ""}
+                          onChange={handleChange}
+                          placeholder="owner@example.com (optional)"
+                          className="mt-1 w-full outline-none rounded-[4px] border border-gray-300 px-3 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-60"
+                        />
+                      </Field>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <Field
                         label="Currency"
                         icon={<DollarSign className="w-4 h-4" />}
                       >
@@ -383,6 +406,22 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
                           isSearchable
                           required={form.type === "FIXED"}
                           placeholder="Select Currency"
+                        />
+                      </Field>
+
+                      <Field
+                        label="Total Max Uses"
+                        icon={<FileDigit className="w-4 h-4" />}
+                      >
+                        <input
+                          type="text"
+                          name="maxUses"
+                          title="Max Uses"
+                          min="0"
+                          placeholder="Unlimited"
+                          value={form.maxUses ?? ""}
+                          onChange={handleChange}
+                          className="mt-1 w-full outline-none rounded-[4px] border border-gray-300 px-3 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-60"
                         />
                       </Field>
                     </div>
@@ -491,22 +530,6 @@ const EditCouponDialog: FC<EditCouponDialogProps> = ({
                         />
                       </Field>
                     </div>
-
-                    <Field
-                      label="Total Max Uses"
-                      icon={<FileDigit className="w-4 h-4" />}
-                    >
-                      <input
-                        type="text"
-                        name="maxUses"
-                        title="Max Uses"
-                        min="0"
-                        placeholder="Unlimited"
-                        value={form.maxUses ?? ""}
-                        onChange={handleChange}
-                        className="mt-1 w-full outline-none rounded-[4px] border border-gray-300 px-3 py-2 text-sm focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-60"
-                      />
-                    </Field>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <Field

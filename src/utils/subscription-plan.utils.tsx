@@ -62,6 +62,8 @@ const FEATURE_MAP: Record<keyof SubscriptionPlanFeatures, FeatureFormatter> = {
 
   max_shipping_accounts: (value: number) =>
     value > 0 ? `Up to ${value} shipping accounts per store` : null,
+
+  reselling: (value: boolean) => (value ? "Reselling features" : null),
 };
 
 export function formatPlanFeatures(
@@ -101,6 +103,7 @@ const FEATURE_LABELS: Record<keyof SubscriptionPlanFeatures, string> = {
   social_store_order_sync: "Social store order sync",
   social_store_service_sync: "Social store service sync",
   max_shipping_accounts: "Max shipping accounts per store",
+  reselling: "Reselling features",
 };
 
 export function getFeatureLabel(key: keyof SubscriptionPlanFeatures): string {

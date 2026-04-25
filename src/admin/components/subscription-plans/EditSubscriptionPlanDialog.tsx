@@ -64,6 +64,7 @@ const DEFAULT_FEATURES: SubscriptionPlanFeatures = {
   free_ssl: false,
   hide_platform_banner: false,
   custom_templates: false,
+  reselling: false,
   unlimited_products: false,
   social_store_order_sync: false,
   social_store_service_sync: false,

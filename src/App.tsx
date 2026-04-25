@@ -15,6 +15,7 @@ import HomePage from "./client/pages/HomePage";
 import FAQPage from "./client/pages/FAQPage";
 import PricingPage from "./client/pages/PricingPage";
 import ContactUs from "./client/pages/ContactUs";
+import ResellerHubPage from "./client/pages/ResellerHubPage";
 import LoginPage from "./client/pages/LoginPage";
 import RegisterPage from "./client/pages/RegisterPage";
 import ForgetPassword from "./client/pages/ForgetPassword";
@@ -63,6 +64,9 @@ const SubscriptionPlansPage = React.lazy(
   () => import("./admin/pages/SubscriptionPlansPage"),
 );
 const PaymentsPage = React.lazy(() => import("./admin/pages/PaymentsPage"));
+const ResellerStoresPage = React.lazy(
+  () => import("./admin/pages/ResellerStoresPage"),
+);
 const ContactMessagesPage = React.lazy(
   () => import("./admin/pages/ContactMessagesPage"),
 );
@@ -85,6 +89,7 @@ const App: React.FC = () => {
               <Route path="/" element={<PublicLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="faq" element={<FAQPage />} />
+                <Route path="reseller-hub" element={<ResellerHubPage />} />
                 <Route path="pricing" element={<PricingPage />} />
                 <Route path="terms-of-service" element={<TermsOfService />} />
                 <Route path="privacy-policy" element={<PrivacyPolicy />} />
@@ -223,6 +228,14 @@ const App: React.FC = () => {
                 element={
                   <Suspense fallback={<Loader />}>
                     <CouponsPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/reseller-stores"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <ResellerStoresPage />
                   </Suspense>
                 }
               />

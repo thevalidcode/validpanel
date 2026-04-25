@@ -57,6 +57,11 @@ const sections: MenuSection[] = [
         icon: <ShoppingBagIcon className="w-5 h-5" />,
       },
       {
+        name: "Reseller Stores",
+        to: "/admin/reseller-stores",
+        icon: <ShoppingBagIcon className="w-5 h-5" />,
+      },
+      {
         name: "Admin Management",
         to: "/admin/admin-management",
         icon: <FaUsers className="w-5 h-5" />,

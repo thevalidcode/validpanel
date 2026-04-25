@@ -97,7 +97,7 @@ const StepOne: React.FC = () => {
           </p>
           <div className="flex justify-center gap-2 flex-wrap">
             <span className="bg-pink-100 text-pink-700 text-xs px-3 py-1 rounded-full">
-              Social Services
+              Social Media Services
             </span>
             <span className="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full">
               Digital Marketing

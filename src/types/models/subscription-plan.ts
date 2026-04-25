@@ -23,6 +23,7 @@ export type SubscriptionPlanFeatures = {
   store_custom_emails: boolean;
   store_newsletters: boolean;
   max_shipping_accounts: number;
+  reselling: boolean;
 };
 
 export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE" | "DRAFT";

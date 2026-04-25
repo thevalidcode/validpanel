@@ -42,6 +42,7 @@ export function useGetCoupon(uid: string) {
 
 interface CreateCouponData {
   code: string;
+  couponOwnerEmail?: string | null;
   type: DiscountType;
   value: string; // decimal string
   currency?: string | null;

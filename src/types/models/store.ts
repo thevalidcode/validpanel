@@ -22,6 +22,7 @@ export type Store = {
   ownerId: number;
   logoUrl: string;
   color: string;
+  resellingEnabled: boolean;
 };
 
 export type StoreWithOwner = Store & {

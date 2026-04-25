@@ -27,7 +27,7 @@ export function useCreateStore() {
         // Log the response for debugging
         console.error("Store creation failed. Response:", res.data);
         throw new Error(
-          "Failed to create store: No store object returned from server."
+          "Failed to create store: No store object returned from server.",
         );
       }
       return res.data;
@@ -54,6 +54,7 @@ export function useGetUserStores() {
       if (!res.data) throw new Error("Failed to fetch stores");
       return res.data.stores;
     },
+    enabled: !!userInfo,
   });
 }
 
@@ -100,6 +101,7 @@ interface UpdateStoreProps {
   status?: StoreStatus;
   logoUrl?: string;
   color?: string;
+  resellingEnabled?: boolean;
 }
 
 export function useUpdateStore() {
@@ -136,7 +138,7 @@ export function useGetStores() {
     queryKey: ["stores-all"],
     queryFn: async () => {
       const res = await api.get<{ stores: StoreWithOwner[] }>(
-        `/stores/admin/all`
+        `/stores/admin/all`,
       );
       if (!res.data) throw new Error("Failed to fetch stores");
       return res.data.stores;

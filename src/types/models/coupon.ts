@@ -18,6 +18,7 @@ export interface Coupon {
   id: number;
   uid: string;
   code: string;
+  couponOwnerEmail: string | null;
   type: DiscountType;
   value: string; // decimal string
   currency: CurrencyCode | null;
