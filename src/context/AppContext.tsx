@@ -6,10 +6,11 @@ import type {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { createContext, useState, useMemo, useEffect } from "react";
-import { get, set } from "idb-keyval";
+import { del, get, set } from "idb-keyval";
 import type { CurrencyCode } from "@/lib/currencyConverter";
 import type { Admin, User } from "@/types";
 import { timezoneToCurrency } from "@/_docs/doc";
+import { useLocation } from "react-router-dom";
 
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -30,18 +31,54 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [userCurrency, setUserCurrencyState] = useState<CurrencyCode>("USD");
   const domain = getDomain();
+  const location = useLocation();
+  const activeAuthRole = location.pathname.startsWith("/admin") ? "admin" : "user";
+
+  const clearBrowserAuthCookies = () => {
+    if (typeof document === "undefined") return;
+
+    document.cookie = "auth_token=; Max-Age=0; path=/";
+    document.cookie = "csrf_token=; Max-Age=0; path=/";
+  };
+
+  const clearStoredAuth = async () => {
+    setUserInfo(null);
+    setAdminInfo(null);
+
+    try {
+      await Promise.all([del("userInfo"), del("adminInfo")]);
+    } finally {
+      clearBrowserAuthCookies();
+    }
+  };
 
   // Load user/admin from IndexedDB on mount
   useEffect(() => {
     const loadUserInfo = async () => {
+      setIsAuthLoading(true);
       try {
-        const storedUser = await get<User | null>("userInfo");
-        if (storedUser)
-          setUserInfo(JSON.parse(JSON.stringify(storedUser)) || null);
+        const [storedUser, storedAdmin] = await Promise.all([
+          get<User | null>("userInfo"),
+          get<Admin | null>("adminInfo"),
+        ]);
 
-        const storedAdmin = await get<Admin | null>("adminInfo");
-        if (storedAdmin)
-          setAdminInfo(JSON.parse(JSON.stringify(storedAdmin)) || null);
+        if (activeAuthRole === "admin") {
+          if (storedAdmin) {
+            setAdminInfo(JSON.parse(JSON.stringify(storedAdmin)) || null);
+          } else {
+            setAdminInfo(null);
+          }
+          setUserInfo(null);
+          await del("userInfo");
+        } else {
+          if (storedUser) {
+            setUserInfo(JSON.parse(JSON.stringify(storedUser)) || null);
+          } else {
+            setUserInfo(null);
+          }
+          setAdminInfo(null);
+          await del("adminInfo");
+        }
       } catch (err) {
         console.error("Failed to load auth info from IndexedDB:", err);
       } finally {
@@ -49,25 +86,35 @@ const AppProvider = ({ children }: AppProviderProps) => {
       }
     };
     loadUserInfo();
-  }, []);
+  }, [activeAuthRole]);
 
   // Save user/admin info to IndexedDB whenever they change
   useEffect(() => {
     const saveAuthInfo = async () => {
       try {
-        const safeUser = userInfo ? JSON.parse(JSON.stringify(userInfo)) : null;
-        const safeAdmin = adminInfo
-          ? JSON.parse(JSON.stringify(adminInfo))
-          : null;
-
-        await set("userInfo", safeUser);
-        await set("adminInfo", safeAdmin);
+        if (activeAuthRole === "admin") {
+          if (adminInfo) {
+            const safeAdmin = JSON.parse(JSON.stringify(adminInfo));
+            await set("adminInfo", safeAdmin);
+            await del("userInfo");
+          } else {
+            await del("adminInfo");
+          }
+        } else {
+          if (userInfo) {
+            const safeUser = JSON.parse(JSON.stringify(userInfo));
+            await set("userInfo", safeUser);
+            await del("adminInfo");
+          } else {
+            await del("userInfo");
+          }
+        }
       } catch (err) {
         console.error("Failed to save auth info:", err);
       }
     };
     saveAuthInfo();
-  }, [userInfo, adminInfo]);
+  }, [activeAuthRole, userInfo, adminInfo]);
 
   // Sync currency with localStorage and auto-detect from locale
   useEffect(() => {
@@ -123,8 +170,32 @@ const AppProvider = ({ children }: AppProviderProps) => {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
+
+    instance.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const status = error?.response?.status;
+        const payload = error?.response?.data;
+        const combinedMessage = `${payload?.error ?? ""} ${payload?.message ?? ""} ${error?.message ?? ""}`.toLowerCase();
+
+        if (
+          status === 401 &&
+          !String(error?.config?.url ?? "").includes("/auth/core/logout") &&
+          /token|auth|session|missing authentication/.test(combinedMessage)
+        ) {
+          await instance.post("/auth/core/logout").catch(() => undefined);
+          await clearStoredAuth();
+          window.location.replace(
+            activeAuthRole === "admin" ? "/admin/login" : "/login",
+          );
+        }
+
+        return Promise.reject(error);
+      },
+    );
+
     return instance;
-  }, []);
+  }, [activeAuthRole]);
 
   // Fetch currency rates
   const { isLoading: isRatesLoading } = useQuery({
