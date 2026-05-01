@@ -192,6 +192,7 @@ const EditResellerStoreDialog: FC<EditResellerStoreDialogProps> = ({
                     setForm((prev) => ({ ...prev, isActive: checked }))
                   }
                   label="Active"
+                  required={false}
                 />
               </div>
 

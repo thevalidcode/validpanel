@@ -10,7 +10,6 @@ import { del, get, set } from "idb-keyval";
 import type { CurrencyCode } from "@/lib/currencyConverter";
 import type { Admin, User } from "@/types";
 import { timezoneToCurrency } from "@/_docs/doc";
-import { useLocation } from "react-router-dom";
 
 // Create the context with a default value of undefined
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -31,8 +30,15 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [userCurrency, setUserCurrencyState] = useState<CurrencyCode>("USD");
   const domain = getDomain();
-  const location = useLocation();
-  const activeAuthRole = location.pathname.startsWith("/admin") ? "admin" : "user";
+  const getPathname = () => {
+    if (typeof window !== "undefined" && window.location && window.location.pathname) {
+      return window.location.pathname;
+    }
+    return "/";
+  };
+
+  const pathname = getPathname();
+  const activeAuthRole = pathname.startsWith("/admin") ? "admin" : "user";
 
   const clearBrowserAuthCookies = () => {
     if (typeof document === "undefined") return;
