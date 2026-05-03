@@ -8,7 +8,7 @@ import Color from "@tiptap/extension-color";
 import { TextStyle } from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
 import Link from "@tiptap/extension-link";
-import { Extension, type Editor } from "@tiptap/core";
+import { Extension, type Editor, Node, mergeAttributes } from "@tiptap/core";
 import { motion } from "framer-motion";
 import { ImageIcon, LinkIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -29,6 +29,7 @@ const defaultEnable = {
   color: true,
   fontFamily: true,
   code: true,
+  video: true,
 };
 
 const headingOptions: Option<string>[] = [
@@ -73,6 +74,39 @@ function useBuiltExtensions(
         openOnClick: true,
         autolink: true,
         defaultProtocol: "https",
+      }) as unknown as Extension,
+      // simple iframe node for embeds (YouTube)
+      Node.create({
+        name: "iframe",
+        group: "block",
+        atom: true,
+        selectable: true,
+        addAttributes() {
+          return {
+            src: { default: null },
+          };
+        },
+        parseHTML() {
+          return [{ tag: "iframe" }];
+        },
+        renderHTML({ HTMLAttributes }) {
+          return [
+            "div",
+            { class: "video-embed" },
+            [
+              "iframe",
+              mergeAttributes(
+                {
+                  frameborder: "0",
+                  allow:
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                  allowfullscreen: "true",
+                },
+                HTMLAttributes
+              ),
+            ],
+          ];
+        },
       }) as unknown as Extension,
     ];
 
@@ -229,6 +263,23 @@ export default function WysiwygEditor({
       return;
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  }, [editor]);
+
+  const insertVideo = useCallback(() => {
+    if (!editor) return;
+    const previous = editor.getAttributes("iframe").src || "";
+    const url = window.prompt("YouTube URL or embed URL", previous);
+    if (url === null) return;
+    if (url === "") return;
+
+    // extract YouTube ID and convert to embed
+    const ytMatch = url.match(
+      /(?:youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([\w-]{11})/
+    );
+    const id = ytMatch ? ytMatch[1] : null;
+    const embed = id ? `https://www.youtube.com/embed/${id}` : url;
+
+    editor.chain().focus().setNode("iframe", { src: embed }).run();
   }, [editor]);
 
   const handleSave = useCallback(async () => {
@@ -415,6 +466,16 @@ export default function WysiwygEditor({
             >
               <LinkIcon className="w-3.5 h-3.5" />
               Link
+            </button>
+          )}
+
+          {enable.video && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-[4px] border border-gray-200 text-gray-700"
+              onClick={insertVideo}
+            >
+              YouTube
             </button>
           )}
 
